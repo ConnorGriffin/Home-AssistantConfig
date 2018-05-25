@@ -2,6 +2,11 @@
 
 - platform: template
   sensors:
+    blood_glucose_level:
+      friendly_name: 'Blood Glucose Level'
+      value_template: '{{sensor.blood_glucose}}'
+      unit_of_measurement: 'mg/dL'
+      icon_template: 'mdi:water'
     schlage_frontdoor_battery:
         friendly_name: 'Front Door Lock'
         value_template: '{{ states.zwave.front_door_lock.attributes.battery_level }}'
