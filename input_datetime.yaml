@@ -1,0 +1,24 @@
+alarm1_datetime:
+    name: "Time"
+    has_date: false
+    has_time: true 
+
+alarm2_datetime:
+    name: "Time"
+    has_date: false
+    has_time: true 
+
+alarm3_datetime:
+    name: "Time"
+    has_date: false
+    has_time: true 
+
+alarm4_datetime:
+    name: "Time"
+    has_date: false
+    has_time: true 
+
+alarm5_datetime:
+    name: "Time"
+    has_date: false
+    has_time: true 

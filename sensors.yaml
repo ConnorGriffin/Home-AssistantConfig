@@ -1,0 +1,43 @@
+- platform: yr
+
+- platform: template
+  sensors:
+    schlage_frontdoor_battery:
+        friendly_name: 'Front Door Lock'
+        value_template: '{{ states.zwave.front_door_lock.attributes.battery_level }}'
+        unit_of_measurement: '%'
+        icon_template: >
+            {%- set batteryLevel = state_attr('zwave.front_door_lock', 'battery_level') -%}
+            {%- if (batteryLevel != 'None') -%}
+              {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+                {# Round to the nearest 10 if battery is between 5 and 95 #} 
+                mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+              {%- elif (batteryLevel >= 95) -%} 
+                {# full battery #}
+                mdi:battery
+              {%- elif (batteryLevel <= 5) -%} 
+                {# less than 5% battery #}
+                mdi:battery-outline
+              {%- endif -%}
+            {%- else -%}
+              {# If battery status is not known, use battery-unknown icon #}
+              mdi:battery-unknown
+            {%- endif -%}
+
+- platform: rest
+  resource: https://hass.connorcg.com:1880/currentbg
+  name: Blood Glucose
+  method: GET
+  username: admin
+  password: !secret http_password
+  authentication: basic
+  value_template: '{{value_json.sgv}}'
+  unit_of_measurement: 'mg/dL'
+  json_attributes:
+  - date
+  - dateString
+  - delta
+  - direction
+  - sgv
+  - type
+  - noise
