@@ -62,7 +62,7 @@ diabetes:
     name: Diabetes
     view: no
     entities: 
-      - sensor.blood_glucose
+      - sensor.blood_glucose_level
 
 connors_office:
     name: "Connor's Office"
