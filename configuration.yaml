@@ -83,6 +83,17 @@ tts:
 
 # Cloud
 cloud:
+  google_actions:
+      filter:
+#        include_entities:
+        include_domains:
+          - light
+          - climate
+      entity_config:
+        light.connors_office_light:
+          name: Connor's Office Light
+          aliases:
+            - My light
 
 group: !include groups.yaml
 automation: !include automations.yaml
