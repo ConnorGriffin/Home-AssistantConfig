@@ -1,3 +1,7 @@
+ecobee_auto_home_away:
+  name: "Ecobee Auto Home/Away"
+  icon: mdi:thermostat
+
 # region alarms
 alarm1_enabled:
   name: "Enabled"
