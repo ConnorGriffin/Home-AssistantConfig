@@ -8,6 +8,7 @@ default_view:
         - group.living_room
         - group.connors_office
         - group.dianas_office
+        - group.automation
 
 people_view:
     name: People
@@ -107,6 +108,11 @@ zwave:
         - zwave.bedroom_light
         - zwave.connors_office_light
         - zwave.schlage_be469_touchscreen_deadbolt
+
+automation:
+    name: Automation
+    entities: 
+        - input_boolean.ecobee_auto_home_away
 
 alarm1:
     control: hidden
