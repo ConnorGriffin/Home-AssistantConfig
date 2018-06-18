@@ -1,3 +1,4 @@
+# region alarms
 alarm1_enabled:
   name: "Enabled"
   icon: mdi:toggle-switch
@@ -122,3 +123,4 @@ alarm5_friday:
 alarm5_saturday:
   name: "Saturday"
   icon: mdi:calendar-blank
+# endregion

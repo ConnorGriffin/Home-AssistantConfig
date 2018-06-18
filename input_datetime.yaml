@@ -1,3 +1,4 @@
+# region alarms
 alarm1_datetime:
     name: "Time"
     has_date: false
@@ -22,3 +23,4 @@ alarm5_datetime:
     name: "Time"
     has_date: false
     has_time: true 
+# endregion
