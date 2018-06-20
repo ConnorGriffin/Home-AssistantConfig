@@ -1,6 +1,11 @@
-*
-!*.yaml
-!scenes
-!.gitignore
+.uuid
+.HA_VERSION
+*.log
+*.conf
+*.db
+*.sqlite
+*.xml
+OZW_Log.txt
 secrets.yaml
 known_devices.yaml
+appdaemon/apps/__pycache__
