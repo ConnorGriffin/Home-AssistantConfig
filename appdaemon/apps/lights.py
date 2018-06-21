@@ -96,6 +96,7 @@ class Lights(hass.Hass):
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
         light_friendly = self.friendly_name(entity)
         self.log('{}: Turned on'.format(light_friendly))
+        self.auto_brightness_cb(dict(entity_id=entity))
         
     # Set brightness automatically based on schedule
     def auto_brightness_cb(self, kwargs):
