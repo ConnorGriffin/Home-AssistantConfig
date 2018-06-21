@@ -60,7 +60,7 @@ class Lights(hass.Hass):
         if setting['override'] == override:
             # Reset if the current action is called again (double tap once turns on, second time resets)
             setting['override'] = None
-            # callback the scheduling code here
+            self.auto_brightness_cb(dict(entity_id=entity_id))
         else:
             setting['override'] = override
             self.turn_on(entity_id, brightness_pct=brightness_pct)
