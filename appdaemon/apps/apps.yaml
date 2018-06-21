@@ -1,8 +1,4 @@
 ---
-hello_world:
-  module: hello
-  class: HelloWorld
-
 lights:
   module: lights
   class: Lights
