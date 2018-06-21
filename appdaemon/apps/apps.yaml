@@ -6,10 +6,6 @@ hello_world:
 lights:
   module: lights
   class: Lights
-
-Double Tap Switch:
-  class: zwave_double_tap
-  module: zwave_double_tap 
   entities:
-    - zwave.bedroom_light
-    - zwave.connors_office_light
+    - bedroom_light
+    - connors_office_light
