@@ -83,17 +83,19 @@ class Lights(hass.Hass):
         else:
             return None
 
-        self.log('{}: {}'.format(light_friendly, direction))
+        self.log('{}: Double tapped {}'.format(light_friendly, direction))
         self.set_override(light_entity, override, brightness_pct)
 
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
+        light_friendly = self.friendly_name(entity)
+        self.log('{}: Turned off'.format(light_friendly))
         self.global_vars['lights'][entity]['override'] = None
     
     # Call auto_brightness_cb when a light is turned on 
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
-        self.log('{}: turned_on_cb'.format(entity))
-        self.auto_brightness_cb(entity)
+        light_friendly = self.friendly_name(entity)
+        self.log('{}: Turned on'.format(light_friendly))
         
     # Set brightness automatically based on schedule
     def auto_brightness_cb(self, kwargs):
