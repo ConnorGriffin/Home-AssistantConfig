@@ -6,7 +6,7 @@ log:
   log_generations: 3
   log_size: 1000000
 appdaemon:
-  threads: 10
+  #threads: 10
   app_dir: /config/appdaemon/apps
   api_port: 5000
   api_key: !secret http_password
