@@ -70,6 +70,7 @@ class Lights(hass.Hass):
         basic_level = data["basic_level"]
         zwave_entity = kwargs['entity_id']
         light_entity = kwargs['light_entity']
+        light_friendly = self.friendly_name(light_entity)
 
         if basic_level == 255:
             direction = 'up'
