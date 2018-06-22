@@ -5,3 +5,16 @@ lights:
   entities:
     - bedroom_light
     - connors_office_light
+  brightness_schedule:
+    - pct: 75
+      start: '9:00'
+      end: '10:00'
+    - pct: 100
+      start: '12:00'
+      end: '16:00'
+    - pct: 70
+      start: '18:00'
+      end: '18:00'
+    - pct: 10
+      start: '21:00'
+      end: '06:00'
