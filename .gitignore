@@ -2,7 +2,7 @@
 .HA_VERSION
 *.log
 *.conf
-*.db
+*.db*
 *.sqlite
 *.xml
 OZW_Log.txt
