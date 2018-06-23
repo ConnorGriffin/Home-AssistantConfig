@@ -3,8 +3,22 @@ lights:
   module: lights
   class: Lights
   entities:
-    - bedroom_light
-    - connors_office_light
+    - name: bedroom_light
+      alarms: 
+        - hide_switch_from_groups: 
+            - bedroom
+          alarm_groups:
+            - alarm1
+            - alarm2
+            - alarm3
+            - alarm4
+            - alarm5
+    - name: connors_office_light
+      alarms: 
+        - hide_switch_from_groups: 
+            - connors_office
+#          alarm_groups:
+#            - alarm5
   brightness_schedule:
     - pct: 75
       start: '9:00'

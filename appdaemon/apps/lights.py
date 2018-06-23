@@ -9,7 +9,12 @@ class Lights(hass.Hass):
 
         if "entities" in self.args:
             # Loop through the entities 
-            for entity_id in self.args["entities"]:
+            for entity in self.args["entities"]:
+                # Get the entity settings
+                entity_id = entity['name']
+                alarms = entity.get('alarms',{})
+
+                # Convert entity name into useable entity_ids
                 zwave_entity = 'zwave.{}'.format(entity_id)
                 light_entity = 'light.{}'.format(entity_id)
                 light_friendly = self.friendly_name(light_entity)
@@ -18,33 +23,33 @@ class Lights(hass.Hass):
                 self.global_vars['lights'][light_entity] = {
                     'override': None,
                     'setpoint': None
-                }
+                } 
 
                 # Listen for double taps
                 self.log("Monitoring {} for double tap.".format(light_friendly), "INFO")
                 self.listen_event(
                     self.double_tap_cb, 
                     "zwave.node_event", 
-                    entity_id=zwave_entity, 
-                    light_entity=light_entity
+                    entity_id = zwave_entity, 
+                    light_entity = light_entity
                 )
 
                 # Listen for light getting turned off
                 self.log("Monitoring {} for turn off.".format(light_friendly), "INFO")
                 self.listen_state(
                     self.turned_off_cb,
-                    entity=light_entity,
-                    new='off',
-                    old='on'
+                    entity = light_entity,
+                    new = 'off',
+                    old = 'on'
                 )
 
                 # Listen for light getting turned on
                 self.log("Monitoring {} for turn on.".format(light_friendly), "INFO")
                 self.listen_state(
                     self.turned_on_cb,
-                    entity=light_entity,
-                    new='on',
-                    old='off'
+                    entity = light_entity,
+                    new = 'on',
+                    old = 'off'
                 )
 
                 # Set auto-brightness every 5 minutes if light is on
@@ -52,9 +57,41 @@ class Lights(hass.Hass):
                     self.auto_brightness_cb,
                     datetime.datetime.now(),
                     300,
-                    entity_id=light_entity,
-                    transition=300
+                    entity_id = light_entity,
+                    transition = 300
                 )
+
+                # Iterate over each alarm setting in each light 
+                for alarm in alarms:
+                    hide_switch_groups = alarm.get('hide_switch_from_groups',[])
+
+                    # Setup a listener for each alarm name in the group
+                    for alarm_name in alarm.get('alarm_groups',[]): 
+                        self.log('Monitoring {} for {}.'.format(light_friendly, alarm_name))
+                        self.listen_event(
+                            self.alarm_fired_cb,
+                            'alarm_fired',
+                            alarm_name = alarm_name,
+                            light_entity = light_entity,
+                            hide_switch_groups = hide_switch_groups
+                        )
+
+
+    def restore_group_cb(self, entity, attribute, old, new, kwargs):
+        group = kwargs.get('group')
+        original_entities = kwargs.get('original_entities') 
+
+        # Update the group with the new entity list (remove the light switch)
+        self.log('Resetting {} entities (unhiding light).'.format(self.friendly_name('group.{}'.format(group))))
+        self.call_service(
+            service = 'group/set',
+            object_id = group,
+            entities = original_entities
+        )
+
+        # Stop the listener manually, can't use a oneshot until https://github.com/home-assistant/appdaemon/pull/299 is merged
+        self.cancel_listen_event(kwargs['handle'])
+        
 
     # Used by other functions to set overrides and store override data in the global_vars dictionary
     def set_override(self, entity_id, override, brightness_pct):
@@ -69,12 +106,60 @@ class Lights(hass.Hass):
             setting['setpoint'] = None
             self.turn_on(entity_id, brightness_pct=brightness_pct)
 
+
+    def alarm_fired_cb(self, event_name, data, kwargs):
+        light_entity = kwargs.get('light_entity')
+        hide_switch_groups = kwargs.get('hide_switch_groups')
+        alarm_name = data['alarm_name']
+        alarm_group = 'group.{}'.format(alarm_name)
+        override = self.global_vars['lights'][light_entity]['override']
+
+        # If the alarm is already triggered, don't do anything
+        if override != 'alarm':
+            # Turn on the configured light to full brightness
+            self.log('{}: Turned on by alarm {}.'.format(self.friendly_name(light_entity), self.friendly_name(alarm_group)))
+            self.set_override(
+                entity_id = light_entity,
+                override = 'alarm',
+                brightness_pct = 100
+            )
+
+            # Hide the switch from the specified groups when the alarm is triggered
+            for group in hide_switch_groups:
+                group_id = 'group.{}'.format(group)
+                entities = self.get_state(group_id, attribute='entity_id')
+
+                self.log('Hiding {} from {}.'.format(self.friendly_name(light_entity), self.friendly_name(group_id)))
+
+                # Copy the list of entities in the group now, then remove the light switch
+                original_entities = entities.copy()
+                entities.remove(light_entity)
+
+                # Update the group with the new entity list (remove the light switch)
+                self.call_service(
+                    service = 'group/set',
+                    object_id = group,
+                    entities = entities
+                )
+
+                # Setup a listener that will restore the original entity list when the light is interacted with in any way
+                # Can't use oneshot beause of a bug. Waiting for this to be merged: https://github.com/home-assistant/appdaemon/pull/299
+                self.listen_state(
+                    self.restore_group_cb,
+                    entity = light_entity,
+                    old = 'on',
+                    new = 'off',
+                    original_entities = original_entities,
+                    group = group
+                )
+
+
     # Set max/min brightness on double tap up/down
     def double_tap_cb(self, event_name, data, kwargs):
         basic_level = data["basic_level"]
         light_entity = kwargs['light_entity']
         light_friendly = self.friendly_name(light_entity)
-
+ 
         if basic_level in [255,0]:
             if basic_level == 255:
                 direction = 'up'
@@ -88,6 +173,7 @@ class Lights(hass.Hass):
             self.set_override(light_entity, override, brightness_pct)
             self.log('{}: Double tapped {}'.format(light_friendly, direction))
     
+
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
         light_friendly = self.friendly_name(entity)
@@ -95,11 +181,13 @@ class Lights(hass.Hass):
         self.global_vars['lights'][entity]['override'] = None
         self.global_vars['lights'][entity]['setpoint'] = None
     
+
     # Call auto_brightness_cb when a light is turned on 
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
         light_friendly = self.friendly_name(entity)
         self.log('{}: Turned on'.format(light_friendly))
         self.auto_brightness_cb(dict(entity_id=entity, source='turned_on_cb'))
+        
         
     # Set brightness automatically based on schedule
     def auto_brightness_cb(self, kwargs):
@@ -161,5 +249,9 @@ class Lights(hass.Hass):
                 last_percent = setting.get('setpoint')
                 if last_percent != target_percent:
                     self.log("{}: Setting auto-brightness - {}%".format(friendly_name, round(target_percent, 2)))
-                    self.turn_on(entity_id, brightness_pct=target_percent, transition=transition)
+                    self.turn_on(
+                        entity_id,
+                        brightness_pct = target_percent, 
+                        transition = transition
+                    )
                     setting['setpoint'] = target_percent
