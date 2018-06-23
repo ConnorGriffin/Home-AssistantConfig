@@ -75,21 +75,19 @@ class Lights(hass.Hass):
         light_entity = kwargs['light_entity']
         light_friendly = self.friendly_name(light_entity)
 
-        if basic_level == 255:
-            direction = 'up'
-            override = 'max_bright'
-            brightness_pct = 100
-        elif basic_level == 0:
-            direction = 'down'
-            override = 'min_bright'
-            brightness_pct = 10
-        else:
-            return None
-
-        self.set_override(light_entity, override, brightness_pct)
-        self.log('{}: Double tapped {}'.format(light_friendly, direction))
-        
-
+        if basic_level in [255,0]:
+            if basic_level == 255:
+                direction = 'up'
+                override = 'max_bright'
+                brightness_pct = 100
+            elif basic_level == 0:
+                direction = 'down'
+                override = 'min_bright'
+                brightness_pct = 10
+            
+            self.set_override(light_entity, override, brightness_pct)
+            self.log('{}: Double tapped {}'.format(light_friendly, direction))
+    
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
         light_friendly = self.friendly_name(entity)
