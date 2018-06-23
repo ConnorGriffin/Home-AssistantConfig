@@ -1,5 +1,6 @@
 # VIEWS #
 default_view:
+    name: Home
     view: yes
     icon: mdi:home
     entities:
@@ -19,13 +20,14 @@ people_view:
         - group.diabetes
 
 media_view:
+    Name: Media
     view: yes
     icon: mdi:audio-video
     entities:
         - media_player.roku_5y25a2192945
         
 alarmclock_view:
-    name: Sandbox
+    name: Alarms
     icon: mdi:alarm
     view: yes
     entities:
