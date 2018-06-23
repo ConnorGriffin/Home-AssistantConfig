@@ -13,9 +13,10 @@ class AlarmClock(hass.Hass):
             self.run_minutely(
                 self.alarm_triggered_cb,
                 datetime.datetime.now().time(),
-                constrain_input_boolean='input_boolean.{}_enabled'.format(alarm_name),
-                alarm_name=alarm_name
+                constrain_input_boolean = 'input_boolean.{}_enabled'.format(alarm_name),
+                alarm_name = alarm_name
             )
+            
 
     def alarm_triggered_cb(self, kwargs):
         alarm_name = kwargs.get('alarm_name')
@@ -46,9 +47,10 @@ class AlarmClock(hass.Hass):
             # Fire the alarm 
             self.run_in(
                 self.trigger_alarm,
-                seconds=diff_seconds, 
-                alarm_name=alarm_name,
+                seconds = diff_seconds, 
+                alarm_name = alarm_name,
             )
+
 
     def trigger_alarm(self, kwargs):
         alarm_name = kwargs.get('alarm_name')
