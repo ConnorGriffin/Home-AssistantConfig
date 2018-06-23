@@ -16,14 +16,6 @@ class AlarmClock(hass.Hass):
                 constrain_input_boolean='input_boolean.{}_enabled'.format(alarm_name),
                 alarm_name=alarm_name
             )
-        
-        self.listen_event(
-            self.test_triggered,
-            'alarm_fired'
-        )
-            
-    def test_triggered(self, event_name, data, kwargs):
-        self.log(data)
 
     def alarm_triggered_cb(self, kwargs):
         alarm_name = kwargs.get('alarm_name')
@@ -62,6 +54,7 @@ class AlarmClock(hass.Hass):
         alarm_name = kwargs.get('alarm_name')
         
         # Notify HomeAssistant that this alarm has triggered. Other AppDaemon apps can subscribe to this event to take action on the alarm 
+        self.log('Fired {}.'.format(alarm_name))
         self.fire_event(
             "alarm_fired",
             alarm_name = alarm_name
