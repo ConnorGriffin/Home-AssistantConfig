@@ -20,7 +20,7 @@ people_view:
         - group.diabetes
 
 media_view:
-    Name: Media
+    name: Media
     view: yes
     icon: mdi:audio-video
     entities:
