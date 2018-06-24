@@ -72,7 +72,6 @@ class AlarmClock(hass.Hass):
         alarm_name = kwargs.get('alarm_name')
         
         # Get the alarm properties
-        enabled = self.get_state('input_boolean.{}_enabled'.format(alarm_name))
         time = self.get_state('input_datetime.{}_datetime'.format(alarm_name))
         alarm_seconds = (int(time.split(':')[0]) * 60 + int(time.split(':')[1])) * 60 + int(time.split(':')[2]) 
         
