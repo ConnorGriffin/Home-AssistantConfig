@@ -31,3 +31,23 @@ lights:
 alarm_clock:
   module: alarm_clock
   class: AlarmClock
+
+ecobee:
+  module: ecobee
+  class: Ecobee
+  ecobee_entity: climate.home
+  presence_entity: input_text.alarm5_name
+  home_delay: 0
+  not_home_delay: 30
+  climate_modes:
+    # When away during these, set a home hold
+    usually_home:
+      - Home
+      - Peak
+      - Sleep 
+    # When home during these, set an away hold
+    usually_not_home:
+      - Away
+    # For documentation purposes only, take no action
+    no_action:
+      - Pre Peak
