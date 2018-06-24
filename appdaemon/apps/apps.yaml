@@ -14,11 +14,6 @@ lights:
             - alarm4
             - alarm5
     - name: connors_office_light
-      alarms: 
-        - hide_switch_from_groups: 
-            - connors_office
-#          alarm_groups:
-#            - alarm5
   brightness_schedule:
     - pct: 75
       start: '9:00'
