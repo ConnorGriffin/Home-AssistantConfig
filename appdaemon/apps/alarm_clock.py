@@ -51,7 +51,7 @@ class AlarmClock(hass.Hass):
         alarm_name = kwargs.get('alarm_name')
         
         # Notify HomeAssistant that this alarm has triggered. Other AppDaemon apps can subscribe to this event to take action on the alarm 
-        self.log('Fired {}.'.format(alarm_name))
+        self.log('Fired alarm {}.'.format(self.friendly_name('group.{}'.format(alarm_name))))
         self.fire_event(
             "alarm_fired",
             alarm_name = alarm_name
