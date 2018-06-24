@@ -16,7 +16,57 @@ class AlarmClock(hass.Hass):
                 constrain_input_boolean = 'input_boolean.{}_enabled'.format(alarm_name),
                 alarm_name = alarm_name
             )
-            
+
+            # Update the alarm group name instantly if the alarm is renamed
+            self.listen_state(
+                self.alarm_renamed_cb,
+                entity = 'input_text.{}_name'.format(alarm_name),
+                alarm_name = alarm_name
+            )
+
+            # Update the alarm group name every 5 minutes (for reboots, group reload, etc)
+            self.run_every(
+                self.scheduled_rename_cb,
+                datetime.datetime.now(),
+                interval = 300,
+                alarm_name = alarm_name,
+            )
+
+    def rename_alarm(self, alarm_name):
+        #alarm_name = kwargs.get('alarm_name')
+        # Get the alarm's friendly name (group name) and input name (Name textbox)
+        input_name = self.get_state('input_text.{}_name'.format(alarm_name))
+        friendly_name = self.friendly_name('group.{}'.format(alarm_name))
+
+        # If the two names don't match, set the friendly name to the input name
+        if input_name != friendly_name:
+            self.call_service(
+                service = 'group/set',
+                object_id = alarm_name,
+                name = input_name
+            )
+
+
+    def trigger_alarm(self, kwargs):
+        alarm_name = kwargs.get('alarm_name')
+        
+        # Notify HomeAssistant that this alarm has triggered. Other AppDaemon apps can subscribe to this event to take action on the alarm 
+        self.log('Fired {}.'.format(alarm_name))
+        self.fire_event(
+            "alarm_fired",
+            alarm_name = alarm_name
+        )
+
+
+    def alarm_renamed_cb(self, entity, attribute, old, new, kwargs):
+        alarm_name = kwargs.get('alarm_name')
+        self.rename_alarm(alarm_name)
+
+
+    def scheduled_rename_cb(self, kwargs):
+        alarm_name = kwargs.get('alarm_name')
+        self.rename_alarm(alarm_name)
+
 
     def alarm_triggered_cb(self, kwargs):
         alarm_name = kwargs.get('alarm_name')
@@ -50,14 +100,3 @@ class AlarmClock(hass.Hass):
                 seconds = diff_seconds, 
                 alarm_name = alarm_name,
             )
-
-
-    def trigger_alarm(self, kwargs):
-        alarm_name = kwargs.get('alarm_name')
-        
-        # Notify HomeAssistant that this alarm has triggered. Other AppDaemon apps can subscribe to this event to take action on the alarm 
-        self.log('Fired {}.'.format(alarm_name))
-        self.fire_event(
-            "alarm_fired",
-            alarm_name = alarm_name
-        )
