@@ -76,6 +76,32 @@ class Lights(hass.Hass):
                             hide_switch_groups = hide_switch_groups
                         )
 
+                        
+    def timestr_delta(self, start_time_str, now, end_time_str, name=None):
+        start_time = self.parse_time(start_time_str, name)
+        end_time = self.parse_time(end_time_str, name)
+        
+        start_date = now.replace(
+            hour=start_time.hour, minute=start_time.minute,
+            second=start_time.second
+        )
+        end_date = now.replace(
+            hour=end_time.hour, minute=end_time.minute, second=end_time.second
+        )
+        if end_date < start_date:
+            # Spans midnight
+            if now < start_date and now < end_date:
+                now = now + datetime.timedelta(days=1)
+            end_date = end_date + datetime.timedelta(days=1)
+        return {
+            "now_is_between": (start_date <= now <= end_date),
+            "start_to_end": (end_date - start_date),
+            "since_start": (now - start_date),
+            "to_end": (end_date - now),
+            "start_date": start_date,
+            "end_date": end_date
+        }
+
 
     def restore_group_cb(self, entity, attribute, old, new, kwargs):
         group = kwargs.get('group')
@@ -100,8 +126,16 @@ class Lights(hass.Hass):
         if setting['override'] == override:
             # Reset if the current action is called again (double tap once turns on, second time resets)
             setting['override'] = None
+
+            # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
             self.auto_brightness_cb(dict(entity_id=entity_id))
-        else:
+            self.run_in(
+                self.auto_brightness_cb,
+                seconds = 5,
+                entity_id = entity_id,
+                transition = 295
+            )
+        else: 
             setting['override'] = override
             setting['setpoint'] = None
             self.turn_on(entity_id, brightness_pct=brightness_pct)
@@ -186,7 +220,15 @@ class Lights(hass.Hass):
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
         light_friendly = self.friendly_name(entity)
         self.log('{}: Turned on'.format(light_friendly))
+
+        # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
         self.auto_brightness_cb(dict(entity_id=entity, source='turned_on_cb'))
+        self.run_in(
+            self.auto_brightness_cb,
+            seconds = 5,
+            entity_id = entity,
+            transition = 295
+        )
         
         
     # Set brightness automatically based on schedule
@@ -203,52 +245,39 @@ class Lights(hass.Hass):
         # state flip-flops when light is first turned on, use the source and last_changed_ms to ignore state
         if (state == 'on' or source == 'turned_on_cb') and not setting['override']:
             schedule = self.app_config['lights']['brightness_schedule']
-            now = datetime.datetime.now()
-            midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
-            now_minutes = (now - midnight).seconds / 60
+
+            # Account for transition time
+            now = datetime.datetime.now() + datetime.timedelta(seconds=transition)
 
             # Iterate for each item in the schedule, set i = item index, determine the brightness to use
             for i in range(len(schedule)):
-                current_minutes = now_minutes
-                start_minutes = int(schedule[i]['start'].split(':')[0]) * 60 + int(schedule[i]['start'].split(':')[1])
-                end_minutes = int(schedule[i]['end'].split(':')[0]) * 60 + int(schedule[i]['end'].split(':')[1])
-
                 # Get the next schedule item, go to 0 (wrap around) if we're on the last schedule
                 if i+1 == len(schedule):
                     next_schedule = schedule[0]
                 else:
                     next_schedule = schedule[i+1]
 
-                # Get the minutes for the next schedule start time
-                next_start_minutes = int(next_schedule['start'].split(':')[0]) * 60 + int(next_schedule['start'].split(':')[1])
+                # Determine if now is during or between two schedules
+                in_schedule = self.timestr_delta(schedule[i]['start'], now, schedule[i]['end'])
+                between_schedule = self.timestr_delta(schedule[i]['end'], now, next_schedule['start'])
 
-                # If schedule ends tomorrow: (4:00 becomes 28:00)
-                if end_minutes < start_minutes:
-                    end_minutes += 1440
-                
-                # If the next schedule starts tomorrow (4:00 becomes 28:00)
-                if next_start_minutes < end_minutes or end_minutes < start_minutes:
-                    next_start_minutes += 1440
-                    if end_minutes > start_minutes and current_minutes < start_minutes:
-                        current_minutes += 1440  
-
-                if current_minutes >= start_minutes and current_minutes <= end_minutes:
+                if in_schedule['now_is_between']:
                     # If we're within a schedule entry's time window, match exactly
                     target_percent = schedule[i]['pct']
                     break # don't eval any ore schedules
-                elif current_minutes >= end_minutes and current_minutes < next_start_minutes:
+                elif between_schedule['now_is_between']:
                     # if we are between two schedules, calculate the brightness percentage
-                    time_diff = next_start_minutes - end_minutes
+                    time_diff = between_schedule['start_to_end'].total_seconds()
                     bright_diff = schedule[i]['pct'] - next_schedule['pct']
-                    bright_per_minute = bright_diff / time_diff 
-                    target_percent = schedule[i]['pct'] - (time_diff - (time_diff - (current_minutes - end_minutes))) * bright_per_minute
-                    break # don't eval any ore schedules
-             
+                    bright_per_second = bright_diff / time_diff 
+                    target_percent = schedule[i]['pct'] - (between_schedule['since_start'].total_seconds() * bright_per_second)
+                    break # don't eval any ore schedules      
+
             # set brightness if a schedule was matched and the percent has changed since the last auto-brightness run
             if target_percent:
                 last_percent = setting.get('setpoint')
                 if last_percent != target_percent:
-                    self.log("{}: Setting auto-brightness - {}%".format(friendly_name, round(target_percent, 2)))
+                    self.log("{}: Setting auto-brightness - {}% over {} seconds".format(friendly_name, round(target_percent, 2), transition))
                     self.turn_on(
                         entity_id,
                         brightness_pct = target_percent, 
