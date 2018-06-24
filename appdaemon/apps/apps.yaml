@@ -35,10 +35,11 @@ alarm_clock:
 ecobee:
   module: ecobee
   class: Ecobee
+  constraint_input_boolean: input_boolean.ecobee_auto_home_away
   ecobee_entity: climate.home
-  presence_entity: input_text.alarm5_name
+  presence_entity: group.all_devices
   home_delay: 0
-  not_home_delay: 30
+  not_home_delay: 120
   climate_modes:
     # When away during these, set a home hold
     usually_home:

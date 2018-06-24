@@ -9,11 +9,9 @@ class Ecobee(hass.Hass):
             'home_status': None
         }
 
-        self.register_constraint('home_status_not')
         ecobee_entity = self.args['ecobee_entity']
         presence_entity = self.args['presence_entity']
-
-
+        
         for state in ['home', 'not_home']:
             # Set home_status global var on init, then setup listeners to keep it updated
             duration = self.args['{}_delay'.format(state)]
@@ -29,60 +27,74 @@ class Ecobee(hass.Hass):
                 state_duration = duration
             )
 
-            for climate_mode in self.args.get('climate_modes', {}).get('usually_{}'.format(state),[]):
-                # Example: if climate mode changes to away and home status is not away, set a home hold
-                self.listen_state(
-                    self.ecobee_state_cb,
-                    entity = ecobee_entity,
-                    attribute = 'climate_mode',
-                    new = climate_mode,
-                    home_status_not = state
-                )
-        
-        """
-        # Listen for ecobee climate mode and hold mode changes
+        # Listen for any ecobee state changes
         self.listen_state(
             self.ecobee_state_cb,
             entity = ecobee_entity,
-            attribute = 'hold_mode',
         )
-        self.listen_state(
-            self.ecobee_state_cb,
-            entity = ecobee_entity,
-            attribute = 'away_mode'
-        )
-        """
 
     
-    def monitor_ecobee_action(self, kwargs):
-        entity = kwargs['entity']
-        state = kwargs['state']
+    def monitor_ecobee_action(self):
+        home_modes = self.args.get('climate_modes', {}).get('usually_home',[])
+        away_modes = self.args.get('climate_modes', {}).get('usuaully_not_home',[])
+        ecobee_entity = self.args['ecobee_entity']
+        state_data = self.get_state(ecobee_entity, attribute='all')
+        home = self.global_vars['ecobee']['home_status'] == 'home'
+        away_hold = state_data['attributes']['away_mode']
+        hold_mode = state_data['attributes']['hold_mode']
+        climate_mode = state_data['attributes']['climate_mode']
 
-        # Evaluate if we need to set a hold (first load)
-        if self.home_status_not(state):
-            self.log('set a hold')
-            # Set a hold? IDK, uncommented so that I wouldn't get an indent error tbh
+        # For some reason away holds set away_hold and not hold_mode, handle this
+        if not hold_mode and away_hold == "on":
+            hold_mode = "away"
+        
+        # This is so we don't cancel temp or vacation holds
+        if home:
+            hold_match = hold_mode in ['away', 'home'] or not hold_mode
+        else:
+            hold_match = hold_mode in ['away', 'home', 'temp'] or not hold_mode
 
-        # Create a listener (future events)
-        self.listen_state(
-            self.ecobee_state_cb,
-            entity = ecobee_entity,
-            attribute = 'climate_mode',
-            new = climate_mode,
-            home_status_not = state
-        )
+        # Don't run if the ecobee is off
+        if hold_match and state_data['attributes']['operation_mode'] != 'off':
+            if home:
+                if hold_mode != 'home' and climate_mode in away_modes:
+                    # Home during a standard away time, set a home hold
+                    self.log('Setting a home hold.')
+                    self.call_service(
+                        service = 'climate/set_hold_mode',
+                        entity_id = ecobee_entity,
+                        hold_mode = 'home'
+                    )
+                elif hold_mode and climate_mode in home_modes:
+                    # Home during a hold and comfort setting is a home setting
+                    self.log('Resuming action (home).')
+                    self.call_service(
+                        service = 'climate/ecobee_resume_program',
+                        entity_id = ecobee_entity,
+                        resume_all = True
+                    )
+            elif not home:
+                if hold_mode != 'away' and climate_mode in home_modes:
+                    # Comfort mode isn't away and we aren't in a home hold
+                    self.log('Setting an away hold.')
+                    self.call_service(
+                        service = 'climate/set_hold_mode',
+                        entity_id = ecobee_entity,
+                        hold_mode = 'away'
+                    )
+                elif hold_mode and climate_mode in away_modes:
+                    # Away during a hold and comfort setting is an away setting
+                    self.log('Resuming action (away).')
+                    self.call_service(
+                        service = 'climate/ecobee_resume_program',
+                        entity_id = ecobee_entity,
+                        resume_all = True
+                    )
 
 
     # Callback for ecobee state changes
     def ecobee_state_cb(self, entity, attribute, old, new, kwargs):
-        presence = kwargs['presence']
-        action = kwargs['action']
-        self.log([entity, attribute, old, new, presence, action])
-
-
-    # Inverse constraint, returns true if home status isn't equal to the provided value
-    def home_status_not(self, value):
-        return value != self.global_vars['ecobee']['home_status']
+        self.monitor_ecobee_action()
 
 
     # Check if state has existed for an arbitrary duration in seconds
@@ -102,12 +114,11 @@ class Ecobee(hass.Hass):
          # Update global vars home_status if state has matched state argument for duration number of seconds
         if duration and state_data['state'] == state:
             self.global_vars['ecobee']['home_status'] = state
-            # Call an ecobee function here that sets home/away based on state and current climate mode
+            self.monitor_ecobee_action()
 
 
     # Callback for presence changes
     def presence_cb(self, entity, attribute, old, new, kwargs):
-        self.log([entity, attribute, old, new])
         duration = kwargs.get('state_duration', 0)
         # Check if the state is still the same after duration (number of seconds)
         self.run_in(
