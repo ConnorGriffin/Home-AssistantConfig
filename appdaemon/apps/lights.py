@@ -53,13 +53,7 @@ class Lights(hass.Hass):
                 )
 
                 # Set auto-brightness every 5 minutes if light is on
-                self.run_every(
-                    self.auto_brightness_cb,
-                    datetime.datetime.now(),
-                    300,
-                    entity_id = light_entity,
-                    transition = 300
-                )
+                self.auto_brightness_cb(dict(entity_id = light_entity))
 
                 # Iterate over each alarm setting in each light 
                 for alarm in alarms:
@@ -128,13 +122,10 @@ class Lights(hass.Hass):
             setting['override'] = None
 
             # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
-            self.auto_brightness_cb(dict(entity_id=entity_id))
-            self.run_in(
-                self.auto_brightness_cb,
-                seconds = 5,
-                entity_id = entity_id,
-                transition = 295
-            )
+            self.auto_brightness_cb(dict(
+                entity_id=entity_id,
+                immediate = True
+            ))
         else: 
             setting['override'] = override
             setting['setpoint'] = None
@@ -222,32 +213,28 @@ class Lights(hass.Hass):
         self.log('{}: Turned on'.format(light_friendly))
 
         # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
-        self.auto_brightness_cb(dict(entity_id=entity, source='turned_on_cb'))
-        self.run_in(
-            self.auto_brightness_cb,
-            seconds = 5,
-            entity_id = entity,
-            transition = 295
-        )
+        self.auto_brightness_cb(dict(
+            entity_id=entity, 
+            source='turned_on_cb',
+            immediate = True
+        ))
         
         
     # Set brightness automatically based on schedule
     def auto_brightness_cb(self, kwargs):
         entity_id = kwargs.get('entity_id')
-        transition = kwargs.get('transition', 0)
+        immediate = kwargs.get('immediate')
         source = kwargs.get('source', None)
 
         friendly_name = self.friendly_name(entity_id)
         state = self.get_state(entity_id)
         setting = self.global_vars['lights'][entity_id]
+        now = datetime.datetime.now()
 
         # Set auto-brightness if light is on and no override exists
-        # state flip-flops when light is first turned on, use the source and last_changed_ms to ignore state
+        # state flip-flops when light is first turned on, use the source to ignore state
         if (state == 'on' or source == 'turned_on_cb') and not setting['override']:
             schedule = self.app_config['lights']['brightness_schedule']
-
-            # Account for transition time
-            now = datetime.datetime.now() + datetime.timedelta(seconds=transition)
 
             # Iterate for each item in the schedule, set i = item index, determine the brightness to use
             for i in range(len(schedule)):
@@ -264,14 +251,32 @@ class Lights(hass.Hass):
                 if in_schedule['now_is_between']:
                     # If we're within a schedule entry's time window, match exactly
                     target_percent = schedule[i]['pct']
-                    break # don't eval any ore schedules
+                    transition = 0
+
+                    # don't eval any ore schedules
+                    break 
                 elif between_schedule['now_is_between']:
                     # if we are between two schedules, calculate the brightness percentage
                     time_diff = between_schedule['start_to_end'].total_seconds()
                     bright_diff = schedule[i]['pct'] - next_schedule['pct']
                     bright_per_second = bright_diff / time_diff 
-                    target_percent = schedule[i]['pct'] - (between_schedule['since_start'].total_seconds() * bright_per_second)
-                    break # don't eval any ore schedules      
+                    
+                    if immediate:
+                        # If setting an immediate brightness, we want to calculate the brightness percentage and then make a recursive call
+                        target_percent = schedule[i]['pct'] - (between_schedule['since_start'].total_seconds() * bright_per_second)
+                        transition = 0
+                        self.run_in(
+                            self.auto_brightness_cb,
+                            seconds = 5,
+                            entity_id = entity_id
+                        )
+                    else:
+                        # Otherwise we only care about the transition time
+                        target_percent = next_schedule['pct']
+                        transition = between_schedule['to_end'].total_seconds()
+                    
+                    # don't eval any ore schedules 
+                    break 
 
             # set brightness if a schedule was matched and the percent has changed since the last auto-brightness run
             if target_percent:
