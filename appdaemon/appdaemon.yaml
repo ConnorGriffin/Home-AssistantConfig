@@ -1,17 +1,17 @@
-secrets: /config/secrets.yaml
+secrets: /conf/secrets.yaml
 log:
-  accessfile: /config/appdaemon/logs/access.log
-  errorfile: /config/appdaemon/logs/error.log
-  logfile: /config/appdaemon/logs/appdaemon.log
+  accessfile: /conf/logs/access.log
+  errorfile: /conf/logs/error.log
+  logfile: /conf/logs/appdaemon.log
   log_generations: 3
   log_size: 1000000
 appdaemon:
   #threads: 10
-  app_dir: /config/appdaemon/apps
+  app_dir: /conf/apps
   api_port: 5000
   api_key: !secret http_password
-  api_ssl_certificate: fullchain.pem
-  api_ssl_key: privkey.pem
+#  api_ssl_certificate: fullchain.pem
+#  api_ssl_key: privkey.pem
   plugins:
     HASS:
       type: hass
@@ -19,4 +19,4 @@ appdaemon:
       ha_key: !secret http_password
 hadashboard:
   dash_url: !secret hadash_url
-  dash_dir: /config/appdaemon/dashboards
+  dash_dir: /conf/dashboards
