@@ -9,3 +9,10 @@ OZW_Log.txt
 secrets.yaml
 known_devices.yaml
 appdaemon/apps/__pycache__
+.vim
+.cloud
+.cache
+.vscode
+.bash*
+.profile
+.viminfo
