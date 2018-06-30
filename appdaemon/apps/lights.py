@@ -156,7 +156,7 @@ class Lights(hass.Hass):
         else: 
             setting['override'] = override
             setting['setpoint'] = None
-            self.turn_on(entity_id, brightness_pct=brightness_pct)
+            self.turn_on(entity_id, brightness=brightness_pct*2.55)
 
 
     def alarm_fired_cb(self, event_name, data, kwargs):
@@ -317,7 +317,7 @@ class Lights(hass.Hass):
                     self.log("{}: Setting auto-brightness - {}% over {} seconds".format(friendly_name, round(target_percent, 2), transition))
                     self.turn_on(
                         entity_id,
-                        brightness_pct = target_percent, 
+                        brightness = target_percent * 2.55, 
                         transition = transition
                     )
                     setting['setpoint'] = target_percent
@@ -329,6 +329,10 @@ class Lights(hass.Hass):
         if source == 'turned_off':
             self.set_state(sensor_name, state=0)
         else:
-            brightness = self.get_state(entity, attribute='brightness') / 255
+            brightness_data = self.get_state(entity, attribute='brightness')
+            if not brightness_data:
+                brightness = 0
+            else:
+                brightness = brightness_data / 255
             self.set_state(sensor_name, state=brightness)
 
