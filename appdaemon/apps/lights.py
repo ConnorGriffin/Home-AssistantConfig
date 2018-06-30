@@ -234,7 +234,7 @@ class Lights(hass.Hass):
         entity_id = kwargs.get('entity_id')
         immediate = kwargs.get('immediate')
         source = kwargs.get('source', None)
-        transition = kwargs.get('transition')
+        transition = kwargs.get('transition', 0)
 
         friendly_name = self.friendly_name(entity_id)
         state = self.get_state(entity_id)
@@ -278,7 +278,8 @@ class Lights(hass.Hass):
                         self.run_in(
                             self.auto_brightness_cb,
                             seconds = 5,
-                            entity_id = entity_id
+                            entity_id = entity_id,
+                            transition = 295
                         )
                     else:
                         if between_schedule['to_end'].total_seconds() <= transition:
@@ -286,7 +287,7 @@ class Lights(hass.Hass):
                             target_percent = next_schedule['pct']
                             transition = between_schedule['to_end'].total_seconds()
                         else:
-                            target_percent = between_schedule['since_start'].total_seconds() * bright_per_second
+                            target_percent = schedule[i]['pct'] - ((between_schedule['since_start'].total_seconds() + transition) * bright_per_second)
                     
                     # don't eval any ore schedules 
                     break 
