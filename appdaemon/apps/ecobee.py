@@ -18,8 +18,7 @@ class Ecobee(hass.Hass):
                 entity = self.args['presence_entity'],
                 new = state,
                 immediate = True,
-                duration = self.args['{}_delay'.format(state)],
-                constrain_input_boolean = constrain_input_boolean
+                duration = self.args['{}_delay'.format(state)]
             )
     
         # Listen for any ecobee state changes
@@ -101,7 +100,8 @@ class Ecobee(hass.Hass):
     # Update global variable and evaluate hold actions on presence change
     def presence_cb(self, entity, attribute, old, new, kwargs):
         self.global_vars['ecobee']['home_status'] = new
-        self.ecobee_actions()
+        if self.get_state(self.args['constrain_boolean']) == 'on':
+            self.ecobee_actions()
 
     # Evaluate hold action when boolean is turned on, set a resume all when it's switched off
     def constrain_boolean_cb(self, entity, attribute, old, new, kwargs):
