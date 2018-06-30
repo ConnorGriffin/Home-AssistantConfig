@@ -43,6 +43,16 @@ class Lights(hass.Hass):
                     old = 'on'
                 )
 
+                # Set the brightness sensor to 0 when turned off, otherwise brightness data freezes at the last set value
+                self.listen_state(
+                    self.update_brightness_sensor_cb,
+                    entity = light_entity,
+                    new = 'off',
+                    old = 'on',
+                    immediate = True,
+                    source = 'turned_off'
+                )
+
                 # Listen for light getting turned on
                 self.log("Monitoring {} for turn on.".format(light_friendly), "INFO")
                 self.listen_state(
@@ -59,6 +69,14 @@ class Lights(hass.Hass):
                     300,
                     entity_id = light_entity,
                     transition = 300
+                )
+
+                # Listen for any changes in brightness
+                self.listen_state(
+                    self.update_brightness_sensor_cb,
+                    entity = light_entity,
+                    attribute = 'brightness',
+                    immediate = True
                 )
 
                 # Set auto-brightness every 5 minutes if light is on
@@ -303,3 +321,14 @@ class Lights(hass.Hass):
                         transition = transition
                     )
                     setting['setpoint'] = target_percent
+
+
+    def update_brightness_sensor_cb(self, entity, attribute, old, new, kwargs):
+        source = kwargs.get('source')
+        sensor_name = 'sensor.{}_brightness'.format(entity.split('.')[1])
+        if source == 'turned_off':
+            self.set_state(sensor_name, state=0)
+        else:
+            brightness = self.get_state(entity, attribute='brightness') / 255
+            self.set_state(sensor_name, state=brightness)
+
