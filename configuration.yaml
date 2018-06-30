@@ -137,3 +137,8 @@ device_tracker:
     password: !secret router_password
     new_device_defaults:
       track_new_devices: False
+
+influxdb:
+  host: !secret influx_ip
+  username: !secret influx_user
+  password: !secret influx_password
