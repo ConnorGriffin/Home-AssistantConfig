@@ -53,6 +53,15 @@ class Lights(hass.Hass):
                 )
 
                 # Set auto-brightness every 5 minutes if light is on
+                self.run_every(
+                    self.auto_brightness_cb,
+                    datetime.datetime.now(),
+                    300,
+                    entity_id = light_entity,
+                    transition = 300
+                )
+
+                # Set auto-brightness every 5 minutes if light is on
                 self.auto_brightness_cb(dict(entity_id = light_entity))
 
                 # Iterate over each alarm setting in each light 
@@ -225,6 +234,7 @@ class Lights(hass.Hass):
         entity_id = kwargs.get('entity_id')
         immediate = kwargs.get('immediate')
         source = kwargs.get('source', None)
+        transition = kwargs.get('transition')
 
         friendly_name = self.friendly_name(entity_id)
         state = self.get_state(entity_id)
@@ -271,9 +281,12 @@ class Lights(hass.Hass):
                             entity_id = entity_id
                         )
                     else:
-                        # Otherwise we only care about the transition time
-                        target_percent = next_schedule['pct']
-                        transition = between_schedule['to_end'].total_seconds()
+                        if between_schedule['to_end'].total_seconds() <= transition:
+                            # If we're in a new schedule in the next 5 minutes, use that schedule's brightness
+                            target_percent = next_schedule['pct']
+                            transition = between_schedule['to_end'].total_seconds()
+                        else:
+                            target_percent = between_schedule['since_start'].total_seconds() * bright_per_second
                     
                     # don't eval any ore schedules 
                     break 
