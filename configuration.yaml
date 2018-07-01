@@ -116,3 +116,4 @@ influxdb:
 
 media_player:
   - platform: roku  
+    host: !secret roku_ip
