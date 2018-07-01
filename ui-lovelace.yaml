@@ -1,0 +1,83 @@
+name: Home
+views:
+  - name: Home
+    tab_icon: mdi:home
+    #theme:
+    cards:
+      - type: entities
+        title: General
+        entities: 
+          - lock.front_door
+          - climate.home
+          - sensor.home_humidity
+      - type: entity-filter
+        card: glance
+        card_config:
+          title: Presence
+        filter:
+          - domain: device_tracker
+      - type: entities
+        title: Bedroom
+        entities: 
+          - light.bedroom_light
+          - binary_sensor.bedroom_occupancy
+          - sensor.bedroom_temperature
+      - type: entities
+        title: "Connor's Office"
+        entities: 
+          - light.connors_office_light
+          - binary_sensor.connor_office_occupancy
+          - sensor.connor_office_temperature
+      - type: entities
+        title: "Diana's Office"
+        entities: 
+          - light.dianas_office_light
+          - binary_sensor.diana_office_occupancy
+          - sensor.diana_office_temperature
+      - type: entities
+        title: "Living Room"
+        entities: 
+          - binary_sensor.living_room_occupancy
+          - sensor.living_room_temperature
+      - type: entities
+        title: Automations
+        entities: 
+          - input_boolean.ecobee_auto_home_away
+  - name: Climate
+    tab_icon: mdi:weather-sunny
+    cards:
+      - type: weather-forecast
+        entity: weather.home
+      - type: iframe
+        title: History
+        url: !secret temp_iframe_url
+  - name: Media
+    tab_icon: mdi:audio-video
+    cards:
+      - type: media-control
+        entity: media_player.roku_5y25a2192945
+  - name: z-Wave Devices
+    tab_icon: mdi:remote
+    cards:
+      - type: entity-filter
+        card_config:
+          title: Z-Wave
+        filter:
+          - domain: zwave
+  - tab_icon: mdi:settings
+    name: Debugging
+    cards:
+      - type: entity-filter
+        filter: [{}]
+        card_config:
+          title: All entities
+
+      # Need custom card with alarm labels
+      #- type: entity-filter
+      #  filter:
+      #    - domain: input_boolean
+      #      entity_id: input_boolean.alarm*_enabled
+      #  card_config:
+      #    title: Alarm Clocks
+
+    
