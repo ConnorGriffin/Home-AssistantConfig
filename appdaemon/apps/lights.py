@@ -72,15 +72,6 @@ class Lights(hass.Hass):
                     transition = 300
                 )
 
-                # Listen for any changes in brightness
-                self.listen_state(
-                    self.update_brightness_sensor_cb,
-                    entity = light_entity,
-                    attribute = 'brightness',
-                    duration = 5,
-                    immediate = True
-                )
-
                 # Set auto-brightness every 5 minutes if light is on
                 self.auto_brightness_cb(dict(entity_id = light_entity))
 
@@ -232,11 +223,13 @@ class Lights(hass.Hass):
 
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
-        light_friendly = self.friendly_name(entity)
-        self.log('{}: Turned off'.format(light_friendly))
         self.global_vars['lights'][entity]['override'] = None
         self.global_vars['lights'][entity]['setpoint'] = None
-    
+        self.set_state(entity, state = 'off', attributes = {"brightness": 0})
+
+        light_friendly = self.friendly_name(entity)
+        self.log('{}: Turned off'.format(light_friendly))
+
 
     # Call auto_brightness_cb when a light is turned on 
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
