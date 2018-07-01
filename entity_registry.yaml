@@ -1,68 +1,85 @@
 light.connors_office_light:
+  config_entry_id:
   name: Connor's Office Light
   platform: zwave
   unique_id: 2-72057594076299265
 light.bedroom_light:
+  config_entry_id:
   name: Bedroom Light
   platform: zwave
   unique_id: 3-72057594093076481
 sensor.schlage_be469_touchscreen_deadbolt_alarm_type:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: 4-72057594111082497
 sensor.schlage_be469_touchscreen_deadbolt_alarm_level:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: 4-72057594111082513
 lock.front_door:
+  config_entry_id:
   name: Front Door Lock
   platform: zwave
   unique_id: 5-72057594127613952
 sensor.schlage_be469_touchscreen_deadbolt_alarm_type_2:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: 5-72057594127859713
 sensor.schlage_be469_touchscreen_deadbolt_alarm_level_2:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: 5-72057594127859729
 sensor.schlage_be469_touchscreen_deadbolt_sourcenodeid:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: 5-72057594127859745
 sensor.schlage_be469_touchscreen_deadbolt_access_control:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: 5-72057594127859857
 sensor.schlage_be469_touchscreen_deadbolt_burglar:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: 5-72057594127859873
 sensor.schlage_be469_touchscreen_deadbolt_power_management:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: 5-72057594127859889
 sensor.schlage_be469_touchscreen_deadbolt_system:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: 5-72057594127859905
 zwave.aeotec_zw090_zstick_gen5_us:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: node-1
 zwave.connors_office_light:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: node-2
 zwave.bedroom_light:
+  config_entry_id:
   name:
   platform: zwave
   unique_id: node-3
 zwave.front_door_lock:
-  name:
+  config_entry_id:
+  name: Front Door Lock
   platform: zwave
   unique_id: node-5
 media_player.roku_5y25a2192945:
+  config_entry_id:
   name:
   platform: roku
   unique_id: 5Y25A2192945
