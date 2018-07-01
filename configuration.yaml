@@ -101,20 +101,6 @@ zwave:
     light.bedroom_light:
         polling_intensity: 1
 
-panel_iframe:
-  nodered_flows:
-    title: 'Node-RED Flows'
-    url: !secret nodered_url
-    icon: mdi:nodejs
-  configurator:
-    title: 'Configurator'
-    url: !secret configurator_url
-    icon: mdi:wrench
-  terminal:
-    title: 'Terminal'
-    url: !secret terminal_url
-    icon: mdi:console
-    
 device_tracker:
   - platform: netgear
     host: 192.168.1.1
