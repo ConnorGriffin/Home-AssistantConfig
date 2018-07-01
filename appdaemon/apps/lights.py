@@ -49,6 +49,7 @@ class Lights(hass.Hass):
                     entity = light_entity,
                     new = 'off',
                     old = 'on',
+                    duration = 5,
                     immediate = True,
                     source = 'turned_off'
                 )
@@ -76,6 +77,7 @@ class Lights(hass.Hass):
                     self.update_brightness_sensor_cb,
                     entity = light_entity,
                     attribute = 'brightness',
+                    duration = 5,
                     immediate = True
                 )
 
@@ -151,7 +153,8 @@ class Lights(hass.Hass):
             # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
             self.auto_brightness_cb(dict(
                 entity_id=entity_id,
-                immediate = True
+                immediate = True,
+                source = 'set_override'
             ))
         else: 
             setting['override'] = override
@@ -210,7 +213,6 @@ class Lights(hass.Hass):
     def double_tap_cb(self, event_name, data, kwargs):
         basic_level = data["basic_level"]
         light_entity = kwargs['light_entity']
-        light_friendly = self.friendly_name(light_entity)
  
         if basic_level in [255,0]:
             if basic_level == 255:
@@ -223,6 +225,8 @@ class Lights(hass.Hass):
                 brightness_pct = 10
             
             self.set_override(light_entity, override, brightness_pct)
+            
+            light_friendly = self.friendly_name(light_entity)
             self.log('{}: Double tapped {}'.format(light_friendly, direction))
     
 
@@ -261,7 +265,7 @@ class Lights(hass.Hass):
 
         # Set auto-brightness if light is on and no override exists
         # state flip-flops when light is first turned on, use the source to ignore state
-        if (state == 'on' or source == 'turned_on_cb') and not setting['override']:
+        if (state == 'on' or source in ['turned_on_cb', 'set_override']) and not setting['override']:
             schedule = self.app_config['lights']['brightness_schedule']
 
             # Iterate for each item in the schedule, set i = item index, determine the brightness to use
@@ -321,6 +325,10 @@ class Lights(hass.Hass):
                         transition = transition
                     )
                     setting['setpoint'] = target_percent
+            else:
+                self.log("{}: No target_percent".format(friendly_name))
+        else: 
+            self.log("{}: Not setting brightness".format(friendly_name))
 
 
     def update_brightness_sensor_cb(self, entity, attribute, old, new, kwargs):
