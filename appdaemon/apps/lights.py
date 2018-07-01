@@ -125,6 +125,10 @@ class Lights(hass.Hass):
     # Used by other functions to set overrides and store override data in the global_vars dictionary
     def set_override(self, entity_id, override, brightness_pct):
         setting = self.global_vars['lights'][entity_id]
+        # Get the snooze minutes from the setting dict
+        for entity in self.args['entities']:
+            if entity['name'] == entity_id.split('.')[1]:
+                snooze_minutes = entity['snooze_minutes']
 
         if setting['override'] == override:
             # Reset if the current action is called again (double tap once turns on, second time resets)
@@ -136,10 +140,26 @@ class Lights(hass.Hass):
                 immediate = True,
                 source = 'set_override'
             ))
+        elif setting['override'] == 'alarm' and override != 'alarm' and snooze_minutes:
+            # If the current override is alarm and snooze is configured
+            self.turn_off(entity_id)
+            self.run_in(
+                self.resume_from_snooze,
+                seconds = snooze_minutes * 60,
+                entity_id = entity_id
+            )
         else: 
             setting['override'] = override
             setting['setpoint'] = None
             self.turn_on(entity_id, brightness=brightness_pct*2.55)
+
+
+    def resume_from_snooze(self, kwargs):
+        entity_id = kwargs.get('entity_id')
+        setting = self.global_vars['lights'][entity_id]
+        setting['override'] = 'alarm'
+        setting['setpoint'] = None
+        self.turn_on(entity_id, brightness=255)
 
 
     def alarm_fired_cb(self, event_name, data, kwargs):
