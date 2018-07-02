@@ -3,6 +3,7 @@ lights:
   module: lights
   class: Lights
   entities:
+    - name: connors_office_light
     - name: bedroom_light
       snooze_minutes: 10
       alarms: 
