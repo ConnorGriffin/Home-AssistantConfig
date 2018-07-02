@@ -4,7 +4,7 @@ lights:
   class: Lights
   entities:
     - name: bedroom_light
-      snooze_minutes: 10 
+      snooze_minutes: 10
       alarms: 
         - hide_switch_from_groups: 
             - bedroom
@@ -14,6 +14,7 @@ lights:
             - alarm3
             - alarm4
             - alarm5
+            - "Connor's phone"
   brightness_schedule:
     - pct: 75
       start: '9:00:00'
@@ -55,7 +56,6 @@ ecobee:
     no_action:
       - Pre Peak
 
-
 presence:
   module: presence
   class: Presence
@@ -66,3 +66,10 @@ presence:
       entity: binary_sensor.connor_office_occupancy
     - name: Diana's Office
       entity: binary_sensor.diana_office_occupancy
+
+install_dependencies:
+  module: install_deps
+  class: InstallDeps
+  priority: 0
+  packages:
+    - lxml
