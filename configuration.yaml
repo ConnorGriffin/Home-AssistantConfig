@@ -102,18 +102,16 @@ zwave:
         polling_intensity: 1
 
 device_tracker:
-  - platform: netgear
-    host: 192.168.1.1
-    username: admin
-    password: !secret router_password
+  - platform: nmap_tracker
+    hosts: 10.31.36.0/24
     new_device_defaults:
       track_new_devices: False
-
+    
 influxdb:
   host: !secret influx_ip
   username: !secret influx_user
   password: !secret influx_password
 
-media_player:
-  - platform: roku  
-    host: !secret roku_ip
+#media_player:
+#  - platform: roku  
+#    host: !secret roku_ip
