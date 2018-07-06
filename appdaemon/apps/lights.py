@@ -128,7 +128,7 @@ class Lights(hass.Hass):
         # Get the snooze minutes from the setting dict
         for entity in self.args['entities']:
             if entity['name'] == entity_id.split('.')[1]:
-                snooze_minutes = entity['snooze_minutes']
+                snooze_minutes = entity.get('snooze_minutes', None)
 
         if setting['override'] == override:
             # Reset if the current action is called again (double tap once turns on, second time resets)
