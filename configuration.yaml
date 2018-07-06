@@ -111,7 +111,3 @@ influxdb:
   host: !secret influx_ip
   username: !secret influx_user
   password: !secret influx_password
-
-#media_player:
-#  - platform: roku  
-#    host: !secret roku_ip
