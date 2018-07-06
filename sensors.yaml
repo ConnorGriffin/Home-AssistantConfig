@@ -45,21 +45,3 @@
               {# If battery status is not known, use battery-unknown icon #}
               mdi:battery-unknown
             {%- endif -%}
-
-- platform: rest
-  resource: https://hass.connorcg.com:1880/currentbg
-  name: Blood Glucose
-  method: GET
-  username: admin
-  password: !secret http_password
-  authentication: basic
-  value_template: '{{value_json.sgv}}'
-  unit_of_measurement: 'mg/dL'
-  json_attributes:
-  - date
-  - dateString
-  - delta
-  - direction
-  - sgv
-  - type
-  - noise
