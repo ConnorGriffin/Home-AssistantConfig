@@ -1,0 +1,20 @@
+connors_office_light_mode:
+  name: "Connor's Office Light Mode"
+  options:
+    - Manual Control
+    - Automatic Brightness
+    - Maximum Brightness
+    - Minimum Brightness
+  initial: Automatic Brightness 
+  icon: mdi:lightbulb
+
+  
+bedroom_light_mode:
+  name: "Bedroom Light Mode"
+  options:
+    - Manual Control
+    - Automatic Brightness
+    - Maximum Brightness
+    - Minimum Brightness
+  initial: Automatic Brightness 
+  icon: mdi:lightbulb

@@ -18,11 +18,13 @@ class Lights(hass.Hass):
                 zwave_entity = 'zwave.{}'.format(entity_id)
                 light_entity = 'light.{}'.format(entity_id)
                 light_friendly = self.friendly_name(light_entity)
+                mode_entity = 'input_select.{}_mode'.format(entity_id)
 
                 # Initialize the global settings for each entity
                 self.global_vars['lights'][light_entity] = {
                     'override': None,
-                    'setpoint': None
+                    'setpoint': None,
+                    'mode':     self.get_state(mode_entity)
                 } 
 
                 # Listen for double taps
@@ -52,16 +54,25 @@ class Lights(hass.Hass):
                     old = 'off'
                 )
 
-                # Set auto-brightness every 5 minutes if light is on
+                # Set auto-brightness every 5 minutes if light is on and mode is Automatic Brightness
                 self.run_every(
                     self.auto_brightness_cb,
                     datetime.datetime.now(),
                     300,
                     entity_id = light_entity,
-                    transition = 300
+                    transition = 300,
+                    # TODO: Move constraint inside the callback since we're calling the callback (as a function, not a callback) without the constraint in other places
+                    constrain_input_select = '{},Automatic Brightness'.format(mode_entity)
                 )
 
-                # Set auto-brightness every 5 minutes if light is on
+                # Listen for mode dropdown changes
+                self.log("Monitoring {} for mode dropdown changes.".format(light_friendly), "INFO")
+                self.listen_state(
+                    self.mode_dropdown_cb,
+                    entity = mode_entity
+                )
+
+                # Set auto-brightness once on startup
                 self.auto_brightness_cb(dict(entity_id = light_entity))
 
                 # Iterate over each alarm setting in each light 
@@ -79,7 +90,32 @@ class Lights(hass.Hass):
                             hide_switch_groups = hide_switch_groups
                         )
 
-                        
+
+    def mode_dropdown_cb(self, entity, attribute, old, new, kwargs):
+        # TODO: Store mode (automatic/manual) and restore that setting instead of resetting to schedule
+        light_entity = entity.replace('input_select','light').replace('_mode','')
+        setting = self.global_vars['lights'][light_entity]
+        if new == 'Maximum Brightness' and setting['override'] != 'Maximum Brightness':
+            # Set a maximum brightness hold
+            self.set_override(
+                entity_id = light_entity,
+                override = 'Maximum Brightness',
+                brightness_pct = 100
+            )
+        elif new == 'Minimum Brightness' and setting['override'] != 'Minimum Brightness':
+            # Set a minimum brightness hold
+            self.set_override(
+                entity_id = light_entity,
+                override = 'Minimum Brightness',
+                brightness_pct = 10
+            )
+        elif new == 'Automatic Brightness':
+            # Revert to the automatic brightness when changed to 'Automatic Brightness'
+            setting['override'] = None
+            setting['setpoint'] = None
+            self.auto_brightness_cb(dict(entity_id = light_entity))
+            
+
     def timestr_delta(self, start_time_str, now, end_time_str, name=None):
         start_time = self.parse_time(start_time_str, name)
         end_time = self.parse_time(end_time_str, name)
@@ -125,6 +161,7 @@ class Lights(hass.Hass):
     # Used by other functions to set overrides and store override data in the global_vars dictionary
     def set_override(self, entity_id, override, brightness_pct):
         setting = self.global_vars['lights'][entity_id]
+        mode_entity = 'input_select.{}_mode'.format(entity_id.split('.')[1])
         # Get the snooze minutes from the setting dict
         for entity in self.args['entities']:
             if entity['name'] == entity_id.split('.')[1]:
@@ -133,10 +170,16 @@ class Lights(hass.Hass):
         if setting['override'] == override:
             # Reset if the current action is called again (double tap once turns on, second time resets)
             setting['override'] = None
+            # TODO: Set the previous mode here instead of defaulting to Automatic Brightness
+            self.call_service(
+                service = 'input_select/select_option', 
+                entity_id = mode_entity, 
+                option = 'Automatic Brightness'
+            )
 
             # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
             self.auto_brightness_cb(dict(
-                entity_id=entity_id,
+                entity_id = entity_id,
                 immediate = True,
                 source = 'set_override'
             ))
@@ -152,6 +195,11 @@ class Lights(hass.Hass):
             setting['override'] = override
             setting['setpoint'] = None
             self.turn_on(entity_id, brightness=brightness_pct*2.55)
+            self.call_service(
+                service = 'input_select/select_option', 
+                entity_id = mode_entity, 
+                option = override
+            )
 
 
     def resume_from_snooze(self, kwargs):
@@ -190,6 +238,7 @@ class Lights(hass.Hass):
                 original_entities = entities.copy()
                 entities.remove(light_entity)
 
+                # TODO: Set mode dropdown options to just 'Alarm' while alarm is enabled
                 # Update the group with the new entity list (remove the light switch)
                 self.call_service(
                     service = 'group/set',
@@ -217,11 +266,11 @@ class Lights(hass.Hass):
         if basic_level in [255,0]:
             if basic_level == 255:
                 direction = 'up'
-                override = 'max_bright'
+                override = 'Maximum Brightness'
                 brightness_pct = 100
             elif basic_level == 0:
                 direction = 'down'
-                override = 'min_bright'
+                override = 'Minimum Brightness'
                 brightness_pct = 10
             
             self.set_override(light_entity, override, brightness_pct)

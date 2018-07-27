@@ -115,6 +115,8 @@ automation:
     name: Automation
     entities: 
         - input_boolean.ecobee_auto_home_away
+        - input_select.connors_office_light_mode
+        - input_select.bedroom_light_mode
 
 alarm1:
     control: hidden
