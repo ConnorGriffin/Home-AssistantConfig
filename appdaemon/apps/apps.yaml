@@ -7,9 +7,9 @@ lights:
     - name: bedroom_light
       snooze_minutes: 10
       alarms: 
-        - hide_switch_from_groups: 
-            - bedroom
-          alarm_groups:
+        #- hide_switch_from_groups: 
+        #    - bedroom
+        - alarm_groups:
             - alarm1
             - alarm2
             - alarm3
