@@ -55,7 +55,7 @@ history:
             - binary_sensor.connors_office_occupancy
             - binary_sensor.dianas_office_occupancy
             - binary_sensor.living_room_occupancy
-        domains: 
+        domains:
             - sensor
             - climate
             - device_tracker
@@ -107,7 +107,9 @@ device_tracker:
     hosts: 10.31.36.0/24
     new_device_defaults:
       track_new_devices: False
-    
+    consider_home: 300
+    interval_seconds: 60
+
 influxdb:
   host: !secret influx_ip
   username: !secret influx_user
