@@ -8,7 +8,7 @@ class Lights(hass.Hass):
         self.global_vars['lights'] = {}
 
         if "entities" in self.args:
-            # Loop through the entities 
+            # Loop through the entities
             for entity in self.args["entities"]:
                 # Get the entity settings
                 entity_id = entity['name']
@@ -25,14 +25,14 @@ class Lights(hass.Hass):
                     'override': None,
                     'setpoint': None,
                     'mode':     self.get_state(mode_entity)
-                } 
+                }
 
                 # Listen for double taps
                 self.log("Monitoring {} for double tap.".format(light_friendly), "INFO")
                 self.listen_event(
-                    self.double_tap_cb, 
-                    "zwave.node_event", 
-                    entity_id = zwave_entity, 
+                    self.double_tap_cb,
+                    "zwave.node_event",
+                    entity_id = zwave_entity,
                     light_entity = light_entity
                 )
 
@@ -60,9 +60,7 @@ class Lights(hass.Hass):
                     datetime.datetime.now(),
                     300,
                     entity_id = light_entity,
-                    transition = 300,
-                    # TODO: Move constraint inside the callback since we're calling the callback (as a function, not a callback) without the constraint in other places
-                    constrain_input_select = '{},Automatic Brightness'.format(mode_entity)
+                    transition = 300
                 )
 
                 # Listen for mode dropdown changes
@@ -75,12 +73,12 @@ class Lights(hass.Hass):
                 # Set auto-brightness once on startup
                 self.auto_brightness_cb(dict(entity_id = light_entity))
 
-                # Iterate over each alarm setting in each light 
+                # Iterate over each alarm setting in each light
                 for alarm in alarms:
                     hide_switch_groups = alarm.get('hide_switch_from_groups',[])
 
                     # Setup a listener for each alarm name in the group
-                    for alarm_name in alarm.get('alarm_groups',[]): 
+                    for alarm_name in alarm.get('alarm_groups',[]):
                         self.log('Monitoring {} for {}.'.format(light_friendly, alarm_name))
                         self.listen_event(
                             self.alarm_fired_cb,
@@ -94,6 +92,7 @@ class Lights(hass.Hass):
     def mode_dropdown_cb(self, entity, attribute, old, new, kwargs):
         # TODO: Store mode (automatic/manual) and restore that setting instead of resetting to schedule
         light_entity = entity.replace('input_select','light').replace('_mode','')
+        zwave_entity = light_entity.replace('light.', 'zwave.')
         setting = self.global_vars['lights'][light_entity]
         if new == 'Maximum Brightness' and setting['override'] != 'Maximum Brightness':
             # Set a maximum brightness hold
@@ -114,12 +113,19 @@ class Lights(hass.Hass):
             setting['override'] = None
             setting['setpoint'] = None
             self.auto_brightness_cb(dict(entity_id = light_entity))
-            
+
+        # Refresh the z-wave entity since the light doesn't show as on in the HA UI and setting refresh_value in zwave config breaks too many other things
+        self.run_in(
+            self.refresh_zwave_entity,
+            seconds = 1,
+            entity_id = zwave_entity
+        )
+
 
     def timestr_delta(self, start_time_str, now, end_time_str, name=None):
         start_time = self.parse_time(start_time_str, name)
         end_time = self.parse_time(end_time_str, name)
-        
+
         start_date = now.replace(
             hour=start_time.hour, minute=start_time.minute,
             second=start_time.second
@@ -144,7 +150,7 @@ class Lights(hass.Hass):
 
     def restore_group_cb(self, entity, attribute, old, new, kwargs):
         group = kwargs.get('group')
-        original_entities = kwargs.get('original_entities') 
+        original_entities = kwargs.get('original_entities')
 
         # Update the group with the new entity list (remove the light switch)
         self.log('Resetting {} entities (unhiding light).'.format(self.friendly_name('group.{}'.format(group))))
@@ -156,7 +162,7 @@ class Lights(hass.Hass):
 
         # Stop the listener manually, can't use a oneshot until https://github.com/home-assistant/appdaemon/pull/299 is merged
         self.cancel_listen_event(kwargs['handle'])
-        
+
 
     # Used by other functions to set overrides and store override data in the global_vars dictionary
     def set_override(self, entity_id, override, brightness_pct):
@@ -172,8 +178,8 @@ class Lights(hass.Hass):
             setting['override'] = None
             # TODO: Set the previous mode here instead of defaulting to Automatic Brightness
             self.call_service(
-                service = 'input_select/select_option', 
-                entity_id = mode_entity, 
+                service = 'input_select/select_option',
+                entity_id = mode_entity,
                 option = 'Automatic Brightness'
             )
 
@@ -191,15 +197,23 @@ class Lights(hass.Hass):
                 seconds = snooze_minutes * 60,
                 entity_id = entity_id
             )
-        else: 
+        else:
             setting['override'] = override
             setting['setpoint'] = None
             self.turn_on(entity_id, brightness=brightness_pct*2.55)
             self.call_service(
-                service = 'input_select/select_option', 
-                entity_id = mode_entity, 
+                service = 'input_select/select_option',
+                entity_id = mode_entity,
                 option = override
             )
+
+
+    def refresh_zwave_entity(self, kwargs):
+        entity_id = kwargs.get('entity_id')
+        self.call_service(
+            service = 'zwave/refresh_entity',
+            entity_id = entity_id
+        )
 
 
     def resume_from_snooze(self, kwargs):
@@ -212,6 +226,7 @@ class Lights(hass.Hass):
 
     def alarm_fired_cb(self, event_name, data, kwargs):
         light_entity = kwargs.get('light_entity')
+        zwave_entity = light_entity.replace('light.', 'zwave.')
         hide_switch_groups = kwargs.get('hide_switch_groups')
         alarm_name = data['alarm_name']
         alarm_group = 'group.{}'.format(alarm_name)
@@ -225,6 +240,13 @@ class Lights(hass.Hass):
                 entity_id = light_entity,
                 override = 'alarm',
                 brightness_pct = 100
+            )
+
+            # Refresh the z-wave entity since the light doesn't show as on in the HA UI and setting refresh_value in zwave config breaks too many other things
+            self.run_in(
+                self.refresh_zwave_entity,
+                seconds = 1,
+                entity_id = zwave_entity
             )
 
             # Hide the switch from the specified groups when the alarm is triggered
@@ -262,7 +284,7 @@ class Lights(hass.Hass):
     def double_tap_cb(self, event_name, data, kwargs):
         basic_level = data["basic_level"]
         light_entity = kwargs['light_entity']
- 
+
         if basic_level in [255,0]:
             if basic_level == 255:
                 direction = 'up'
@@ -272,15 +294,16 @@ class Lights(hass.Hass):
                 direction = 'down'
                 override = 'Minimum Brightness'
                 brightness_pct = 10
-            
+
             self.set_override(light_entity, override, brightness_pct)
-            
+
             light_friendly = self.friendly_name(light_entity)
             self.log('{}: Double tapped {}'.format(light_friendly, direction))
-    
+
 
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
+        # TODO: Either reset the dropdown to 'Automatic Brightness' here, or implement persistent state/settings
         self.global_vars['lights'][entity]['override'] = None
         self.global_vars['lights'][entity]['setpoint'] = None
         self.set_state(entity, state = 'off', attributes = {"brightness": 0})
@@ -289,19 +312,19 @@ class Lights(hass.Hass):
         self.log('{}: Turned off'.format(light_friendly))
 
 
-    # Call auto_brightness_cb when a light is turned on 
+    # Call auto_brightness_cb when a light is turned on
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
         light_friendly = self.friendly_name(entity)
         self.log('{}: Turned on'.format(light_friendly))
 
         # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
         self.auto_brightness_cb(dict(
-            entity_id=entity, 
+            entity_id=entity,
             source='turned_on_cb',
             immediate = True
         ))
-        
-        
+
+
     # Set brightness automatically based on schedule
     def auto_brightness_cb(self, kwargs):
         entity_id = kwargs.get('entity_id')
@@ -337,13 +360,13 @@ class Lights(hass.Hass):
                     transition = 0
 
                     # don't eval any ore schedules
-                    break 
+                    break
                 elif between_schedule['now_is_between']:
                     # if we are between two schedules, calculate the brightness percentage
                     time_diff = between_schedule['start_to_end'].total_seconds()
                     bright_diff = schedule[i]['pct'] - next_schedule['pct']
-                    bright_per_second = bright_diff / time_diff 
-                    
+                    bright_per_second = bright_diff / time_diff
+
                     if immediate:
                         # If setting an immediate brightness, we want to calculate the brightness percentage and then make a recursive call
                         target_percent = schedule[i]['pct'] - (between_schedule['since_start'].total_seconds() * bright_per_second)
@@ -361,9 +384,9 @@ class Lights(hass.Hass):
                             transition = between_schedule['to_end'].total_seconds()
                         else:
                             target_percent = schedule[i]['pct'] - ((between_schedule['since_start'].total_seconds() + transition) * bright_per_second)
-                    
-                    # don't eval any ore schedules 
-                    break 
+
+                    # don't eval any ore schedules
+                    break
 
             # set brightness if a schedule was matched and the percent has changed since the last auto-brightness run
             if target_percent:
@@ -372,7 +395,7 @@ class Lights(hass.Hass):
                     self.log("{}: Setting auto-brightness - {}% over {} seconds".format(friendly_name, round(target_percent, 2), transition))
                     self.turn_on(
                         entity_id,
-                        brightness = target_percent * 2.55, 
+                        brightness = target_percent * 2.55,
                         transition = transition
                     )
                     setting['setpoint'] = target_percent
