@@ -108,7 +108,7 @@ device_tracker:
     new_device_defaults:
       track_new_devices: False
     consider_home: 300
-    interval_seconds: 60
+    home_interval: 60
 
 influxdb:
   host: !secret influx_ip
