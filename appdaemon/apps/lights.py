@@ -115,11 +115,11 @@ class Lights(hass.Hass):
             self.auto_brightness_cb(dict(entity_id = light_entity))
 
         # Refresh the z-wave entity since the light doesn't show as on in the HA UI and setting refresh_value in zwave config breaks too many other things
-        self.run_in(
-            self.refresh_zwave_entity,
-            seconds = 1,
-            entity_id = zwave_entity
-        )
+        #self.run_in(
+        #    self.refresh_zwave_entity,
+        #    seconds = 1,
+        #    entity_id = zwave_entity
+        #)
 
 
     def timestr_delta(self, start_time_str, now, end_time_str, name=None):
@@ -243,11 +243,11 @@ class Lights(hass.Hass):
             )
 
             # Refresh the z-wave entity since the light doesn't show as on in the HA UI and setting refresh_value in zwave config breaks too many other things
-            self.run_in(
-                self.refresh_zwave_entity,
-                seconds = 1,
-                entity_id = zwave_entity
-            )
+            #self.run_in(
+            #    self.refresh_zwave_entity,
+            #    seconds = 1,
+            #    entity_id = zwave_entity
+            #)
 
             # Hide the switch from the specified groups when the alarm is triggered
             for group in hide_switch_groups:
