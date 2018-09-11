@@ -103,18 +103,18 @@ zwave:
         polling_intensity: 1
 
 device_tracker:
-  #- platform: nmap_tracker
-  #  hosts: 10.31.36.0/24
-  #  new_device_defaults:
-  #    track_new_devices: False
-  #  consider_home: 300
-  #  home_interval: 60
-  - platform: netgear
-    host: 10.31.36.45
-    username: admin
-    password: !secret router_password
+  - platform: nmap_tracker
+    hosts: 10.31.36.0/24
     new_device_defaults:
       track_new_devices: False
+    consider_home: 300
+    home_interval: 60
+  #- platform: netgear
+  #  host: 10.31.36.45
+  #  username: admin
+  #  password: !secret router_password
+  #  new_device_defaults:
+  #    track_new_devices: False
 
 influxdb:
   host: !secret influx_ip
