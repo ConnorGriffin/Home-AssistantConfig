@@ -98,9 +98,11 @@ zwave:
   network_key: !secret zwave_network_key
   device_config:
     light.connors_office_light:
-        polling_intensity: 1
+      polling_intensity: 1
     light.bedroom_light:
-        polling_intensity: 1
+      polling_intensity: 1
+    light.dianas_office_light:
+      polling_intensity: 1
 
 device_tracker:
   - platform: nmap_tracker
@@ -120,3 +122,15 @@ influxdb:
   host: !secret influx_ip
   username: !secret influx_user
   password: !secret influx_password
+
+notify:
+  - name: email
+    platform: smtp
+    sender: homeassistant@connorcg.com
+    recipient:
+      - connor@connorcg.com
+    server: !secret smtp_server
+    port: 587
+    username: homeassistant@connorcg.com
+    password: !secret smtp_server_password
+    sender_name: HomeAssistant

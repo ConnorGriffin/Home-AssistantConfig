@@ -6,11 +6,11 @@ class Presence(hass.Hass):
         for room in self.args.get('rooms',[]):
             self.listen_state(
                 self.occupancy_cb,
-                entity = room['entity'], 
+                entity = room['entity'],
                 name = room['name'],
                 immediate = True
             )
-    
+
 
     def occupancy_cb(self, entity, attribute, old, new, kwargs):
         name = kwargs.get('name','Unnamed room')

@@ -1,83 +1,176 @@
-name: Home
+title: Home
 views:
-  - name: Home
-    tab_icon: mdi:home
+  - title: Home
+    icon: mdi:home
     #theme:
     cards:
-      - type: entities
-        title: General
-        entities: 
+      - title: General
+        type: entities
+        entities:
           - lock.front_door
           - climate.home
           - sensor.home_humidity
-      - type: entity-filter
-        card: glance
-        card_config:
-          title: Presence
-        filter:
-          - domain: device_tracker
-      - type: entities
-        title: Bedroom
-        entities: 
-          - light.bedroom_light
-          - binary_sensor.bedroom_occupancy
-          - sensor.bedroom_temperature
-      - type: entities
-        title: "Connor's Office"
-        entities: 
-          - light.connors_office_light
-          - binary_sensor.connor_office_occupancy
-          - sensor.connor_office_temperature
-      - type: entities
-        title: "Diana's Office"
-        entities: 
-          - light.dianas_office_light
-          - binary_sensor.diana_office_occupancy
-          - sensor.diana_office_temperature
-      - type: entities
-        title: "Living Room"
-        entities: 
-          - binary_sensor.living_room_occupancy
-          - sensor.living_room_temperature
-      - type: entities
-        title: Automations
-        entities: 
+          - device_tracker.connor_galaxys8
+          - device_tracker.diana_pixel2
+
+      - title: Bedroom
+        type: glance
+        column_width: 25%
+        entities:
+          - entity: light.bedroom_light
+            name: Light
+          - entity: input_select.bedroom_light_mode
+            name: Light Mode
+          - entity: binary_sensor.bedroom_occupancy
+            name: Occupancy
+          - entity: sensor.bedroom_temperature
+            name: Temp
+
+
+      - title: Connor's Office
+        type: glance
+        column_width: 25%
+        entities:
+          - entity: light.connors_office_light
+            name: Light
+          - entity: input_select.connors_office_light_mode
+            name: Light Mode
+          - entity: binary_sensor.connor_office_occupancy
+            name: Occupancy
+          - entity: sensor.connor_office_temperature
+            name: Temp
+
+      - title: Diana's Office
+        type: glance
+        column_width: 25%
+        entities:
+          - entity: light.dianas_office_light
+            name: Light
+          - entity: input_select.dianas_office_light_mode
+            name: Light Mode
+          - entity: binary_sensor.diana_office_occupancy
+            name: Occupancy
+          - entity: sensor.diana_office_temperature
+            name: Temp
+
+      - title: Living Room
+        type: glance
+        column_width: 25%
+        entities:
+          - entity: binary_sensor.living_room_occupancy
+            name: Occupancy
+          - entity: sensor.living_room_temperature
+            name: Temp
+
+      - title: Automations
+        type: entities
+        entities:
+          - input_boolean.light_automation
+          - input_boolean.alarm_clock_automation
           - input_boolean.ecobee_auto_home_away
-  - name: Climate
-    tab_icon: mdi:weather-sunny
+          - input_boolean.room_presence
+          - input_boolean.low_battery_alert
+
+  - title: Alarms
+    icon: mdi:alarm
+    cards:
+      - title: Alarm1
+        type: entities
+        entities:
+        - input_text.alarm1_name
+        - input_boolean.alarm1_enabled
+        - input_datetime.alarm1_datetime
+        - input_boolean.alarm1_sunday
+        - input_boolean.alarm1_monday
+        - input_boolean.alarm1_tuesday
+        - input_boolean.alarm1_wednesday
+        - input_boolean.alarm1_thursday
+        - input_boolean.alarm1_friday
+        - input_boolean.alarm1_saturday
+
+      - title: Alarm2
+        type: entities
+        entities:
+        - input_text.alarm2_name
+        - input_boolean.alarm2_enabled
+        - input_datetime.alarm2_datetime
+        - input_boolean.alarm2_sunday
+        - input_boolean.alarm2_monday
+        - input_boolean.alarm2_tuesday
+        - input_boolean.alarm2_wednesday
+        - input_boolean.alarm2_thursday
+        - input_boolean.alarm2_friday
+        - input_boolean.alarm2_saturday
+
+      - title: Alarm3
+        type: entities
+        entities:
+        - input_text.alarm3_name
+        - input_boolean.alarm3_enabled
+        - input_datetime.alarm3_datetime
+        - input_boolean.alarm3_sunday
+        - input_boolean.alarm3_monday
+        - input_boolean.alarm3_tuesday
+        - input_boolean.alarm3_wednesday
+        - input_boolean.alarm3_thursday
+        - input_boolean.alarm3_friday
+        - input_boolean.alarm3_saturday
+
+      - title: Alarm4
+        type: entities
+        entities:
+        - input_text.alarm4_name
+        - input_boolean.alarm4_enabled
+        - input_datetime.alarm4_datetime
+        - input_boolean.alarm4_sunday
+        - input_boolean.alarm4_monday
+        - input_boolean.alarm4_tuesday
+        - input_boolean.alarm4_wednesday
+        - input_boolean.alarm4_thursday
+        - input_boolean.alarm4_friday
+        - input_boolean.alarm4_saturday
+
+      - title: Alarm5
+        type: entities
+        entities:
+        - input_text.alarm5_name
+        - input_boolean.alarm5_enabled
+        - input_datetime.alarm5_datetime
+        - input_boolean.alarm5_sunday
+        - input_boolean.alarm5_monday
+        - input_boolean.alarm5_tuesday
+        - input_boolean.alarm5_wednesday
+        - input_boolean.alarm5_thursday
+        - input_boolean.alarm5_friday
+        - input_boolean.alarm5_saturday
+
+  - title: Climate
+    icon: mdi:weather-sunny
     cards:
       - type: weather-forecast
         entity: weather.home
       - type: iframe
         title: History
         url: !secret temp_iframe_url
-  - name: Media
-    tab_icon: mdi:audio-video
+
+  - title: Media
+    icon: mdi:audio-video
     cards:
       - type: media-control
         entity: media_player.roku_5y25a2192945
-  - name: z-Wave Devices
-    tab_icon: mdi:remote
-    cards:
-      - type: entity-filter
-        card_config:
-          title: Z-Wave
-        filter:
-          - domain: zwave
-  - tab_icon: mdi:settings
-    name: Debugging
-    cards:
-      - type: entity-filter
-        filter: [{}]
-        card_config:
-          title: All entities
 
-      # Need custom card with alarm labels
-      #- type: entity-filter
-      #  filter:
-      #    - domain: input_boolean
-      #      entity_id: input_boolean.alarm*_enabled
-      #  card_config:
-      #    title: Alarm Clocks
-
-    
+  - title: z-Wave Devices
+    icon: mdi:remote
+    cards:
+      - title: Z-Wave
+        type: entities
+        entities:
+          - zwave.aeotec_zw090_zstick_gen5_us
+          - zwave.connors_office_light
+          - zwave.dianas_office_light
+          - zwave.bedroom_light
+          - zwave.front_door_lock
+      - title: Batteries
+        type: entities
+        entities:
+          - sensor.schlage_frontdoor_battery

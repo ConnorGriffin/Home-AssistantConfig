@@ -54,7 +54,7 @@ class Lights(hass.Hass):
                     old = 'off'
                 )
 
-                # Set auto-brightness every 5 minutes if light is on and mode is Automatic Brightness
+                # Set auto-brightness every 5 minutes if light is on and mode is Automatic
                 self.run_every(
                     self.auto_brightness_cb,
                     datetime.datetime.now(),
@@ -94,22 +94,22 @@ class Lights(hass.Hass):
         light_entity = entity.replace('input_select','light').replace('_mode','')
         zwave_entity = light_entity.replace('light.', 'zwave.')
         setting = self.global_vars['lights'][light_entity]
-        if new == 'Maximum Brightness' and setting['override'] != 'Maximum Brightness':
+        if new == 'Maximum' and setting['override'] != 'Maximum':
             # Set a maximum brightness hold
             self.set_override(
                 entity_id = light_entity,
-                override = 'Maximum Brightness',
+                override = 'Maximum',
                 brightness_pct = 100
             )
-        elif new == 'Minimum Brightness' and setting['override'] != 'Minimum Brightness':
+        elif new == 'Minimum' and setting['override'] != 'Minimum':
             # Set a minimum brightness hold
             self.set_override(
                 entity_id = light_entity,
-                override = 'Minimum Brightness',
+                override = 'Minimum',
                 brightness_pct = 10
             )
-        elif new == 'Automatic Brightness':
-            # Revert to the automatic brightness when changed to 'Automatic Brightness'
+        elif new == 'Automatic':
+            # Revert to the automatic brightness when changed to 'Automatic'
             setting['override'] = None
             setting['setpoint'] = None
             self.auto_brightness_cb(dict(entity_id = light_entity))
@@ -176,11 +176,11 @@ class Lights(hass.Hass):
         if setting['override'] == override:
             # Reset if the current action is called again (double tap once turns on, second time resets)
             setting['override'] = None
-            # TODO: Set the previous mode here instead of defaulting to Automatic Brightness
+            # TODO: Set the previous mode here instead of defaulting to Automatic
             self.call_service(
                 service = 'input_select/select_option',
                 entity_id = mode_entity,
-                option = 'Automatic Brightness'
+                option = 'Automatic'
             )
 
             # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
@@ -288,11 +288,11 @@ class Lights(hass.Hass):
         if basic_level in [255,0]:
             if basic_level == 255:
                 direction = 'up'
-                override = 'Maximum Brightness'
+                override = 'Maximum'
                 brightness_pct = 100
             elif basic_level == 0:
                 direction = 'down'
-                override = 'Minimum Brightness'
+                override = 'Minimum'
                 brightness_pct = 10
 
             self.set_override(light_entity, override, brightness_pct)
@@ -303,7 +303,7 @@ class Lights(hass.Hass):
 
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
-        # TODO: Either reset the dropdown to 'Automatic Brightness' here, or implement persistent state/settings
+        # TODO: Either reset the dropdown to 'Automatic' here, or implement persistent state/settings
         self.global_vars['lights'][entity]['override'] = None
         self.global_vars['lights'][entity]['setpoint'] = None
         self.set_state(entity, state = 'off', attributes = {"brightness": 0})
@@ -340,7 +340,10 @@ class Lights(hass.Hass):
         # Set auto-brightness if light is on and no override exists
         # state flip-flops when light is first turned on, use the source to ignore state
         if (state == 'on' or source in ['turned_on_cb', 'set_override']) and not setting['override']:
-            schedule = self.app_config['lights']['brightness_schedule']
+            # Get the brightness schedule from the setting dict
+            for entity in self.args['entities']:
+                if entity['name'] == entity_id.split('.')[1]:
+                    schedule = entity.get('brightness_schedule', None)
 
             # Iterate for each item in the schedule, set i = item index, determine the brightness to use
             for i in range(len(schedule)):

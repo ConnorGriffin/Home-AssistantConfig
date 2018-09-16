@@ -25,7 +25,7 @@ media_view:
     icon: mdi:audio-video
     entities:
         - media_player.roku_5y25a2192945
-        
+
 alarmclock_view:
     name: Alarms
     icon: mdi:alarm
@@ -41,7 +41,7 @@ config_view:
     name: Config
     icon: mdi:remote
     view: yes
-    entities: 
+    entities:
         - group.zwave
         - group.batteries
 
@@ -64,7 +64,7 @@ people:
 diabetes:
     name: Diabetes
     view: no
-    entities: 
+    entities:
       - sensor.blood_glucose_level
 
 connors_office:
@@ -79,6 +79,7 @@ dianas_office:
     name: "Diana's Office"
     view: no
     entities:
+      - light.dianas_office_light
       - binary_sensor.diana_office_occupancy
       - sensor.diana_office_temperature
 
@@ -96,26 +97,28 @@ living_room:
     entities:
         - binary_sensor.living_room_occupancy
         - sensor.living_room_temperature
-      
+
 batteries:
     name: Batteries
     view: no
     entities:
         - sensor.schlage_frontdoor_battery
-        
-zwave: 
+
+zwave:
     name: Z-Wave
     entities:
         - zwave.aeotec_zw090_zstick_gen5_us
-        - zwave.bedroom_light
         - zwave.connors_office_light
-        - zwave.schlage_be469_touchscreen_deadbolt
+        - zwave.dianas_office_light
+        - zwave.bedroom_light
+        - zwave.front_door_lock
 
 automation:
     name: Automation
-    entities: 
+    entities:
         - input_boolean.ecobee_auto_home_away
         - input_select.connors_office_light_mode
+        - input_select.dianas_office_light_mode
         - input_select.bedroom_light_mode
 
 alarm1:

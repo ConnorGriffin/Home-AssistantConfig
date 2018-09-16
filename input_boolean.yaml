@@ -1,130 +1,146 @@
 ecobee_auto_home_away:
-  name: "Ecobee Auto Home/Away"
+  name: Ecobee Auto Home/Away
   icon: mdi:thermostat
+
+room_presence:
+  name: Room Presence Detection
+  icon: mdi:home-map-marker
+
+light_automation:
+  name: Light Automation
+  icon: mdi:lightbulb
+
+alarm_clock_automation:
+  name: Alarm Clock Automation
+  icon: mdi:alarm
+
+low_battery_alert:
+  name: Z-Wave Low Battery Alert
+  icon: mdi:battery-alert
 
 # region alarms
 alarm1_enabled:
-  name: "Enabled"
+  name: Enabled
   icon: mdi:toggle-switch
 alarm1_sunday:
-  name: "Sunday"
+  name: Sunday
   icon: mdi:calendar-blank
 alarm1_monday:
-  name: "Monday"
+  name: Monday
   icon: mdi:calendar-blank
 alarm1_tuesday:
-  name: "Tuesday"
+  name: Tuesday
   icon: mdi:calendar-blank
 alarm1_wednesday:
-  name: "Wednesday"
+  name: Wednesday
   icon: mdi:calendar-blank
 alarm1_thursday:
-  name: "Thursday"
+  name: Thursday
   icon: mdi:calendar-blank
 alarm1_friday:
-  name: "Friday"
+  name: Friday
   icon: mdi:calendar-blank
 alarm1_saturday:
-  name: "Saturday"
+  name: Saturday
   icon: mdi:calendar-blank
 
 alarm2_enabled:
-  name: "Enabled"
+  name: Enabled
   icon: mdi:toggle-switch
 alarm2_sunday:
-  name: "Sunday"
+  name: Sunday
   icon: mdi:calendar-blank
 alarm2_monday:
-  name: "Monday"
+  name: Monday
   icon: mdi:calendar-blank
 alarm2_tuesday:
-  name: "Tuesday"
+  name: Tuesday
   icon: mdi:calendar-blank
 alarm2_wednesday:
-  name: "Wednesday"
+  name: Wednesday
   icon: mdi:calendar-blank
 alarm2_thursday:
-  name: "Thursday"
+  name: Thursday
   icon: mdi:calendar-blank
 alarm2_friday:
-  name: "Friday"
+  name: Friday
   icon: mdi:calendar-blank
 alarm2_saturday:
-  name: "Saturday"
+  name: Saturday
   icon: mdi:calendar-blank
 
 alarm3_enabled:
-  name: "Enabled"
+  name: Enabled
   icon: mdi:toggle-switch
 alarm3_sunday:
-  name: "Sunday"
+  name: Sunday
   icon: mdi:calendar-blank
 alarm3_monday:
-  name: "Monday"
+  name: Monday
   icon: mdi:calendar-blank
 alarm3_tuesday:
-  name: "Tuesday"
+  name: Tuesday
   icon: mdi:calendar-blank
 alarm3_wednesday:
-  name: "Wednesday"
+  name: Wednesday
   icon: mdi:calendar-blank
 alarm3_thursday:
-  name: "Thursday"
+  name: Thursday
   icon: mdi:calendar-blank
 alarm3_friday:
-  name: "Friday"
+  name: Friday
   icon: mdi:calendar-blank
 alarm3_saturday:
-  name: "Saturday"
+  name: Saturday
   icon: mdi:calendar-blank
 
 alarm4_enabled:
-  name: "Enabled"
+  name: Enabled
   icon: mdi:toggle-switch
 alarm4_sunday:
-  name: "Sunday"
+  name: Sunday
   icon: mdi:calendar-blank
 alarm4_monday:
-  name: "Monday"
+  name: Monday
   icon: mdi:calendar-blank
 alarm4_tuesday:
-  name: "Tuesday"
+  name: Tuesday
   icon: mdi:calendar-blank
 alarm4_wednesday:
-  name: "Wednesday"
+  name: Wednesday
   icon: mdi:calendar-blank
 alarm4_thursday:
-  name: "Thursday"
+  name: Thursday
   icon: mdi:calendar-blank
 alarm4_friday:
-  name: "Friday"
+  name: Friday
   icon: mdi:calendar-blank
 alarm4_saturday:
-  name: "Saturday"
+  name: Saturday
   icon: mdi:calendar-blank
 
 alarm5_enabled:
-  name: "Enabled"
+  name: Enabled
   icon: mdi:toggle-switch
 alarm5_sunday:
-  name: "Sunday"
+  name: Sunday
   icon: mdi:calendar-blank
 alarm5_monday:
-  name: "Monday"
+  name: Monday
   icon: mdi:calendar-blank
 alarm5_tuesday:
-  name: "Tuesday"
+  name: Tuesday
   icon: mdi:calendar-blank
 alarm5_wednesday:
-  name: "Wednesday"
+  name: Wednesday
   icon: mdi:calendar-blank
 alarm5_thursday:
-  name: "Thursday"
+  name: Thursday
   icon: mdi:calendar-blank
 alarm5_friday:
-  name: "Friday"
+  name: Friday
   icon: mdi:calendar-blank
 alarm5_saturday:
-  name: "Saturday"
+  name: Saturday
   icon: mdi:calendar-blank
 # endregion
