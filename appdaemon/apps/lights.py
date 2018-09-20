@@ -22,9 +22,11 @@ class Lights(hass.Hass):
 
                 # Initialize the global settings for each entity
                 self.global_vars['lights'][light_entity] = {
-                    'override': None,
-                    'setpoint': None,
-                    'mode':     self.get_state(mode_entity)
+                    'override':       None,
+                    'setpoint':       None,
+                    'mode':           self.get_state(mode_entity),
+                    'max_brightness': entity.get('max_brightness', self.args['default_max_brightness']),
+                    'min_brightness': entity.get('min_brightness', self.args['default_min_brightness'])
                 }
 
                 # Listen for double taps
@@ -99,14 +101,14 @@ class Lights(hass.Hass):
             self.set_override(
                 entity_id = light_entity,
                 override = 'Maximum',
-                brightness_pct = 100
+                brightness_pct = setting['max_brightness']
             )
         elif new == 'Minimum' and setting['override'] != 'Minimum':
             # Set a minimum brightness hold
             self.set_override(
                 entity_id = light_entity,
                 override = 'Minimum',
-                brightness_pct = 10
+                brightness_pct = setting['min_brightness']
             )
         elif new == 'Automatic':
             # Revert to the automatic brightness when changed to 'Automatic'
@@ -221,7 +223,7 @@ class Lights(hass.Hass):
         setting = self.global_vars['lights'][entity_id]
         setting['override'] = 'alarm'
         setting['setpoint'] = None
-        self.turn_on(entity_id, brightness=255)
+        self.turn_on(entity_id, brightness=setting['max_brightness']*2.55)
 
 
     def alarm_fired_cb(self, event_name, data, kwargs):
@@ -230,7 +232,8 @@ class Lights(hass.Hass):
         hide_switch_groups = kwargs.get('hide_switch_groups')
         alarm_name = data['alarm_name']
         alarm_group = 'group.{}'.format(alarm_name)
-        override = self.global_vars['lights'][light_entity]['override']
+        setting = self.global_vars['lights'][light_entity]
+        override = setting['override']
 
         # If the alarm is already triggered, don't do anything
         if override != 'alarm':
@@ -239,7 +242,7 @@ class Lights(hass.Hass):
             self.set_override(
                 entity_id = light_entity,
                 override = 'alarm',
-                brightness_pct = 100
+                brightness_pct = setting['max_brightness']
             )
 
             # Refresh the z-wave entity since the light doesn't show as on in the HA UI and setting refresh_value in zwave config breaks too many other things
@@ -284,16 +287,17 @@ class Lights(hass.Hass):
     def double_tap_cb(self, event_name, data, kwargs):
         basic_level = data["basic_level"]
         light_entity = kwargs['light_entity']
+        setting = self.global_vars['lights'][light_entity]
 
         if basic_level in [255,0]:
             if basic_level == 255:
                 direction = 'up'
                 override = 'Maximum'
-                brightness_pct = 100
+                brightness_pct = setting['max_brightness']
             elif basic_level == 0:
                 direction = 'down'
                 override = 'Minimum'
-                brightness_pct = 10
+                brightness_pct = setting['min_brightness']
 
             self.set_override(light_entity, override, brightness_pct)
 
@@ -335,6 +339,8 @@ class Lights(hass.Hass):
         friendly_name = self.friendly_name(entity_id)
         state = self.get_state(entity_id)
         setting = self.global_vars['lights'][entity_id]
+        max_brightness = setting['max_brightness']
+        min_brightness = setting['min_brightness']
         now = datetime.datetime.now()
 
         # Set auto-brightness if light is on and no override exists
@@ -343,7 +349,7 @@ class Lights(hass.Hass):
             # Get the brightness schedule from the setting dict
             for entity in self.args['entities']:
                 if entity['name'] == entity_id.split('.')[1]:
-                    schedule = entity.get('brightness_schedule', None)
+                    schedule = entity.get('brightness_schedule', self.args['default_brightness_schedule'])
 
             # Iterate for each item in the schedule, set i = item index, determine the brightness to use
             for i in range(len(schedule)):
@@ -353,13 +359,24 @@ class Lights(hass.Hass):
                 else:
                     next_schedule = schedule[i+1]
 
+                # Replace strings max/min_brightness with percents
+                if next_schedule['pct'] == 'max_brightness':
+                    next_schedule_pct = max_brightness
+                elif next_schedule['pct'] == 'min_brightness':
+                    next_schedule_pct = min_brightness
+
+                if schedule[i]['pct'] == 'max_brightness':
+                    this_schedule_pct = max_brightness
+                elif schedule[i]['pct'] == 'min_brightness':
+                    this_schedule_pct = min_brightness
+
                 # Determine if now is during or between two schedules
                 in_schedule = self.timestr_delta(schedule[i]['start'], now, schedule[i]['end'])
                 between_schedule = self.timestr_delta(schedule[i]['end'], now, next_schedule['start'])
 
                 if in_schedule['now_is_between']:
                     # If we're within a schedule entry's time window, match exactly
-                    target_percent = schedule[i]['pct']
+                    target_percent = this_schedule_pct
                     transition = 0
 
                     # don't eval any ore schedules
@@ -367,12 +384,12 @@ class Lights(hass.Hass):
                 elif between_schedule['now_is_between']:
                     # if we are between two schedules, calculate the brightness percentage
                     time_diff = between_schedule['start_to_end'].total_seconds()
-                    bright_diff = schedule[i]['pct'] - next_schedule['pct']
+                    bright_diff = this_schedule_pct - next_schedule_pct
                     bright_per_second = bright_diff / time_diff
 
                     if immediate:
                         # If setting an immediate brightness, we want to calculate the brightness percentage and then make a recursive call
-                        target_percent = schedule[i]['pct'] - (between_schedule['since_start'].total_seconds() * bright_per_second)
+                        target_percent = this_schedule_pct - (between_schedule['since_start'].total_seconds() * bright_per_second)
                         transition = 0
                         self.run_in(
                             self.auto_brightness_cb,
@@ -383,10 +400,10 @@ class Lights(hass.Hass):
                     else:
                         if between_schedule['to_end'].total_seconds() <= transition:
                             # If we're in a new schedule in the next 5 minutes, use that schedule's brightness
-                            target_percent = next_schedule['pct']
+                            target_percent = next_schedule_pct
                             transition = between_schedule['to_end'].total_seconds()
                         else:
-                            target_percent = schedule[i]['pct'] - ((between_schedule['since_start'].total_seconds() + transition) * bright_per_second)
+                            target_percent = this_schedule_pct - ((between_schedule['since_start'].total_seconds() + transition) * bright_per_second)
 
                     # don't eval any ore schedules
                     break
