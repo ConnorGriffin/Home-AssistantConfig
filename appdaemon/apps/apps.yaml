@@ -3,49 +3,28 @@ lights:
   module: lights
   class: Lights
   constrain_input_boolean: input_boolean.light_automation
+  default_max_brightness: 100
+  default_min_brightness: 10
+  default_brightness_schedule:
+    - pct: 75
+      start: '9:00:00'
+      end: '10:00:00'
+    - pct: max_brightness
+      start: '12:00:00'
+      end: '16:00:00'
+    - pct: 70
+      start: '18:00:00'
+      end: '18:00:00'
+    - pct: min_brightness
+      start: '21:00:00'
+      end: '06:00:00'
   entities:
     - name: connors_office_light
-      brightness_schedule:
-      - pct: 75
-        start: '9:00:00'
-        end: '10:00:00'
-      - pct: 100
-        start: '12:00:00'
-        end: '16:00:00'
-      - pct: 70
-        start: '18:00:00'
-        end: '18:00:00'
-      - pct: 10
-        start: '21:00:00'
-        end: '06:00:00'
     - name: dianas_office_light
-      brightness_schedule:
-      - pct: 75
-        start: '9:00:00'
-        end: '10:00:00'
-      - pct: 100
-        start: '12:00:00'
-        end: '16:00:00'
-      - pct: 70
-        start: '18:00:00'
-        end: '18:00:00'
-      - pct: 12.5
-        start: '21:00:00'
-        end: '06:00:00'
+      min_brightness: 8
+    - name: hallway_light
+      min_brightness: 15
     - name: bedroom_light
-      brightness_schedule:
-      - pct: 75
-        start: '9:00:00'
-        end: '10:00:00'
-      - pct: 100
-        start: '12:00:00'
-        end: '16:00:00'
-      - pct: 70
-        start: '18:00:00'
-        end: '18:00:00'
-      - pct: 10
-        start: '21:00:00'
-        end: '06:00:00'
       snooze_minutes: 10
       alarms:
         #- hide_switch_from_groups:

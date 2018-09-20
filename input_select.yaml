@@ -1,29 +1,40 @@
 connors_office_light_mode:
   name: "Connor's Office Light Mode"
   options:
-    - Manual
     - Automatic
+    - Manual
     - Maximum
     - Minimum
   initial: Automatic
-  icon: mdi:lightbulb
+  icon: mdi:theme-light-dark
 
 dianas_office_light_mode:
   name: "Diana's Office Light Mode"
   options:
-    - Manual
     - Automatic
+    - Manual
     - Maximum
     - Minimum
   initial: Automatic
-  icon: mdi:lightbulb
+  icon: mdi:theme-light-dark
 
 bedroom_light_mode:
   name: "Bedroom Light Mode"
   options:
-    - Manual
     - Automatic
+    - Manual
     - Maximum
     - Minimum
   initial: Automatic
-  icon: mdi:lightbulb
+  icon: mdi:theme-light-dark
+
+
+hallway_light_mode:
+  name: "Hallway Light Mode"
+  options:
+    - Automatic
+    - Manual
+    - Maximum
+    - Minimum
+  initial: Automatic
+  icon: mdi:theme-light-dark

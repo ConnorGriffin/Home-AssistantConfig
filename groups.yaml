@@ -53,6 +53,8 @@ general:
         - lock.front_door
         - climate.home
         - sensor.home_humidity
+        - light.hallway_light
+        - input_select.hallway_light_mode
 
 people:
     name: Presence
@@ -60,6 +62,21 @@ people:
     entities:
       - device_tracker.connor_galaxys8
       - device_tracker.diana_pixel2
+
+inside_lights:
+    name: Inside Lights
+    entities:
+        - light.connors_office_light
+        - light.dianas_office_light
+        - light.bedroom_light
+        - light.hallway_light
+
+inside_lights_except_bedroom:
+    name: Inside Lights Except Bedroom
+    entities:
+        - light.connors_office_light
+        - light.dianas_office_light
+        - light.hallway_light
 
 diabetes:
     name: Diabetes
@@ -111,6 +128,7 @@ zwave:
         - zwave.connors_office_light
         - zwave.dianas_office_light
         - zwave.bedroom_light
+        - zwave.hallway_light
         - zwave.front_door_lock
 
 automation:

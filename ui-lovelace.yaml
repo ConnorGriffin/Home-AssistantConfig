@@ -12,10 +12,11 @@ views:
           - sensor.home_humidity
           - device_tracker.connor_galaxys8
           - device_tracker.diana_pixel2
+          - light.hallway_light
+          - input_select.hallway_light_mode
 
       - title: Bedroom
-        type: glance
-        column_width: 25%
+        type: entities
         entities:
           - entity: light.bedroom_light
             name: Light
@@ -28,8 +29,7 @@ views:
 
 
       - title: Connor's Office
-        type: glance
-        column_width: 25%
+        type: entities
         entities:
           - entity: light.connors_office_light
             name: Light
@@ -41,8 +41,7 @@ views:
             name: Temp
 
       - title: Diana's Office
-        type: glance
-        column_width: 25%
+        type: entities
         entities:
           - entity: light.dianas_office_light
             name: Light
@@ -54,13 +53,20 @@ views:
             name: Temp
 
       - title: Living Room
-        type: glance
-        column_width: 25%
+        type: entities
         entities:
           - entity: binary_sensor.living_room_occupancy
             name: Occupancy
           - entity: sensor.living_room_temperature
             name: Temp
+
+      - title: Lights
+        type: entities
+        entities:
+          - entity: group.all_lights
+            name: All Lights
+          - group.inside_lights
+          - group.inside_lights_except_bedroom
 
       - title: Automations
         type: entities
@@ -169,6 +175,7 @@ views:
           - zwave.connors_office_light
           - zwave.dianas_office_light
           - zwave.bedroom_light
+          - zwave.hallway_light
           - zwave.front_door_lock
       - title: Batteries
         type: entities
