@@ -10,10 +10,9 @@ views:
           - lock.front_door
           - climate.home
           - sensor.home_humidity
+          - type: divider
           - device_tracker.connor_galaxys8
           - device_tracker.diana_pixel2
-          - light.hallway_light
-          - input_select.hallway_light_mode
 
       - title: Bedroom
         type: entities
@@ -25,11 +24,12 @@ views:
           - entity: binary_sensor.bedroom_occupancy
             name: Occupancy
           - entity: sensor.bedroom_temperature
-            name: Temp
+            name: Temperature
 
 
       - title: Connor's Office
         type: entities
+        show_header_toggle: false
         entities:
           - entity: light.connors_office_light
             name: Light
@@ -38,10 +38,11 @@ views:
           - entity: binary_sensor.connor_office_occupancy
             name: Occupancy
           - entity: sensor.connor_office_temperature
-            name: Temp
+            name: Temperature
 
       - title: Diana's Office
         type: entities
+        show_header_toggle: false
         entities:
           - entity: light.dianas_office_light
             name: Light
@@ -50,15 +51,43 @@ views:
           - entity: binary_sensor.diana_office_occupancy
             name: Occupancy
           - entity: sensor.diana_office_temperature
-            name: Temp
+            name: Temperature
 
       - title: Living Room
         type: entities
+        show_header_toggle: false
         entities:
           - entity: binary_sensor.living_room_occupancy
             name: Occupancy
           - entity: sensor.living_room_temperature
-            name: Temp
+            name: Temperature
+
+      - title: Dining Room
+        type: entities
+        show_header_toggle: false
+        entities:
+          - entity: light.dining_room_light
+            name: Light
+          - entity: input_select.dining_room_light_mode
+            name: Light Mode
+
+      - title: Hallway
+        type: entities
+        show_header_toggle: false
+        entities:
+          - entity: light.hallway_light
+            name: Light
+          - entity: input_select.hallway_light_mode
+            name: Light Mode
+
+      - title: Bathroom
+        type: entities
+        show_header_toggle: false
+        entities:
+          - entity: light.bathroom_light
+            name: Light
+          - entity: input_select.bathroom_light_mode
+            name: Light Mode
 
       - title: Lights
         type: entities
@@ -82,8 +111,9 @@ views:
     cards:
       - title: Alarm1
         type: entities
+        show_header_toggle: false
         entities:
-        - input_text.alarm1_name
+        #- input_text.alarm1_name
         - input_boolean.alarm1_enabled
         - input_datetime.alarm1_datetime
         - input_boolean.alarm1_sunday
@@ -96,8 +126,9 @@ views:
 
       - title: Alarm2
         type: entities
+        show_header_toggle: false
         entities:
-        - input_text.alarm2_name
+        #- input_text.alarm2_name
         - input_boolean.alarm2_enabled
         - input_datetime.alarm2_datetime
         - input_boolean.alarm2_sunday
@@ -110,8 +141,9 @@ views:
 
       - title: Alarm3
         type: entities
+        show_header_toggle: false
         entities:
-        - input_text.alarm3_name
+        #- input_text.alarm3_name
         - input_boolean.alarm3_enabled
         - input_datetime.alarm3_datetime
         - input_boolean.alarm3_sunday
@@ -124,8 +156,9 @@ views:
 
       - title: Alarm4
         type: entities
+        show_header_toggle: false
         entities:
-        - input_text.alarm4_name
+        #- input_text.alarm4_name
         - input_boolean.alarm4_enabled
         - input_datetime.alarm4_datetime
         - input_boolean.alarm4_sunday
@@ -138,8 +171,9 @@ views:
 
       - title: Alarm5
         type: entities
+        show_header_toggle: false
         entities:
-        - input_text.alarm5_name
+        #- input_text.alarm5_name
         - input_boolean.alarm5_enabled
         - input_datetime.alarm5_datetime
         - input_boolean.alarm5_sunday
@@ -176,8 +210,24 @@ views:
           - zwave.dianas_office_light
           - zwave.bedroom_light
           - zwave.hallway_light
+          - zwave.dining_room_light
+          - zwave.bathroom_light
           - zwave.front_door_lock
+
       - title: Batteries
         type: entities
         entities:
           - sensor.schlage_frontdoor_battery
+
+      - title: Aeotec MultiSensor 01
+        type: entities
+        entities:
+          - binary_sensor.aeotec_zw100_multisensor_6_sensor
+          - sensor.aeotec_zw100_multisensor_6_alarm_level
+          - sensor.aeotec_zw100_multisensor_6_alarm_type
+          - sensor.aeotec_zw100_multisensor_6_burglar
+          - sensor.aeotec_zw100_multisensor_6_luminance
+          - sensor.aeotec_zw100_multisensor_6_relative_humidity
+          - sensor.aeotec_zw100_multisensor_6_sourcenodeid
+          - sensor.aeotec_zw100_multisensor_6_temperature
+          - sensor.aeotec_zw100_multisensor_6_ultraviolet

@@ -70,6 +70,8 @@ inside_lights:
         - light.dianas_office_light
         - light.bedroom_light
         - light.hallway_light
+        - light.dining_room_light
+        - light.bathroom_light
 
 inside_lights_except_bedroom:
     name: Inside Lights Except Bedroom
@@ -77,12 +79,14 @@ inside_lights_except_bedroom:
         - light.connors_office_light
         - light.dianas_office_light
         - light.hallway_light
+        - light.dining_room_light
+        - light.bathroom_light
 
-diabetes:
-    name: Diabetes
-    view: no
-    entities:
-      - sensor.blood_glucose_level
+#diabetes:
+#    name: Diabetes
+#    view: no
+#    entities:
+#      - sensor.blood_glucose_level
 
 connors_office:
     name: "Connor's Office"

@@ -2,28 +2,28 @@
 
 - platform: template
   sensors:
-    blood_glucose_level:
-      friendly_name: 'Blood Glucose Level'
-      value_template: >
-        {{ state_attr('sensor.blood_glucose', 'sgv') }}
-      unit_of_measurement: 'mg/dL'
-      icon_template: >
-        {%- set direction = state_attr('sensor.blood_glucose', 'direction') -%}
-        {%- if (direction == 'Flat') -%}
-          mdi:arrow-right
-        {%- elif (direction == 'FortyFiveUp') -%}
-          mdi:arrow-top-right
-        {%- elif (direction == 'FortyFiveDown') -%}
-          mdi:arrow-bottom-right
-        {%- elif (direction == 'SingleUp') -%}
-          mdi:arrow-up
-        {%- elif (direction == 'DoubleUp') -%}
-          mdi:arrow-up-thick
-        {%- elif (direction == 'SingleDown') -%}
-          mdi:arrow-down
-        {%- elif (direction == 'DoubleDown') -%}
-          mdi:arrow-down-thick
-        {%- endif -%}
+#    blood_glucose_level:
+#      friendly_name: 'Blood Glucose Level'
+#      value_template: >
+#        {{ state_attr('sensor.blood_glucose', 'sgv') }}
+#      unit_of_measurement: 'mg/dL'
+#      icon_template: >
+#        {%- set direction = state_attr('sensor.blood_glucose', 'direction') -%}
+#        {%- if (direction == 'Flat') -%}
+#          mdi:arrow-right
+#        {%- elif (direction == 'FortyFiveUp') -%}
+#          mdi:arrow-top-right
+#        {%- elif (direction == 'FortyFiveDown') -%}
+#          mdi:arrow-bottom-right
+#        {%- elif (direction == 'SingleUp') -%}
+#          mdi:arrow-up
+#        {%- elif (direction == 'DoubleUp') -%}
+#          mdi:arrow-up-thick
+#        {%- elif (direction == 'SingleDown') -%}
+#          mdi:arrow-down
+#        {%- elif (direction == 'DoubleDown') -%}
+#          mdi:arrow-down-thick
+#        {%- endif -%}
     schlage_frontdoor_battery:
         friendly_name: 'Front Door Lock'
         value_template: '{{ states.zwave.front_door_lock.attributes.battery_level }}'
@@ -32,12 +32,12 @@
             {%- set batteryLevel = state_attr('zwave.front_door_lock', 'battery_level') -%}
             {%- if (batteryLevel != 'None') -%}
               {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
-                {# Round to the nearest 10 if battery is between 5 and 95 #} 
+                {# Round to the nearest 10 if battery is between 5 and 95 #}
                 mdi:battery-{{(batteryLevel|float / 10)|round*10}}
-              {%- elif (batteryLevel >= 95) -%} 
+              {%- elif (batteryLevel >= 95) -%}
                 {# full battery #}
                 mdi:battery
-              {%- elif (batteryLevel <= 5) -%} 
+              {%- elif (batteryLevel <= 5) -%}
                 {# less than 5% battery #}
                 mdi:battery-outline
               {%- endif -%}

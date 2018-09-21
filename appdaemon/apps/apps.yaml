@@ -22,8 +22,38 @@ lights:
     - name: connors_office_light
     - name: dianas_office_light
       min_brightness: 8
-    - name: hallway_light
+    - name: bathroom_light
       min_brightness: 15
+    - name: hallway_light
+      min_brightness: 14
+      brightness_schedule:
+      - pct: 55
+        start: '9:00:00'
+        end: '10:00:00'
+      - pct: max_brightness
+        start: '12:00:00'
+        end: '16:00:00'
+      - pct: 40
+        start: '18:00:00'
+        end: '18:00:00'
+      - pct: min_brightness
+        start: '21:00:00'
+        end: '06:00:00'
+    - name: dining_room_light
+      min_brightness: 13
+      brightness_schedule:
+      - pct: 55
+        start: '9:00:00'
+        end: '10:00:00'
+      - pct: max_brightness
+        start: '12:00:00'
+        end: '16:00:00'
+      - pct: 40
+        start: '18:00:00'
+        end: '18:00:00'
+      - pct: min_brightness
+        start: '21:00:00'
+        end: '06:00:00'
     - name: bedroom_light
       snooze_minutes: 10
       alarms:

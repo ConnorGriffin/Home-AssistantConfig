@@ -364,11 +364,15 @@ class Lights(hass.Hass):
                     next_schedule_pct = max_brightness
                 elif next_schedule['pct'] == 'min_brightness':
                     next_schedule_pct = min_brightness
+                else:
+                    next_schedule_pct = next_schedule['pct']
 
                 if schedule[i]['pct'] == 'max_brightness':
                     this_schedule_pct = max_brightness
                 elif schedule[i]['pct'] == 'min_brightness':
                     this_schedule_pct = min_brightness
+                else:
+                    this_schedule_pct = schedule[i]['pct']
 
                 # Determine if now is during or between two schedules
                 in_schedule = self.timestr_delta(schedule[i]['start'], now, schedule[i]['end'])

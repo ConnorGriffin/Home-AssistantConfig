@@ -28,9 +28,29 @@ bedroom_light_mode:
   initial: Automatic
   icon: mdi:theme-light-dark
 
-
 hallway_light_mode:
   name: "Hallway Light Mode"
+  options:
+    - Automatic
+    - Manual
+    - Maximum
+    - Minimum
+  initial: Automatic
+  icon: mdi:theme-light-dark
+
+dining_room_light_mode:
+  name: "Dining Room Light Mode"
+  options:
+    - Automatic
+    - Manual
+    - Maximum
+    - Minimum
+  initial: Automatic
+  icon: mdi:theme-light-dark
+
+
+bathroom_light_mode:
+  name: "Bathroom Light Mode"
   options:
     - Automatic
     - Manual
