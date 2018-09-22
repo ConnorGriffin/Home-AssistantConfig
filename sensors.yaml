@@ -45,3 +45,25 @@
               {# If battery status is not known, use battery-unknown icon #}
               mdi:battery-unknown
             {%- endif -%}
+
+    bathroom_multisensor_6_battery:
+        friendly_name: 'Bathroom MultiSensor 6'
+        value_template: '{{ states.zwave.bathroom_multisensor_6.attributes.battery_level }}'
+        unit_of_measurement: '%'
+        icon_template: >
+            {%- set batteryLevel = state_attr('zwave.bathroom_multisensor_6', 'battery_level') -%}
+            {%- if (batteryLevel != 'None') -%}
+              {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+                {# Round to the nearest 10 if battery is between 5 and 95 #}
+                mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+              {%- elif (batteryLevel >= 95) -%}
+                {# full battery #}
+                mdi:battery
+              {%- elif (batteryLevel <= 5) -%}
+                {# less than 5% battery #}
+                mdi:battery-outline
+              {%- endif -%}
+            {%- else -%}
+              {# If battery status is not known, use battery-unknown icon #}
+              mdi:battery-unknown
+            {%- endif -%}

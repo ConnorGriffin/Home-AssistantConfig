@@ -16,6 +16,7 @@ views:
 
       - title: Bedroom
         type: entities
+        show_header_toggle: false
         entities:
           - entity: light.bedroom_light
             name: Light
@@ -213,21 +214,23 @@ views:
           - zwave.dining_room_light
           - zwave.bathroom_light
           - zwave.front_door_lock
+          - zwave.bathroom_multisensor_6
 
       - title: Batteries
         type: entities
         entities:
           - sensor.schlage_frontdoor_battery
+          - sensor.bathroom_multisensor_6_battery
 
       - title: Aeotec MultiSensor 01
         type: entities
         entities:
-          - binary_sensor.aeotec_zw100_multisensor_6_sensor
-          - sensor.aeotec_zw100_multisensor_6_alarm_level
-          - sensor.aeotec_zw100_multisensor_6_alarm_type
-          - sensor.aeotec_zw100_multisensor_6_burglar
-          - sensor.aeotec_zw100_multisensor_6_luminance
-          - sensor.aeotec_zw100_multisensor_6_relative_humidity
-          - sensor.aeotec_zw100_multisensor_6_sourcenodeid
-          - sensor.aeotec_zw100_multisensor_6_temperature
-          - sensor.aeotec_zw100_multisensor_6_ultraviolet
+          - binary_sensor.bathroom_motion
+          - sensor.bathroom_alarm_level
+          - sensor.bathroom_alarm_type
+          - sensor.bathroom_burglar
+          - sensor.bathroom_luminance
+          - sensor.bathroom_relative_humidity
+          - sensor.bathroom_sourcenodeid
+          - sensor.bathroom_temperature
+          - sensor.bathroom_ultraviolet
