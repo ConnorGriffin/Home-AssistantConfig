@@ -19,11 +19,14 @@ class Lights(hass.Hass):
                 light_entity = 'light.{}'.format(entity_id)
                 light_friendly = self.friendly_name(light_entity)
                 mode_entity = 'input_select.{}_mode'.format(entity_id)
+                motion_sensor = entity.get('motion_sensor', None)
+                on_delay = entity.get('on_delay', self.args['default_on_delay'])
+                off_delay = entity.get('off_delay', self.args['default_off_delay'])
 
                 # Initialize the global settings for each entity
                 self.global_vars['lights'][light_entity] = {
                     'override':       None,
-                    'setpoint':       None,
+                    'setpoint':       0,
                     'mode':           self.get_state(mode_entity),
                     'max_brightness': entity.get('max_brightness', self.args['default_max_brightness']),
                     'min_brightness': entity.get('min_brightness', self.args['default_min_brightness'])
@@ -62,7 +65,8 @@ class Lights(hass.Hass):
                     datetime.datetime.now(),
                     300,
                     entity_id = light_entity,
-                    transition = 300
+                    transition = 300,
+                    check_current_brightness = True
                 )
 
                 # Listen for mode dropdown changes
@@ -71,6 +75,24 @@ class Lights(hass.Hass):
                     self.mode_dropdown_cb,
                     entity = mode_entity
                 )
+
+                # Presence detection
+                if motion_sensor:
+                    self.log("Monitoring {} for presence changes.".format(light_friendly), "INFO")
+                    self.listen_state(
+                        cb = self.presence_cb,
+                        entity = motion_sensor,
+                        light_entity = light_entity,
+                        new = 'on',
+                        duration = on_delay
+                    )
+                    self.listen_state(
+                        cb = self.presence_cb,
+                        entity = motion_sensor,
+                        light_entity = light_entity,
+                        new = 'off',
+                        duration = off_delay
+                    )
 
                 # Set auto-brightness once on startup
                 self.auto_brightness_cb(dict(entity_id = light_entity))
@@ -113,7 +135,7 @@ class Lights(hass.Hass):
         elif new == 'Automatic':
             # Revert to the automatic brightness when changed to 'Automatic'
             setting['override'] = None
-            setting['setpoint'] = None
+            setting['setpoint'] = 0
             self.auto_brightness_cb(dict(entity_id = light_entity))
 
         # Refresh the z-wave entity since the light doesn't show as on in the HA UI and setting refresh_value in zwave config breaks too many other things
@@ -201,8 +223,8 @@ class Lights(hass.Hass):
             )
         else:
             setting['override'] = override
-            setting['setpoint'] = None
-            self.turn_on(entity_id, brightness=brightness_pct*2.55)
+            setting['setpoint'] = 0
+            self.turn_on(entity_id, brightness_pct=brightness_pct)
             self.call_service(
                 service = 'input_select/select_option',
                 entity_id = mode_entity,
@@ -222,8 +244,8 @@ class Lights(hass.Hass):
         entity_id = kwargs.get('entity_id')
         setting = self.global_vars['lights'][entity_id]
         setting['override'] = 'alarm'
-        setting['setpoint'] = None
-        self.turn_on(entity_id, brightness=setting['max_brightness']*2.55)
+        setting['setpoint'] = 0
+        self.turn_on(entity_id, brightness_pct=setting['max_brightness'])
 
 
     def alarm_fired_cb(self, event_name, data, kwargs):
@@ -309,7 +331,7 @@ class Lights(hass.Hass):
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
         # TODO: Either reset the dropdown to 'Automatic' here, or implement persistent state/settings
         self.global_vars['lights'][entity]['override'] = None
-        self.global_vars['lights'][entity]['setpoint'] = None
+        self.global_vars['lights'][entity]['setpoint'] = 0
         self.set_state(entity, state = 'off', attributes = {"brightness": 0})
 
         light_friendly = self.friendly_name(entity)
@@ -335,13 +357,21 @@ class Lights(hass.Hass):
         immediate = kwargs.get('immediate')
         source = kwargs.get('source', None)
         transition = kwargs.get('transition', 0)
+        check_current_brightness = kwargs.get('check_current_brightness', False)
 
         friendly_name = self.friendly_name(entity_id)
         state = self.get_state(entity_id)
         setting = self.global_vars['lights'][entity_id]
+        mode_entity = 'input_select.{}_mode'.format(entity_id.split('.')[1])
         max_brightness = setting['max_brightness']
         min_brightness = setting['min_brightness']
         now = datetime.datetime.now()
+
+        if check_current_brightness:
+            current_brightness = self.get_state(entity_id, attribute='brightness')
+            if not current_brightness:
+                current_brightness = 0
+            current_brightness_pct = current_brightness / 2.55
 
         # Set auto-brightness if light is on and no override exists
         # state flip-flops when light is first turned on, use the source to ignore state
@@ -413,13 +443,41 @@ class Lights(hass.Hass):
                     break
 
             # set brightness if a schedule was matched and the percent has changed since the last auto-brightness run
+            # Don't change if the brightness was changed from another source (at the switch, hass ui, google assistant, etc.)
             if target_percent:
                 last_percent = setting.get('setpoint')
                 if last_percent != target_percent:
-                    self.log("{}: Setting auto-brightness - {}% over {} seconds".format(friendly_name, round(target_percent, 2), transition))
-                    self.turn_on(
-                        entity_id,
-                        brightness = target_percent * 2.55,
-                        transition = transition
-                    )
-                    setting['setpoint'] = target_percent
+                    if check_current_brightness and abs(last_percent - current_brightness_pct) > abs(last_percent - target_percent):
+                        self.log('{}: Brightness changed manually, not moving'.format(friendly_name))
+                        self.call_service(
+                            service = 'input_select/select_option',
+                            entity_id = mode_entity,
+                            option = 'Manual'
+                        )
+
+                    else:
+                        self.log("{}: Setting auto-brightness - {}% over {} seconds".format(friendly_name, round(target_percent, 2), transition))
+                        self.turn_on(
+                            entity_id,
+                            brightness_pct = target_percent,
+                            transition = transition
+                        )
+                        setting['setpoint'] = target_percent
+
+
+    def presence_cb(self, entity, attribute, old, new, kwargs):
+        # Testing only: only use motion-activated lighting if Diana isn't home
+        if self.get_state('device_tracker.diana_pixel2') == 'not_home':
+            light_entity = kwargs.get('light_entity')
+            light_friendly = self.friendly_name(light_entity)
+            light_state = self.get_state(light_entity)
+
+            self.log('{} - {}, {}, {}'.format(entity, attribute, old, new))
+
+            # Turn on light if it's off and presence is detected (and vice-versa)
+            if new == 'on' and light_state == 'off':
+                self.turn_on(light_entity)
+                self.log('{}: Turning on, presence detected.'.format(light_friendly))
+            elif new == 'off' and light_state == 'on':
+                self.turn_off(light_entity)
+                self.log('{}: Turning off, no presence detected.'.format(light_friendly))
