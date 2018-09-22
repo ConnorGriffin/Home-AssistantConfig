@@ -466,14 +466,14 @@ class Lights(hass.Hass):
 
 
     def presence_cb(self, entity, attribute, old, new, kwargs):
+        light_entity = kwargs.get('light_entity')
+        light_friendly = self.friendly_name(light_entity)
+        light_state = self.get_state(light_entity)
+
         # Testing only: only use motion-activated lighting if Diana isn't home
-        if self.get_state('device_tracker.diana_pixel2') == 'not_home':
-            light_entity = kwargs.get('light_entity')
-            light_friendly = self.friendly_name(light_entity)
-            light_state = self.get_state(light_entity)
-
-            self.log('{} - {}, {}, {}'.format(entity, attribute, old, new))
-
+        if self.get_state('device_tracker.diana_pixel2') == 'home':
+            self.log('{}: No action taken, Diana is home.'.format(light_friendly))
+        else:
             # Turn on light if it's off and presence is detected (and vice-versa)
             if new == 'on' and light_state == 'off':
                 self.turn_on(light_entity)
