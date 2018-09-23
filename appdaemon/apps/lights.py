@@ -20,12 +20,16 @@ class Lights(hass.Hass):
                 light_friendly = self.friendly_name(light_entity)
                 mode_entity = 'input_select.{}_mode'.format(entity_id)
                 motion_sensor = entity.get('motion_sensor', None)
+                humidity_sensor = entity.get('humidity_sensor', None)
+                humidity_threshold = entity.get('humidity_threshold', None)
                 on_delay = entity.get('on_delay', self.args['default_on_delay'])
                 off_delay = entity.get('off_delay', self.args['default_off_delay'])
 
                 # Initialize the global settings for each entity
                 self.global_vars['lights'][light_entity] = {
                     'override':       None,
+                    'prev_override':  None,
+                    'next_action':    None,
                     'setpoint':       0,
                     'mode':           self.get_state(mode_entity),
                     'max_brightness': entity.get('max_brightness', self.args['default_max_brightness']),
@@ -92,6 +96,16 @@ class Lights(hass.Hass):
                         light_entity = light_entity,
                         new = 'off',
                         duration = off_delay
+                    )
+
+                # Humidity detection (keep light on if showering)
+                if humidity_sensor and humidity_threshold:
+                    self.log("Monitoring {} for humidity threshold of {}%.".format(light_friendly, humidity_threshold), "INFO")
+                    self.listen_state(
+                        cb = self.humidity_cb,
+                        entity = humidity_sensor,
+                        light_entity = light_entity,
+                        humidity_threshold = humidity_threshold
                     )
 
                 # Set auto-brightness once on startup
@@ -330,8 +344,11 @@ class Lights(hass.Hass):
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
         # TODO: Either reset the dropdown to 'Automatic' here, or implement persistent state/settings
-        self.global_vars['lights'][entity]['override'] = None
-        self.global_vars['lights'][entity]['setpoint'] = 0
+        setting = self.global_vars['lights'][entity]
+        setting['override'] = None
+        setting['prev_override'] = None
+        setting['next_action'] = None
+        setting['setpoint'] = 0
         self.set_state(entity, state = 'off', attributes = {"brightness": 0})
 
         light_friendly = self.friendly_name(entity)
@@ -439,7 +456,7 @@ class Lights(hass.Hass):
                         else:
                             target_percent = this_schedule_pct - ((between_schedule['since_start'].total_seconds() + transition) * bright_per_second)
 
-                    # don't eval any ore schedules
+                    # don't eval any more schedules
                     break
 
             # set brightness if a schedule was matched and the percent has changed since the last auto-brightness run
@@ -447,7 +464,7 @@ class Lights(hass.Hass):
             if target_percent:
                 last_percent = setting.get('setpoint')
                 if last_percent != target_percent:
-                    if check_current_brightness and abs(last_percent - current_brightness_pct) > abs(last_percent - target_percent):
+                    if check_current_brightness and abs(last_percent - current_brightness_pct) > 3:
                         self.log('{}: Brightness changed manually, not moving'.format(friendly_name))
                         self.call_service(
                             service = 'input_select/select_option',
@@ -469,15 +486,47 @@ class Lights(hass.Hass):
         light_entity = kwargs.get('light_entity')
         light_friendly = self.friendly_name(light_entity)
         light_state = self.get_state(light_entity)
+        setting = self.global_vars['lights'][light_entity]
 
         # Testing only: only use motion-activated lighting if Diana isn't home
-        if self.get_state('device_tracker.diana_pixel2') == 'home':
-            self.log('{}: No action taken, Diana is home.'.format(light_friendly))
-        else:
-            # Turn on light if it's off and presence is detected (and vice-versa)
-            if new == 'on' and light_state == 'off':
+        #if self.get_state('device_tracker.diana_pixel2') == 'not_home':
+        #    self.log('{}: No action taken, Diana is home.'.format(light_friendly))
+        #else:
+        # Turn on light if it's off and presence is detected (and vice-versa)
+        if new == 'on' and light_state == 'off':
+            self.turn_on(light_entity)
+            self.log('{}: Turning on, presence detected.'.format(light_friendly))
+        elif new == 'off' and light_state == 'on':
+            if setting['override'] == 'showering':
+                setting['next_action'] = 'turn_off'
+                self.log('{}: Turning off when humidity drops below threshold.'.format(light_friendly))
+            else:
+                self.turn_off(light_entity)
+                self.log('{}: Turning off, no presence detected.'.format(light_friendly))
+        elif new == 'on' and light_state == 'on' and setting['override'] == 'showering' and setting['next_action'] == 'turn_off':
+            setting['next_action'] = None
+            self.log('{}: Cancelling next action (humidity turn off), presence detected.'.format(light_friendly))
+
+    # Keep the lights on if someone is showering
+    def humidity_cb(self, entity, attribute, old, new, kwargs):
+        light_entity = kwargs.get('light_entity')
+        humidity_threshold = kwargs.get('humidity_threshold')
+        light_friendly = self.friendly_name(light_entity)
+        light_state = self.get_state(light_entity)
+        setting = self.global_vars['lights'][light_entity]
+
+        # When we've started showering store the previous override, set the current override to 'showering', and turn on the lights
+        # When we're done showering revert to the previous override setting
+        if float(new) >= humidity_threshold and setting['override'] != 'showering':
+            setting['prev_override'] = setting['override']
+            setting['override'] = 'showering'
+            if light_state == 'off':
                 self.turn_on(light_entity)
-                self.log('{}: Turning on, presence detected.'.format(light_friendly))
-            elif new == 'off' and light_state == 'on':
+            self.log('{}: Shower is running, turning on lights and ignoring motion detection.'.format(light_friendly))
+        elif float(new) < humidity_threshold and setting['override'] == 'showering':
+            setting['override'] = setting['prev_override']
+            setting['prev_override'] = 'showering'
+            self.log('{}: Shower is no longer running, resuming motion detection.'.format(light_friendly))
+            if setting['next_action'] == 'turn_off':
                 self.turn_off(light_entity)
                 self.log('{}: Turning off, no presence detected.'.format(light_friendly))

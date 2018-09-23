@@ -32,7 +32,9 @@ lights:
     - name: bathroom_light
       min_brightness: 15
       motion_sensor: binary_sensor.bathroom_motion
-      off_delay: 330 # +30 built into sensor
+      humidity_sensor: sensor.bathroom_relative_humidity
+      humidity_threshold: 70
+      off_delay: 450 # +30 built into sensor
       on_delay: 0
 
     - name: hallway_light
@@ -134,3 +136,4 @@ install_dependencies:
   priority: 0
   packages:
     - lxml
+    - responses
