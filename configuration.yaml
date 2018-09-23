@@ -29,6 +29,20 @@ cloud:
       include_domains:
         - light
         - lock
+        - climate
+        - media_player
+        - input_select
+      include_entities:
+        - group.inside_lights
+        - group.inside_lights_except_bedroom
+        - input_boolean.light_brightness_automation
+        - input_boolean.light_double_tap_automation
+        - input_boolean.light_presence_automation
+        - input_boolean.alarm_clock_automation
+        - input_boolean.ecobee_auto_home_away
+        - input_boolean.room_presence
+        - input_boolean.low_battery_alert
+
 
 http:
   # Secrets are defined in the file secrets.yaml
@@ -107,22 +121,22 @@ zwave:
   device_config:
     light.connors_office_light:
       polling_intensity: 1
-      refresh_value: true
+      #refresh_value: true
     light.bedroom_light:
       polling_intensity: 1
-      refresh_value: true
+      #refresh_value: true
     light.dianas_office_light:
       polling_intensity: 1
-      refresh_value: true
+      #refresh_value: true
     light.hallway_light:
       polling_intensity: 1
-      refresh_value: true
+      #refresh_value: true
     light.dining_room_light:
       polling_intensity: 1
-      refresh_value: true
+      #refresh_value: true
     light.bathroom_light:
       polling_intensity: 1
-      refresh_value: true
+      #refresh_value: true
 
 device_tracker:
   - platform: nmap_tracker
