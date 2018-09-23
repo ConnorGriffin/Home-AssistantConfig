@@ -2,7 +2,6 @@
 lights:
   module: lights
   class: Lights
-  constrain_input_boolean: input_boolean.light_automation
   default_max_brightness: 100
   default_min_brightness: 10
   default_on_delay: 0

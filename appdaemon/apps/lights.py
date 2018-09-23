@@ -42,7 +42,8 @@ class Lights(hass.Hass):
                     self.double_tap_cb,
                     "zwave.node_event",
                     entity_id = zwave_entity,
-                    light_entity = light_entity
+                    light_entity = light_entity,
+                    constrain_input_boolean = 'input_boolean.light_double_tap_automation'
                 )
 
                 # Listen for light getting turned off
@@ -88,14 +89,16 @@ class Lights(hass.Hass):
                         entity = motion_sensor,
                         light_entity = light_entity,
                         new = 'on',
-                        duration = on_delay
+                        duration = on_delay,
+                        constrain_input_boolean = 'input_boolean.light_presence_automation'
                     )
                     self.listen_state(
                         cb = self.presence_cb,
                         entity = motion_sensor,
                         light_entity = light_entity,
                         new = 'off',
-                        duration = off_delay
+                        duration = off_delay,
+                        constrain_input_boolean = 'input_boolean.light_presence_automation'
                     )
 
                 # Humidity detection (keep light on if showering)
@@ -105,7 +108,8 @@ class Lights(hass.Hass):
                         cb = self.humidity_cb,
                         entity = humidity_sensor,
                         light_entity = light_entity,
-                        humidity_threshold = humidity_threshold
+                        humidity_threshold = humidity_threshold,
+                        constrain_input_boolean = 'input_boolean.light_presence_automation'
                     )
 
                 # Set auto-brightness once on startup
@@ -370,6 +374,9 @@ class Lights(hass.Hass):
 
     # Set brightness automatically based on schedule
     def auto_brightness_cb(self, kwargs):
+        if self.get_state('input_boolean.light_brightness_automation') == 'off':
+            return None
+
         entity_id = kwargs.get('entity_id')
         immediate = kwargs.get('immediate')
         source = kwargs.get('source', None)
@@ -392,7 +399,7 @@ class Lights(hass.Hass):
 
         # Set auto-brightness if light is on and no override exists
         # state flip-flops when light is first turned on, use the source to ignore state
-        if (state == 'on' or source in ['turned_on_cb', 'set_override']) and not setting['override']:
+        if (state == 'on' or source in ['turned_on_cb', 'set_override', 'presence']) and not setting['override']:
             # Get the brightness schedule from the setting dict
             for entity in self.args['entities']:
                 if entity['name'] == entity_id.split('.')[1]:
@@ -494,7 +501,11 @@ class Lights(hass.Hass):
         #else:
         # Turn on light if it's off and presence is detected (and vice-versa)
         if new == 'on' and light_state == 'off':
-            self.turn_on(light_entity)
+            # If light is off, turn on with auto_brightness unless auto brightness is disabled
+            if self.get_state('input_boolean.light_brightness_automation') == 'on':
+                self.auto_brightness_cb(dict(entity_id=light_entity, source='presence'))
+            else:
+                self.turn_on(light_entity)
             self.log('{}: Turning on, presence detected.'.format(light_friendly))
         elif new == 'off' and light_state == 'on':
             if setting['override'] == 'showering':
@@ -521,7 +532,11 @@ class Lights(hass.Hass):
             setting['prev_override'] = setting['override']
             setting['override'] = 'showering'
             if light_state == 'off':
-                self.turn_on(light_entity)
+                # If light is off, turn on with auto_brightness unless auto brightness is disabled
+                if self.get_state('input_boolean.light_brightness_automation') == 'on':
+                    self.auto_brightness_cb(dict(entity_id=light_entity, source='presence'))
+                else:
+                    self.turn_on(light_entity)
             self.log('{}: Shower is running, turning on lights and ignoring motion detection.'.format(light_friendly))
         elif float(new) < humidity_threshold and setting['override'] == 'showering':
             setting['override'] = setting['prev_override']
