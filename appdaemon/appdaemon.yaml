@@ -17,6 +17,9 @@ appdaemon:
       type: hass
       ha_url: !secret base_url
       ha_key: !secret http_password
+  opnsense:
+    api_key: !secret opnsense_api_key
+    api_secret: !secret opnsense_api_secret
 hadashboard:
   dash_url: !secret hadash_url
   dash_dir: /conf/dashboards

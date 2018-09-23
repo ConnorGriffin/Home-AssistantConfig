@@ -11,7 +11,7 @@ class InstallDeps(hass.Hass):
                 self.log('{} already installed'.format(package))
             except ImportError:
                 self.install(package)
-    
+
 
     def install(self, package):
         self.log('Installing {}'.format(package))
