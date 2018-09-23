@@ -27,7 +27,6 @@ views:
           - entity: sensor.bedroom_temperature
             name: Temperature
 
-
       - title: Connor's Office
         type: entities
         show_header_toggle: false
@@ -89,6 +88,9 @@ views:
             name: Light
           - entity: input_select.bathroom_light_mode
             name: Light Mode
+          - binary_sensor.bathroom_motion
+          - sensor.bathroom_luminance
+          - sensor.bathroom_relative_humidity
 
       - title: Lights
         type: entities
@@ -101,7 +103,9 @@ views:
       - title: Automations
         type: entities
         entities:
-          - input_boolean.light_automation
+          - input_boolean.light_brightness_automation
+          - input_boolean.light_double_tap_automation
+          - input_boolean.light_presence_automation
           - input_boolean.alarm_clock_automation
           - input_boolean.ecobee_auto_home_away
           - input_boolean.room_presence
@@ -225,12 +229,9 @@ views:
       - title: Aeotec MultiSensor 01
         type: entities
         entities:
-          - binary_sensor.bathroom_motion
           - sensor.bathroom_alarm_level
           - sensor.bathroom_alarm_type
           - sensor.bathroom_burglar
-          - sensor.bathroom_luminance
-          - sensor.bathroom_relative_humidity
           - sensor.bathroom_sourcenodeid
           - sensor.bathroom_temperature
           - sensor.bathroom_ultraviolet
