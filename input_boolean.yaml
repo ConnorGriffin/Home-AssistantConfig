@@ -6,8 +6,16 @@ room_presence:
   name: Room Presence Detection
   icon: mdi:home-map-marker
 
-light_automation:
-  name: Light Automation
+light_brightness_automation:
+  name: Light Brightness Automation
+  icon: mdi:lightbulb
+
+light_double_tap_automation:
+  name: Light Double Tap Automation
+  icon: mdi:lightbulb
+
+light_presence_automation:
+  name: Light Presence Automation
   icon: mdi:lightbulb
 
 alarm_clock_automation:
