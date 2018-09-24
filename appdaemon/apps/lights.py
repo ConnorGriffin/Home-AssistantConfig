@@ -1,6 +1,27 @@
 import appdaemon.plugins.hass.hassapi as hass
 import datetime
 
+class Testing(hass.Hass):
+
+    def initialize(self):
+        self.listen_state(
+            self.state_log,
+            entity = 'light.bathroom_light'
+        )
+        self.listen_state(
+            self.state_log,
+            entity = 'light.connors_office_light'
+        )
+        self.listen_state(
+            self.state_log,
+            entity = 'light.dining_room_light'
+        )
+
+
+    def state_log(self, entity, attribute, old, new, kwargs):
+        self.log('{} - {}: old: {}, new: {}'.format(entity, attribute, old, new))
+
+
 class Lights(hass.Hass):
 
     def initialize(self):
@@ -52,7 +73,7 @@ class Lights(hass.Hass):
                     self.turned_off_cb,
                     entity = light_entity,
                     new = 'off',
-                    old = 'on'
+                    duration = 2
                 )
 
                 # Listen for light getting turned on
@@ -61,7 +82,7 @@ class Lights(hass.Hass):
                     self.turned_on_cb,
                     entity = light_entity,
                     new = 'on',
-                    old = 'off'
+                    duration = 2
                 )
 
                 # Set auto-brightness every 5 minutes if light is on and mode is Automatic
@@ -366,8 +387,8 @@ class Lights(hass.Hass):
 
         # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
         self.auto_brightness_cb(dict(
-            entity_id=entity,
-            source='turned_on_cb',
+            entity_id = entity,
+            source = 'turned_on_cb',
             immediate = True
         ))
 

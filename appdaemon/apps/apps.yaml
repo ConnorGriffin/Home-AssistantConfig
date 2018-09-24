@@ -1,4 +1,8 @@
 ---
+testing:
+  module: lights
+  class: Testing
+
 lights:
   module: lights
   class: Lights
@@ -33,7 +37,7 @@ lights:
       motion_sensor: binary_sensor.bathroom_motion
       humidity_sensor: sensor.bathroom_relative_humidity
       humidity_threshold: 70
-      off_delay: 450 # +30 built into sensor
+      off_delay: 270 # +30 built into sensor
       on_delay: 0
 
     - name: hallway_light

@@ -118,25 +118,25 @@ ecobee:
 zwave:
   usb_path: /dev/ttyACM0
   network_key: !secret zwave_network_key
-  device_config:
-    light.connors_office_light:
-      polling_intensity: 1
-      #refresh_value: true
-    light.bedroom_light:
-      polling_intensity: 1
-      #refresh_value: true
-    light.dianas_office_light:
-      polling_intensity: 1
-      #refresh_value: true
-    light.hallway_light:
-      polling_intensity: 1
-      #refresh_value: true
-    light.dining_room_light:
-      polling_intensity: 1
-      #refresh_value: true
-    light.bathroom_light:
-      polling_intensity: 1
-      #refresh_value: true
+  #device_config:
+    #light.connors_office_light:
+    #  polling_intensity: 1
+    #  refresh_value: true
+    #light.bedroom_light:
+    #  polling_intensity: 1
+    #  refresh_value: true
+    #light.dianas_office_light:
+    #  polling_intensity: 1
+    #  refresh_value: true
+    #light.hallway_light:
+    #  polling_intensity: 1
+    #  refresh_value: true
+    #light.dining_room_light:
+    #  polling_intensity: 1
+    #  refresh_value: true
+    #light.bathroom_light:
+    #  polling_intensity: 1
+    #  refresh_value: true
 
 device_tracker:
   - platform: nmap_tracker
