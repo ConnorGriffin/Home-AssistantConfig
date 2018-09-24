@@ -4,18 +4,11 @@ import datetime
 class Testing(hass.Hass):
 
     def initialize(self):
-        self.listen_state(
-            self.state_log,
-            entity = 'light.bathroom_light'
-        )
-        self.listen_state(
-            self.state_log,
-            entity = 'light.connors_office_light'
-        )
-        self.listen_state(
-            self.state_log,
-            entity = 'light.dining_room_light'
-        )
+        for entity in self.args["entities"]:
+            self.listen_state(
+                self.state_log,
+                entity = entity
+            )
 
 
     def state_log(self, entity, attribute, old, new, kwargs):
