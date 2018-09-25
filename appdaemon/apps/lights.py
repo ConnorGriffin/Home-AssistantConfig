@@ -509,10 +509,6 @@ class Lights(hass.Hass):
         light_state = self.get_state(light_entity)
         setting = self.global_vars['lights'][light_entity]
 
-        # Testing only: only use motion-activated lighting if Diana isn't home
-        #if self.get_state('device_tracker.diana_pixel2') == 'not_home':
-        #    self.log('{}: No action taken, Diana is home.'.format(light_friendly))
-        #else:
         # Turn on light if it's off and presence is detected (and vice-versa)
         if new == 'on' and light_state == 'off':
             # If light is off, turn on with auto_brightness unless auto brightness is disabled
@@ -523,11 +519,15 @@ class Lights(hass.Hass):
             self.log('{}: Turning on, presence detected.'.format(light_friendly))
         elif new == 'off' and light_state == 'on':
             if setting['override'] == 'showering':
-                setting['next_action'] = 'turn_off'
-                self.log('{}: Turning off when humidity drops below threshold.'.format(light_friendly))
+                # Testing only, don't auto turn-off if Diana is home
+                if self.get_state('device_tracker.diana_pixel2') == 'not_home':
+                    setting['next_action'] = 'turn_off'
+                    self.log('{}: Turning off when humidity drops below threshold.'.format(light_friendly))
             else:
-                self.turn_off(light_entity)
-                self.log('{}: Turning off, no presence detected.'.format(light_friendly))
+                # Testing only, don't auto turn-off if Diana is home
+                if self.get_state('device_tracker.diana_pixel2') == 'not_home':
+                    self.turn_off(light_entity)
+                    self.log('{}: Turning off, no presence detected.'.format(light_friendly))
         elif new == 'on' and light_state == 'on' and setting['override'] == 'showering' and setting['next_action'] == 'turn_off':
             setting['next_action'] = None
             self.log('{}: Cancelling next action (humidity turn off), presence detected.'.format(light_friendly))

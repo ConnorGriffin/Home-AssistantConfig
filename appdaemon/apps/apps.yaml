@@ -38,8 +38,8 @@ lights:
       min_brightness: 15
       motion_sensor: binary_sensor.bathroom_motion
       humidity_sensor: sensor.bathroom_relative_humidity
-      humidity_threshold: 70
-      off_delay: 270 # +30 built into sensor
+      humidity_threshold: 65
+      off_delay: 400 # +30 built into sensor
       on_delay: 0
 
     - name: hallway_light
