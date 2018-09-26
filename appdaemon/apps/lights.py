@@ -36,8 +36,10 @@ class Lights(hass.Hass):
                 motion_sensor = entity.get('motion_sensor', None)
                 humidity_sensor = entity.get('humidity_sensor', None)
                 humidity_threshold = entity.get('humidity_threshold', None)
-                on_delay = entity.get('on_delay', self.args['default_on_delay'])
-                off_delay = entity.get('off_delay', self.args['default_off_delay'])
+                on_delay = entity.get('on_delay', self.args['on_delay'])
+                off_delay = entity.get('off_delay', self.args['off_delay'])
+                on_threshold = entity.get('on_threshold', self.args['on_threshold'])
+                off_threshold = entity.get('off_threshold', self.args['off_threshold'])
 
                 # Initialize the global settings for each entity
                 self.global_vars['lights'][light_entity] = {
@@ -46,8 +48,8 @@ class Lights(hass.Hass):
                     'next_action':    None,
                     'setpoint':       0,
                     'mode':           self.get_state(mode_entity),
-                    'max_brightness': entity.get('max_brightness', self.args['default_max_brightness']),
-                    'min_brightness': entity.get('min_brightness', self.args['default_min_brightness'])
+                    'max_brightness': entity.get('max_brightness', self.args['max_brightness']),
+                    'min_brightness': entity.get('min_brightness', self.args['min_brightness'])
                 }
 
                 # Listen for double taps
@@ -65,8 +67,7 @@ class Lights(hass.Hass):
                 self.listen_state(
                     self.turned_off_cb,
                     entity = light_entity,
-                    new = 'off',
-                    duration = 2
+                    new = 'off'
                 )
 
                 # Listen for light getting turned on
@@ -417,7 +418,7 @@ class Lights(hass.Hass):
             # Get the brightness schedule from the setting dict
             for entity in self.args['entities']:
                 if entity['name'] == entity_id.split('.')[1]:
-                    schedule = entity.get('brightness_schedule', self.args['default_brightness_schedule'])
+                    schedule = entity.get('brightness_schedule', self.args['brightness_schedule'])
 
             # Iterate for each item in the schedule, set i = item index, determine the brightness to use
             for i in range(len(schedule)):

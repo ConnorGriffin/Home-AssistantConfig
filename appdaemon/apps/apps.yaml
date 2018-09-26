@@ -17,11 +17,20 @@ lock:
 lights:
   module: lights
   class: Lights
-  default_max_brightness: 100
-  default_min_brightness: 10
-  default_on_delay: 0
-  default_off_delay: 15
-  default_brightness_schedule:
+  # These defaults can be overridden at the entity level
+  # Brightness defaults (used in double-taps and schedules)
+  max_brightness: 100
+  min_brightness: 10
+
+  # How long after detecting presence before turning on/off
+  on_delay: 0
+  off_delay: 15
+
+  # How long a light needs to be on/off before another on/off state will be listened for, deals with buggy GE dimmer reporting
+  on_threshold: 3
+  off_threshold: 5
+
+  brightness_schedule:
     - pct: 75
       start: '9:00:00'
       end: '10:00:00'
@@ -37,6 +46,7 @@ lights:
     - pct: min_brightness
       start: '00:00:00'
       end: '06:00:00'
+
   entities:
     - name: connors_office_light
 
