@@ -5,6 +5,15 @@ testing:
   entities:
     #- light.connors_office_light
 
+lock:
+  module: lock
+  class: Lock
+  connor_tracker: device_tracker.connor_galaxys8
+  diana_tracker: device_tracker.diana_pixel2
+  not_home_duration: 5
+  lock_entity: lock.front_door_lock
+
+
 lights:
   module: lights
   class: Lights
