@@ -10,7 +10,6 @@ class Testing(hass.Hass):
                 entity = entity
             )
 
-
     def state_log(self, entity, attribute, old, new, kwargs):
         self.log('{} - {}: old: {}, new: {}'.format(entity, attribute, old, new))
 
@@ -53,7 +52,6 @@ class Lights(hass.Hass):
                 }
 
                 # Listen for double taps
-                self.log("Monitoring {} for double tap.".format(light_friendly), "INFO")
                 self.listen_event(
                     self.double_tap_cb,
                     "zwave.node_event",
@@ -62,22 +60,26 @@ class Lights(hass.Hass):
                     constrain_input_boolean = 'input_boolean.light_double_tap_automation'
                 )
 
-                # Listen for light getting turned off
-                self.log("Monitoring {} for turn off.".format(light_friendly), "INFO")
-                self.listen_state(
-                    self.turned_off_cb,
-                    entity = light_entity,
-                    new = 'off'
-                )
-
-                # Listen for light getting turned on
-                self.log("Monitoring {} for turn on.".format(light_friendly), "INFO")
-                self.listen_state(
-                    self.turned_on_cb,
-                    entity = light_entity,
-                    new = 'on',
-                    duration = 2
-                )
+                # Check if the light is on or off at init, arm the appropriate callback
+                state = self.get_state(light_entity)
+                if state == 'on':
+                    self.log('Listening for {} to turn off.'.format(light_friendly))
+                    self.listen_state(
+                        self.turned_off_cb,
+                        entity = light_entity,
+                        new = 'off',
+                        on_threshold = on_threshold,
+                        off_threshold = off_threshold
+                    )
+                elif state == 'off':
+                    self.log('Listening for {} to turn on.'.format(light_friendly))
+                    self.listen_state(
+                        self.turned_on_cb,
+                        entity = light_entity,
+                        new = 'on',
+                        on_threshold = on_threshold,
+                        off_threshold = on_threshold
+                    )
 
                 # Set auto-brightness every 5 minutes if light is on and mode is Automatic
                 self.run_every(
@@ -90,7 +92,6 @@ class Lights(hass.Hass):
                 )
 
                 # Listen for mode dropdown changes
-                self.log("Monitoring {} for mode dropdown changes.".format(light_friendly), "INFO")
                 self.listen_state(
                     self.mode_dropdown_cb,
                     entity = mode_entity
@@ -360,24 +361,82 @@ class Lights(hass.Hass):
             self.log('{}: Double tapped {}'.format(light_friendly, direction))
 
 
+    # Used to arm the turned_off and turned_on callbacks after a delay
+    def arm_cb(self, entity, attribute, old, new, kwargs):
+        # Cancel listening (doing this because oneshots don't work)
+        self.cancel_listen_state(kwargs['handle'])
+
+        target_cb = kwargs.get('target_cb')
+        on_threshold = kwargs.get('on_threshold')
+        off_threshold = kwargs.get('off_threshold')
+
+        if target_cb == 'turned_on_cb':
+            # Wait for the light to get turned on, trigger immediately
+            self.listen_state(
+                cb = self.turned_on_cb,
+                entity = entity,
+                new = 'on',
+                on_threshold = on_threshold,
+                off_threshold = off_threshold
+            )
+        elif target_cb == "turned_off_cb":
+            # Wait for the light to get turned off, trigger immediately
+            self.listen_state(
+                cb = self.turned_off_cb,
+                entity = entity,
+                new = 'off',
+                on_threshold = on_threshold,
+                off_threshold = off_threshold
+            )
+
+        self.log('{}: armed {}'.format(self.friendly_name(entity), target_cb))
+
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
-        # TODO: Either reset the dropdown to 'Automatic' here, or implement persistent state/settings
+        # Cancel listening (doing this because oneshots don't work)
+        self.cancel_listen_state(kwargs['handle'])
+
+        on_threshold = kwargs.get('on_threshold')
+        off_threshold = kwargs.get('off_threshold')
+        light_friendly = self.friendly_name(entity)
+
+        # Reset light settings
         setting = self.global_vars['lights'][entity]
         setting['override'] = None
         setting['prev_override'] = None
         setting['next_action'] = None
         setting['setpoint'] = 0
-        self.set_state(entity, state = 'off', attributes = {"brightness": 0})
 
-        light_friendly = self.friendly_name(entity)
+        # Reset mode dropdown
+        mode_entity = 'input_select.{}_mode'.format(entity.split('.')[1])
+        self.call_service(
+            service = 'input_select/select_option',
+            entity_id = mode_entity,
+            option = 'Automatic'
+        )
+
+        # Arm the turned_on_cb after light has been off for a set duration
+        self.listen_state(
+            cb = self.arm_cb,
+            entity = entity,
+            new = 'off',
+            duration = off_threshold,
+            target_cb = 'turned_on_cb',
+            on_threshold = on_threshold,
+            off_threshold = off_threshold
+        )
+
         self.log('{}: Turned off'.format(light_friendly))
 
 
     # Call auto_brightness_cb when a light is turned on
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
+        # Cancel listening (doing this because oneshots don't work)
+        self.cancel_listen_state(kwargs['handle'])
+
+        on_threshold = kwargs.get('on_threshold')
+        off_threshold = kwargs.get('off_threshold')
         light_friendly = self.friendly_name(entity)
-        self.log('{}: Turned on'.format(light_friendly))
 
         # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
         self.auto_brightness_cb(dict(
@@ -385,6 +444,19 @@ class Lights(hass.Hass):
             source = 'turned_on_cb',
             immediate = True
         ))
+
+        self.log('{}: Turned on'.format(light_friendly))
+
+        # Arm the turned_off_cb after light has been on for a set duration
+        self.listen_state(
+            cb = self.arm_cb,
+            entity = entity,
+            new = 'on',
+            duration = on_threshold,
+            target_cb = 'turned_off_cb',
+            on_threshold = on_threshold,
+            off_threshold = off_threshold
+        )
 
 
     # Set brightness automatically based on schedule
