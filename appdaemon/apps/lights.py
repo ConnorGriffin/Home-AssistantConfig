@@ -45,6 +45,7 @@ class Lights(hass.Hass):
                     'override':       None,
                     'prev_override':  None,
                     'next_action':    None,
+                    'armed_cb':       None,
                     'setpoint':       0,
                     'mode':           self.get_state(mode_entity),
                     'max_brightness': entity.get('max_brightness', self.args['max_brightness']),
@@ -78,8 +79,30 @@ class Lights(hass.Hass):
                         entity = light_entity,
                         new = 'on',
                         on_threshold = on_threshold,
-                        off_threshold = on_threshold
+                        off_threshold = off_threshold
                     )
+
+                # Arm the turned_on_cb after light has been off for a set duration
+                self.listen_state(
+                    cb = self.arm_cb,
+                    entity = light_entity,
+                    new = 'off',
+                    duration = off_threshold,
+                    target_cb = 'turned_on_cb',
+                    on_threshold = on_threshold,
+                    off_threshold = off_threshold
+                )
+
+                # Arm the turned_off_cb after light has been on for a set duration
+                self.listen_state(
+                    cb = self.arm_cb,
+                    entity = light_entity,
+                    new = 'on',
+                    duration = on_threshold,
+                    target_cb = 'turned_off_cb',
+                    on_threshold = on_threshold,
+                    off_threshold = off_threshold
+                )
 
                 # Set auto-brightness every 5 minutes if light is on and mode is Automatic
                 self.run_every(
@@ -364,13 +387,14 @@ class Lights(hass.Hass):
     # Used to arm the turned_off and turned_on callbacks after a delay
     def arm_cb(self, entity, attribute, old, new, kwargs):
         # Cancel listening (doing this because oneshots don't work)
-        self.cancel_listen_state(kwargs['handle'])
-
+        #self.cancel_listen_state(kwargs['handle'])
+        setting = self.global_vars['lights'][entity]
         target_cb = kwargs.get('target_cb')
         on_threshold = kwargs.get('on_threshold')
         off_threshold = kwargs.get('off_threshold')
 
-        if target_cb == 'turned_on_cb':
+        if target_cb == 'turned_on_cb' and setting['armed_cb'] != 'turned_on_cb':
+            setting['armed_cb'] = 'turned_on_cb'
             # Wait for the light to get turned on, trigger immediately
             self.listen_state(
                 cb = self.turned_on_cb,
@@ -379,7 +403,9 @@ class Lights(hass.Hass):
                 on_threshold = on_threshold,
                 off_threshold = off_threshold
             )
-        elif target_cb == "turned_off_cb":
+            self.log('{}: armed {}'.format(self.friendly_name(entity), target_cb))
+        elif target_cb == "turned_off_cb" and setting['armed_cb'] != 'turned_off_cb':
+            setting['armed_cb'] = 'turned_off_cb'
             # Wait for the light to get turned off, trigger immediately
             self.listen_state(
                 cb = self.turned_off_cb,
@@ -388,8 +414,7 @@ class Lights(hass.Hass):
                 on_threshold = on_threshold,
                 off_threshold = off_threshold
             )
-
-        self.log('{}: armed {}'.format(self.friendly_name(entity), target_cb))
+            self.log('{}: armed {}'.format(self.friendly_name(entity), target_cb))
 
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
@@ -415,17 +440,6 @@ class Lights(hass.Hass):
             option = 'Automatic'
         )
 
-        # Arm the turned_on_cb after light has been off for a set duration
-        self.listen_state(
-            cb = self.arm_cb,
-            entity = entity,
-            new = 'off',
-            duration = off_threshold,
-            target_cb = 'turned_on_cb',
-            on_threshold = on_threshold,
-            off_threshold = off_threshold
-        )
-
         self.log('{}: Turned off'.format(light_friendly))
 
 
@@ -446,17 +460,6 @@ class Lights(hass.Hass):
         ))
 
         self.log('{}: Turned on'.format(light_friendly))
-
-        # Arm the turned_off_cb after light has been on for a set duration
-        self.listen_state(
-            cb = self.arm_cb,
-            entity = entity,
-            new = 'on',
-            duration = on_threshold,
-            target_cb = 'turned_off_cb',
-            on_threshold = on_threshold,
-            off_threshold = off_threshold
-        )
 
 
     # Set brightness automatically based on schedule

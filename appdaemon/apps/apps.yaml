@@ -1,9 +1,9 @@
 ---
-testing:
-  module: lights
-  class: Testing
-  entities:
-    - light.connors_office_light
+#testing:
+#  module: lights
+#  class: Testing
+#  entities:
+#    - light.connors_office_light
 
 lock:
   module: lock
@@ -27,8 +27,8 @@ lights:
   off_delay: 15
 
   # How long a light needs to be on/off before another on/off state will be listened for, deals with buggy GE dimmer reporting
-  on_threshold: 5
-  off_threshold: 5
+  on_threshold: 3
+  off_threshold: 3
 
   brightness_schedule:
     - pct: 75
