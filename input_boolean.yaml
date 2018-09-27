@@ -8,15 +8,15 @@ room_presence:
 
 light_brightness_automation:
   name: Light Brightness Automation
-  icon: mdi:lightbulb
+  icon: mdi:lightbulb-on
 
 light_double_tap_automation:
   name: Light Double Tap Automation
-  icon: mdi:lightbulb
+  icon: mdi:light-switch
 
 light_presence_automation:
   name: Light Presence Automation
-  icon: mdi:lightbulb
+  icon: mdi:track-light
 
 alarm_clock_automation:
   name: Alarm Clock Automation
@@ -25,6 +25,11 @@ alarm_clock_automation:
 low_battery_alert:
   name: Z-Wave Low Battery Alert
   icon: mdi:battery-alert
+
+smart_unlock_automation:
+  name: Smart Unlock Automation
+  icon: mdi:lock-open
+
 
 # region alarms
 alarm1_enabled:

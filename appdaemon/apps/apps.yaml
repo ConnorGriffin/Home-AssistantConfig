@@ -8,10 +8,15 @@
 lock:
   module: lock
   class: Lock
-  connor_tracker: device_tracker.connor_galaxys8
-  diana_tracker: device_tracker.diana_pixel2
-  not_home_duration: 5
+  trackers:
+    - tracker: device_tracker.connor_galaxys8
+      notify_name: simplepush_connor
+    - tracker: device_tracker.diana_pixel2
+      #notify_name: simplepush_diana
+  # Time in seconds before arming the auto-unlock
+  not_home_duration: 1 #300
   lock_entity: lock.front_door_lock
+  constrain_input_boolean: input_boolean.smart_unlock_automation
 
 
 lights:
