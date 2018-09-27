@@ -14,7 +14,7 @@ lock:
     - tracker: device_tracker.diana_pixel2
       #notify_name: simplepush_diana
   # Time in seconds before arming the auto-unlock
-  not_home_duration: 1 #300
+  not_home_duration: 300
   lock_entity: lock.front_door_lock
   constrain_input_boolean: input_boolean.smart_unlock_automation
 
