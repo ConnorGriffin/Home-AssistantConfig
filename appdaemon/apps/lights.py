@@ -561,7 +561,7 @@ class Lights(hass.Hass):
             if target_percent:
                 last_percent = setting.get('setpoint')
                 if last_percent != target_percent:
-                    if check_current_brightness and abs(last_percent - current_brightness_pct) > 3:
+                    if check_current_brightness and abs(last_percent - current_brightness_pct) > 4:
                         self.log('{}: Brightness changed manually, not moving'.format(friendly_name))
                         self.call_service(
                             service = 'input_select/select_option',
