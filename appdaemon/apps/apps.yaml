@@ -9,9 +9,11 @@ lock:
   module: lock
   class: Lock
   trackers:
-    - tracker: device_tracker.connor_galaxys8
+    - name: Connor
+      tracker: device_tracker.connor_galaxys8
       notify_name: simplepush_connor
-    - tracker: device_tracker.diana_pixel2
+    - name: Diana
+      tracker: device_tracker.diana_pixel2
       #notify_name: simplepush_diana
   # Time in seconds before arming the auto-unlock
   not_home_duration: 300
@@ -63,7 +65,7 @@ lights:
       motion_sensor: binary_sensor.bathroom_motion
       humidity_sensor: sensor.bathroom_relative_humidity
       humidity_threshold: 65
-      off_delay: 400 # +30 built into sensor
+      off_delay: 470 # +30 built into sensor
       on_delay: 0
 
     - name: hallway_light
@@ -99,12 +101,13 @@ lights:
         end: '06:00:00'
 
     - name: bedroom_light
+      min_brightness: 8.5
       snooze_minutes: 10
       alarms:
         #- hide_switch_from_groups:
         #    - bedroom
         - alarm_groups:
-            - alarm1
+            - alarm1`
             - alarm2
             - alarm3
             - alarm4
