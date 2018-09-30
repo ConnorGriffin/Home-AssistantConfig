@@ -1,3 +1,8 @@
+resources:
+  - url: /local/slider-entity-row.js?v=2
+    type: js
+    git: https://github.com/thomasloven/lovelace-slider-entity-row
+
 title: Home
 views:
   - title: Home
@@ -20,6 +25,7 @@ views:
         entities:
           - entity: light.bedroom_light
             name: Light
+            type: custom:slider-entity-row
           - entity: input_select.bedroom_light_mode
             name: Light Mode
           - entity: binary_sensor.bedroom_occupancy
@@ -33,6 +39,7 @@ views:
         entities:
           - entity: light.connors_office_light
             name: Light
+            type: custom:slider-entity-row
           - entity: input_select.connors_office_light_mode
             name: Light Mode
           - entity: binary_sensor.connor_office_occupancy
@@ -46,6 +53,7 @@ views:
         entities:
           - entity: light.dianas_office_light
             name: Light
+            type: custom:slider-entity-row
           - entity: input_select.dianas_office_light_mode
             name: Light Mode
           - entity: binary_sensor.diana_office_occupancy
@@ -68,6 +76,7 @@ views:
         entities:
           - entity: light.dining_room_light
             name: Light
+            type: custom:slider-entity-row
           - entity: input_select.dining_room_light_mode
             name: Light Mode
 
@@ -77,6 +86,7 @@ views:
         entities:
           - entity: light.hallway_light
             name: Light
+            type: custom:slider-entity-row
           - entity: input_select.hallway_light_mode
             name: Light Mode
 
@@ -86,6 +96,7 @@ views:
         entities:
           - entity: light.bathroom_light
             name: Light
+            type: custom:slider-entity-row
           - entity: input_select.bathroom_light_mode
             name: Light Mode
           - binary_sensor.bathroom_motion
