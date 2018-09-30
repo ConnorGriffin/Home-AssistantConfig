@@ -68,18 +68,14 @@ class Lights(hass.Hass):
                     self.listen_state(
                         self.turned_off_cb,
                         entity = light_entity,
-                        new = 'off',
-                        on_threshold = on_threshold,
-                        off_threshold = off_threshold
+                        new = 'off'
                     )
                 elif state == 'off':
                     self.log('Listening for {} to turn on.'.format(light_friendly))
                     self.listen_state(
                         self.turned_on_cb,
                         entity = light_entity,
-                        new = 'on',
-                        on_threshold = on_threshold,
-                        off_threshold = off_threshold
+                        new = 'on'
                     )
 
                 # Arm the turned_on_cb after light has been off for a set duration
@@ -173,7 +169,6 @@ class Lights(hass.Hass):
     def mode_dropdown_cb(self, entity, attribute, old, new, kwargs):
         # TODO: Store mode (automatic/manual) and restore that setting instead of resetting to schedule
         light_entity = entity.replace('input_select','light').replace('_mode','')
-        zwave_entity = light_entity.replace('light.', 'zwave.')
         setting = self.global_vars['lights'][light_entity]
         if new == 'Maximum' and setting['override'] != 'Maximum':
             # Set a maximum brightness hold
@@ -194,13 +189,6 @@ class Lights(hass.Hass):
             setting['override'] = None
             setting['setpoint'] = 0
             self.auto_brightness_cb(dict(entity_id = light_entity))
-
-        # Refresh the z-wave entity since the light doesn't show as on in the HA UI and setting refresh_value in zwave config breaks too many other things
-        #self.run_in(
-        #    self.refresh_zwave_entity,
-        #    seconds = 1,
-        #    entity_id = zwave_entity
-        #)
 
 
     def timestr_delta(self, start_time_str, now, end_time_str, name=None):
@@ -289,14 +277,6 @@ class Lights(hass.Hass):
             )
 
 
-    def refresh_zwave_entity(self, kwargs):
-        entity_id = kwargs.get('entity_id')
-        self.call_service(
-            service = 'zwave/refresh_entity',
-            entity_id = entity_id
-        )
-
-
     def resume_from_snooze(self, kwargs):
         entity_id = kwargs.get('entity_id')
         setting = self.global_vars['lights'][entity_id]
@@ -307,7 +287,6 @@ class Lights(hass.Hass):
 
     def alarm_fired_cb(self, event_name, data, kwargs):
         light_entity = kwargs.get('light_entity')
-        zwave_entity = light_entity.replace('light.', 'zwave.')
         hide_switch_groups = kwargs.get('hide_switch_groups')
         alarm_name = data['alarm_name']
         alarm_group = 'group.{}'.format(alarm_name)
@@ -421,9 +400,8 @@ class Lights(hass.Hass):
         # Cancel listening (doing this because oneshots don't work)
         self.cancel_listen_state(kwargs['handle'])
 
-        on_threshold = kwargs.get('on_threshold')
-        off_threshold = kwargs.get('off_threshold')
         light_friendly = self.friendly_name(entity)
+        self.log('{}: Turned off'.format(light_friendly))
 
         # Reset light settings
         setting = self.global_vars['lights'][entity]
@@ -440,17 +418,14 @@ class Lights(hass.Hass):
             option = 'Automatic'
         )
 
-        self.log('{}: Turned off'.format(light_friendly))
-
 
     # Call auto_brightness_cb when a light is turned on
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
         # Cancel listening (doing this because oneshots don't work)
         self.cancel_listen_state(kwargs['handle'])
 
-        on_threshold = kwargs.get('on_threshold')
-        off_threshold = kwargs.get('off_threshold')
         light_friendly = self.friendly_name(entity)
+        self.log('{}: Turned on'.format(light_friendly))
 
         # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
         self.auto_brightness_cb(dict(
@@ -458,8 +433,6 @@ class Lights(hass.Hass):
             source = 'turned_on_cb',
             immediate = True
         ))
-
-        self.log('{}: Turned on'.format(light_friendly))
 
 
     # Set brightness automatically based on schedule
