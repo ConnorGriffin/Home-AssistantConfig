@@ -36,7 +36,8 @@ class Lock(hass.Hass):
         handle = self.listen_event(
             cb = self.returned_home_cb,
             event = 'returned_home',
-            name = tracker_name
+            name = tracker_name,
+            notify_name = kwargs.get('notify_name', None)
         )
 
         # Store the listen_event data so we can cancel it later
