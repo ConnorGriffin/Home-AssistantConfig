@@ -9,10 +9,10 @@ lock:
   module: lock
   class: Lock
   trackers:
-    - name: Connor
+    - tracker_name: Connor
       tracker: device_tracker.connor_galaxys8
       notify_name: simplepush_connor
-    - name: Diana
+    - tracker_name: Diana
       tracker: device_tracker.diana_pixel2
       #notify_name: simplepush_diana
   # Time in seconds before arming the auto-unlock

@@ -8,10 +8,10 @@ class Lock(hass.Hass):
         self.trackers = {}
 
         for tracker in self.args['trackers']:
-            name = tracker['name']
+            tracker_name = tracker['tracker_name']
 
             # Store some metadata here, needed since there's no listen_event oneshots and passing handles is weird
-            self.trackers[name] = {
+            self.trackers[tracker_name] = {
                 'listening': False,
                 'handle':    None
             }
@@ -24,24 +24,24 @@ class Lock(hass.Hass):
                 duration = self.args['not_home_duration'],
                 immediate = True,
                 notify_name = tracker.get('notify_name', None),
-                name = name
+                tracker_name = tracker_name
             )
 
 
     def not_home_cb(self, entity, attribute, old, new, kwargs):
-        name = kwargs['name']
-        self.log('Arming, waiting for {} to return home.'.format(name))
+        tracker_name = kwargs['tracker_name']
+        self.log('Arming, waiting for {} to return home.'.format(tracker_name))
 
         # Listen for the person to return home
         handle = self.listen_event(
             cb = self.returned_home_cb,
             event = 'returned_home',
-            name = name
+            name = tracker_name
         )
 
         # Store the listen_event data so we can cancel it later
-        self.trackers[name]['listening'] = True
-        self.trackers[name]['handle'] = handle
+        self.trackers[tracker_name]['listening'] = True
+        self.trackers[tracker_name]['handle'] = handle
 
 
     def returned_home_cb(self, event_name, data, kwargs):
