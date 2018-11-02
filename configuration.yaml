@@ -99,6 +99,7 @@ group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 sensor: !include sensors.yaml
+binary_sensor: !include binary_sensors.yaml
 input_datetime: !include input_datetime.yaml
 input_boolean: !include input_boolean.yaml
 input_text: !include input_text.yaml
@@ -106,6 +107,10 @@ input_select: !include input_select.yaml
 
 ecobee:
   api_key: !secret ecobee_api_key
+
+media_player:
+  - platform: roku
+  - platform: plex
 
 zwave:
   usb_path: /dev/ttyACM0
