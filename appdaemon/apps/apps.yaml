@@ -126,6 +126,10 @@ low_battery_alert:
   level: 15
   entities:
     - zwave.front_door_lock
+    - zwave.front_door_sensor
+    - zwave.front_window_right_sensor
+    - zwave.bathroom_multisensor_6
+    - zwave.back_door_sensor
 
 ecobee:
   module: ecobee
