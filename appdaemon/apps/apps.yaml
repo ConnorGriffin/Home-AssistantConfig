@@ -107,7 +107,7 @@ lights:
         #- hide_switch_from_groups:
         #    - bedroom
         - alarm_groups:
-            - alarm1`
+            - alarm1
             - alarm2
             - alarm3
             - alarm4

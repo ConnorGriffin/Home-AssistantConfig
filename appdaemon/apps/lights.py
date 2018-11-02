@@ -289,14 +289,13 @@ class Lights(hass.Hass):
         light_entity = kwargs.get('light_entity')
         hide_switch_groups = kwargs.get('hide_switch_groups')
         alarm_name = data['alarm_name']
-        alarm_group = 'group.{}'.format(alarm_name)
         setting = self.global_vars['lights'][light_entity]
         override = setting['override']
 
         # If the alarm is already triggered, don't do anything
         if override != 'alarm':
             # Turn on the configured light to full brightness
-            self.log('{}: Turned on by alarm {}.'.format(self.friendly_name(light_entity), self.friendly_name(alarm_group)))
+            self.log('{}: Turned on by alarm {}.'.format(self.friendly_name(light_entity), alarm_name))
             self.set_override(
                 entity_id = light_entity,
                 override = 'alarm',
