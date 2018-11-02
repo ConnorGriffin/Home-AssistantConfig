@@ -285,7 +285,7 @@ views:
       - title: Front Door Sensor
         type: entities
         entities:
-          - binary_sensor.front_door_sensor_sensor
+          - binary_sensor.front_door_sensor
           - sensor.front_door_sensor_access_control
           - sensor.front_door_sensor_alarm_level
           - sensor.front_door_sensor_alarm_type
