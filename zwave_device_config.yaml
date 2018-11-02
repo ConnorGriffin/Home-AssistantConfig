@@ -1,0 +1,21 @@
+light.ge_14294_inwall_smart_dimmer_level:
+  ignored: false
+  polling_intensity: 1
+light.bathroom_light:
+  ignored: false
+  polling_intensity: 1
+light.dianas_office_light:
+  ignored: false
+  polling_intensity: 1
+light.connors_office_light:
+  ignored: false
+  polling_intensity: 1
+light.bedroom_light:
+  ignored: false
+  polling_intensity: 1
+light.dining_room_light:
+  ignored: false
+  polling_intensity: 1
+light.hallway_light:
+  ignored: false
+  polling_intensity: 1
