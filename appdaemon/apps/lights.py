@@ -304,11 +304,11 @@ class Lights(hass.Hass):
             )
 
             # Refresh the z-wave entity since the light doesn't show as on in the HA UI and setting refresh_value in zwave config breaks too many other things
-            #self.run_in(
-            #    self.refresh_zwave_entity,
-            #    seconds = 1,
-            #    entity_id = zwave_entity
-            #)
+            self.run_in(
+                self.refresh_zwave_entity,
+                seconds = 1,
+                entity_id = light_entity
+            )
 
             # Hide the switch from the specified groups when the alarm is triggered
             for group in hide_switch_groups:
@@ -608,3 +608,11 @@ class Lights(hass.Hass):
             if setting['next_action'] == 'turn_off':
                 self.turn_off(light_entity)
                 self.log('{}: Turning off, no presence detected.'.format(light_friendly))
+
+
+    def refresh_zwave_entity(self, kwargs):
+        entity_id = kwargs.get('entity_id')
+        self.call_service(
+            service = 'zwave/refresh_entity',
+            entity_id = entity_id
+        )
