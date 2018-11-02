@@ -12,9 +12,8 @@ views:
       - title: General
         type: entities
         entities:
-          - lock.front_door_lock
-          - climate.home
           - sensor.home_humidity
+          - climate.home
           - type: divider
           - device_tracker.connor_galaxys8
           - device_tracker.diana_pixel2
@@ -65,6 +64,9 @@ views:
         type: entities
         show_header_toggle: false
         entities:
+          - lock.front_door_lock
+          - sensor.front_door_state
+          - sensor.front_window_right_state
           - entity: binary_sensor.living_room_occupancy
             name: Occupancy
           - entity: sensor.living_room_temperature
@@ -103,6 +105,12 @@ views:
           - sensor.bathroom_luminance
           - sensor.bathroom_relative_humidity
 
+      - title: Back Room
+        type: entities
+        show_header_toggle: false
+        entities:
+          - sensor.back_door_state
+
       - title: Lights
         type: entities
         entities:
@@ -110,18 +118,6 @@ views:
             name: All Lights
           - group.inside_lights
           - group.inside_lights_except_bedroom
-
-      - title: Automations
-        type: entities
-        entities:
-          - input_boolean.smart_unlock_automation
-          - input_boolean.light_brightness_automation
-          - input_boolean.light_double_tap_automation
-          - input_boolean.light_presence_automation
-          - input_boolean.alarm_clock_automation
-          - input_boolean.ecobee_auto_home_away
-          - input_boolean.room_presence
-          - input_boolean.low_battery_alert
 
   - title: Alarms
     icon: mdi:alarm
@@ -204,21 +200,45 @@ views:
   - title: Climate
     icon: mdi:weather-sunny
     cards:
+      - type: thermostat
+        entity: climate.home
       - type: weather-forecast
         entity: weather.home
+      - type: vertical-stack
+        cards:
+        - type: sensor
+          entity: sensor.bedroom_temperature
+        - type: sensor
+          entity: sensor.living_room_temperature
+        - type: sensor
+          entity: sensor.connor_office_temperature
+        - type: sensor
+          entity: sensor.diana_office_temperature
+
       - type: iframe
         title: History
-        url: !secret temp_iframe_url
+        url: http://10.31.36.11:3000/dashboard-solo/snapshot/AHM5vJRewYGhx2eg6iJiy6KFhRYeu1I7?orgId=1&panelId=2&from=1530396946437&to=1530440146437&theme=light
 
   - title: Media
     icon: mdi:audio-video
     cards:
       - type: media-control
-        entity: media_player.roku_5y25a2192945
+        entity: media_player.living_room_roku
 
-  - title: z-Wave Devices
+  - title: Advanced
     icon: mdi:remote
     cards:
+      - title: Automations
+        type: entities
+        entities:
+          - input_boolean.smart_unlock_automation
+          - input_boolean.light_brightness_automation
+          - input_boolean.light_double_tap_automation
+          - input_boolean.light_presence_automation
+          - input_boolean.alarm_clock_automation
+          - input_boolean.ecobee_auto_home_away
+          - input_boolean.room_presence
+          - input_boolean.low_battery_alert
       - title: Z-Wave
         type: entities
         entities:
@@ -235,10 +255,13 @@ views:
       - title: Batteries
         type: entities
         entities:
-          - sensor.schlage_frontdoor_battery
+          - sensor.front_door_lock_battery
+          - sensor.front_door_sensor_battery
+          - sensor.front_window_right_sensor_battery
           - sensor.bathroom_multisensor_6_battery
+          - sensor.back_door_sensor_battery
 
-      - title: Aeotec MultiSensor 01
+      - title: Bathroom MultiSensor
         type: entities
         entities:
           - sensor.bathroom_alarm_level
@@ -247,3 +270,44 @@ views:
           - sensor.bathroom_sourcenodeid
           - sensor.bathroom_temperature
           - sensor.bathroom_ultraviolet
+
+      - title: Front Door Lock
+        type: entities
+        entities:
+          - sensor.front_door_lock_access_control
+          - sensor.front_door_lock_alarm_level
+          - sensor.front_door_lock_alarm_type
+          - sensor.front_door_lock_burglar
+          - sensor.front_door_lock_power_management
+          - sensor.front_door_lock_sourcenodeid
+          - sensor.front_door_lock_system
+
+      - title: Front Door Sensor
+        type: entities
+        entities:
+          - binary_sensor.front_door_sensor_sensor
+          - sensor.front_door_sensor_access_control
+          - sensor.front_door_sensor_alarm_level
+          - sensor.front_door_sensor_alarm_type
+          - sensor.front_door_sensor_burglar
+          - sensor.front_door_sensor_sourcenodeid
+
+      - title: Front Window (Right) Sensor
+        type: entities
+        entities:
+          - binary_sensor.front_window_right_sensor
+          - sensor.front_window_right_sensor_access_control
+          - sensor.front_window_right_sensor_alarm_level
+          - sensor.front_window_right_sensor_alarm_type
+          - sensor.front_window_right_sensor_burglar
+          - sensor.front_window_right_sensor_sourcenodeid
+
+      - title: Back Door Sensor
+        type: entities
+        entities:
+          - binary_sensor.back_door_sensor
+          - sensor.back_door_sensor_access_control
+          - sensor.back_door_sensor_alarm_level
+          - sensor.back_door_sensor_alarm_type
+          - sensor.back_door_sensor_burglar
+          - sensor.back_door_sensor_sourcenodeid

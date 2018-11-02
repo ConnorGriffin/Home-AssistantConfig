@@ -24,46 +24,163 @@
 #        {%- elif (direction == 'DoubleDown') -%}
 #          mdi:arrow-down-thick
 #        {%- endif -%}
-    schlage_frontdoor_battery:
-        friendly_name: 'Front Door Lock'
-        value_template: '{{ states.zwave.front_door_lock.attributes.battery_level }}'
-        unit_of_measurement: '%'
-        icon_template: >
-            {%- set batteryLevel = state_attr('zwave.front_door_lock', 'battery_level') -%}
-            {%- if (batteryLevel != 'None') -%}
-              {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
-                {# Round to the nearest 10 if battery is between 5 and 95 #}
-                mdi:battery-{{(batteryLevel|float / 10)|round*10}}
-              {%- elif (batteryLevel >= 95) -%}
-                {# full battery #}
-                mdi:battery
-              {%- elif (batteryLevel <= 5) -%}
-                {# less than 5% battery #}
-                mdi:battery-outline
-              {%- endif -%}
-            {%- else -%}
-              {# If battery status is not known, use battery-unknown icon #}
-              mdi:battery-unknown
+    front_door_lock_battery:
+      friendly_name: 'Front Door Lock'
+      value_template: '{{ states.zwave.front_door_lock.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.front_door_lock', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
             {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
 
     bathroom_multisensor_6_battery:
-        friendly_name: 'Bathroom MultiSensor 6'
-        value_template: '{{ states.zwave.bathroom_multisensor_6.attributes.battery_level }}'
-        unit_of_measurement: '%'
-        icon_template: >
-            {%- set batteryLevel = state_attr('zwave.bathroom_multisensor_6', 'battery_level') -%}
-            {%- if (batteryLevel != 'None') -%}
-              {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
-                {# Round to the nearest 10 if battery is between 5 and 95 #}
-                mdi:battery-{{(batteryLevel|float / 10)|round*10}}
-              {%- elif (batteryLevel >= 95) -%}
-                {# full battery #}
-                mdi:battery
-              {%- elif (batteryLevel <= 5) -%}
-                {# less than 5% battery #}
-                mdi:battery-outline
-              {%- endif -%}
-            {%- else -%}
-              {# If battery status is not known, use battery-unknown icon #}
-              mdi:battery-unknown
+      friendly_name: 'Bathroom MultiSensor 6'
+      value_template: '{{ states.zwave.bathroom_multisensor_6.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.bathroom_multisensor_6', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
             {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    front_window_right_sensor_battery:
+      friendly_name: 'Front Window (Right) Sensor'
+      value_template: '{{ states.zwave.front_window_right_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.front_window_right_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    back_door_sensor_battery:
+      friendly_name: 'Back Door Sensor'
+      value_template: '{{ states.zwave.back_door_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.back_door_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    front_door_sensor_battery:
+      friendly_name: 'Front Door Sensor'
+      value_template: '{{ states.zwave.front_door_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.front_door_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    front_door_state:
+      friendly_name: "Front Door State"
+      value_template: >-
+        {%- set access_control = states.sensor.front_door_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.front_door_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:door-closed
+        {%- elif (access_control == 22) -%}
+          mdi:door-open
+        {%- endif -%}
+
+    back_door_state:
+      friendly_name: "Back Door State"
+      value_template: >-
+        {%- set access_control = states.sensor.back_door_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.back_door_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:door-closed
+        {%- elif (access_control == 22) -%}
+          mdi:door-open
+        {%- endif -%}
+
+    front_window_right_state:
+      friendly_name: "Front Window (Right) State"
+      value_template: >-
+        {%- set access_control = states.sensor.front_window_right_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.front_window_right_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:window-closed
+        {%- elif (access_control == 22) -%}
+          mdi:window-open
+        {%- endif -%}
