@@ -51,6 +51,16 @@ class DoorWindowClimate(hass.Hass):
                     mode = zone['mode'],
                     sensor = zone['sensor']
                 )
+                self.listen_state(
+                    cb = self.sensor_cb,
+                    entity = window,
+                    new = 'Open',
+                    duration = window_open_seconds,
+                    immediate = True,
+                    zone = zone['name'],
+                    mode = zone['mode'],
+                    sensor = zone['sensor']
+                )
 
             # Setup listeners for each door
             for door in doors:
@@ -59,6 +69,16 @@ class DoorWindowClimate(hass.Hass):
                     entity = door,
                     new = 'Closed',
                     duration = door_closed_seconds,
+                    immediate = True,
+                    zone = zone['name'],
+                    mode = zone['mode'],
+                    sensor = zone['sensor']
+                )
+                self.listen_state(
+                    cb = self.sensor_cb,
+                    entity = door,
+                    new = 'Open',
+                    duration = door_open_seconds,
                     immediate = True,
                     zone = zone['name'],
                     mode = zone['mode'],
