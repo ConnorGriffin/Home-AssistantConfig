@@ -203,6 +203,7 @@ door_window_climate:
   # Rooms/areas
   zones:
     - name: Main House
+      sensor: sensor.main_house_zone
       mode: any
       windows:
         #- sensor.front_window_left_state
@@ -215,6 +216,7 @@ door_window_climate:
       doors:
         - sensor.front_door_state
     - name: Back Room Exterior
+      sensor: sensor.back_room_exterior_zone
       mode: any
       doors:
         - sensor.back_door_state

@@ -4,7 +4,6 @@ import datetime
 class DoorWindowClimate(hass.Hass):
 
     def initialize(self):
-        # TODO: Send zone status back to AppDaemon as a state/event input
         # TODO: Create actions based on climate rules
         # TODO: Handle temperature deltas, climate control, rest of the script basically
 
@@ -17,10 +16,14 @@ class DoorWindowClimate(hass.Hass):
             temp_entity = temp_source[0]
             temp_attribute = temp_source[1]
 
-            self.log(
-                self.get_state(temp_entity, attribute=temp_attribute)
+            # Create each zone sensor in HA
+            self.set_state(
+                entity_id = zone['sensor'],
+                state = 'Unknown',
+                attributes = {
+                    'friendly_name': zone['name']
+                }
             )
-
 
             # Setup a persistent data store for each zone
             self.data[zone['name']] = {
@@ -45,7 +48,8 @@ class DoorWindowClimate(hass.Hass):
                     duration = window_closed_seconds,
                     immediate = True,
                     zone = zone['name'],
-                    mode = zone['mode']
+                    mode = zone['mode'],
+                    sensor = zone['sensor']
                 )
 
             # Setup listeners for each door
@@ -57,13 +61,15 @@ class DoorWindowClimate(hass.Hass):
                     duration = door_closed_seconds,
                     immediate = True,
                     zone = zone['name'],
-                    mode = zone['mode']
+                    mode = zone['mode'],
+                    sensor = zone['sensor']
                 )
 
 
     def sensor_cb(self, entity, attribute, old, new, kwargs):
         zone = kwargs.get('zone')
         mode = kwargs.get('mode')
+        sensor = kwargs.get('sensor')
 
         # Add or remove the sensor from the open_sensors and closed_sensors lists
         if new == 'Closed':
@@ -83,15 +89,20 @@ class DoorWindowClimate(hass.Hass):
         if (open_count + closed_count) == self.data[zone]['total_sensors']:
             if mode == 'any':
                 if open_count >= 1:
+                    # Set the Zone Status in HomeAssistant. Other AppDaemon apps can subscribe to this event to take action on the alarm
                     self.log('{} is open'.format(zone))
                     self.data[zone]['state'] = 'open'
+                    self.set_state(sensor, state='Open', friendly_name=zone)
                 else:
                     self.log('{} is closed'.format(zone))
                     self.data[zone]['state'] = 'closed'
+                    self.set_state(sensor, state='Closed', friendly_name=zone)
             elif mode == 'all':
                 if closed_count >= 1:
                     self.log('{} is closed'.format(zone))
                     self.data[zone]['state'] = 'closed'
+                    self.set_state(sensor, state='Closed', friendly_name=zone)
                 else:
                     self.log('{} is open'.format(zone))
                     self.data[zone]['state'] = 'open'
+                    self.set_state(sensor, state='Open', friendly_name=zone)

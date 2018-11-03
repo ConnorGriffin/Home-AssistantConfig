@@ -204,6 +204,11 @@ views:
         entity: climate.home
       - type: weather-forecast
         entity: weather.home
+      - title: Climate Zones
+        type: entities
+        entities:
+          - sensor.main_house_zone
+          - sensor.back_room_exterior_zone
       - type: vertical-stack
         cards:
         - type: sensor
