@@ -30,6 +30,10 @@ smart_unlock_automation:
   name: Smart Unlock Automation
   icon: mdi:lock-open
 
+smart_autolock_automation:
+  name: Smart Autolock Automation
+  icon: mdi:lock
+
 
 # region alarms
 alarm1_enabled:

@@ -232,6 +232,7 @@ views:
         type: entities
         entities:
           - input_boolean.smart_unlock_automation
+          - input_boolean.smart_autolock_automation
           - input_boolean.light_brightness_automation
           - input_boolean.light_double_tap_automation
           - input_boolean.light_presence_automation
