@@ -563,7 +563,7 @@ class Lights(hass.Hass):
             if self.get_state('input_boolean.light_brightness_automation') == 'on':
                 self.auto_brightness_cb(dict(entity_id=light_entity, source='presence'))
             else:
-                self.turn_on(light_entity)
+                self.turn_on_and_refresh(light_entity)
             self.log('{}: Turning on, presence detected.'.format(light_friendly))
         elif new == 'off' and light_state == 'on':
             if setting['override'] == 'showering':
@@ -574,7 +574,7 @@ class Lights(hass.Hass):
             else:
                 # Testing only, don't auto turn-off if Diana is home
                 if self.get_state('device_tracker.diana_pixel2') == 'not_home':
-                    self.turn_off(light_entity)
+                    self.turn_off_and_refresh(light_entity)
                     self.log('{}: Turning off, no presence detected.'.format(light_friendly))
         elif new == 'on' and light_state == 'on' and setting['override'] == 'showering' and setting['next_action'] == 'turn_off':
             setting['next_action'] = None
@@ -598,20 +598,37 @@ class Lights(hass.Hass):
                 if self.get_state('input_boolean.light_brightness_automation') == 'on':
                     self.auto_brightness_cb(dict(entity_id=light_entity, source='presence'))
                 else:
-                    self.turn_on(light_entity)
+                    self.turn_on_and_refresh(light_entity)
             self.log('{}: Shower is running, turning on lights and ignoring motion detection.'.format(light_friendly))
         elif float(new) < humidity_threshold and setting['override'] == 'showering':
             setting['override'] = setting['prev_override']
             setting['prev_override'] = 'showering'
             self.log('{}: Shower is no longer running, resuming motion detection.'.format(light_friendly))
             if setting['next_action'] == 'turn_off':
-                self.turn_off(light_entity)
+                self.turn_off_and_refresh(light_entity)
                 self.log('{}: Turning off, no presence detected.'.format(light_friendly))
 
 
-    def refresh_zwave_entity(self, kwargs):
-        entity_id = kwargs.get('entity_id')
+    def refresh_zwave_entity(self, entity):
         self.call_service(
             service = 'zwave/refresh_entity',
-            entity_id = entity_id
+            entity_id = entity
+        )
+
+
+    def turn_off_and_refresh(self, entity):
+        self.turn_off(entity)
+        self.run_in(
+            self.refresh_zwave_entity,
+            seconds = 1,
+            entity_id = light_entity
+        )
+
+
+    def turn_on_and_refresh(self, entity):
+        self.turn_on(entity)
+        self.run_in(
+            self.refresh_zwave_entity,
+            seconds = 1,
+            entity_id = light_entity
         )
