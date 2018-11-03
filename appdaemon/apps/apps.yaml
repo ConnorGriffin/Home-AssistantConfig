@@ -188,15 +188,58 @@ door_autolock:
       sensor: sensor.back_door_state
 
 
-#door_window_climate:
-#  module: door_window
-#  class: DoorWindow
-#  windows:
-#    - window: Front Window
-#      sensor:
-#        - sensor.front_window_right_state
-#  doors:
-#    - door: Front Door
-#      sensor: sensor.front_door_state
-#    - door: Back Door
-#      sensor: sensor.back_door_state
+door_window_climate:
+  module: door_window_climate
+  class: DoorWindowClimate
+  # How long to wait before changing climate behaviours after each event
+  door_open_seconds: 300
+  door_closed_seconds: 0
+  window_open_seconds: 30
+  window_closed_seconds: 0
+  # Thermostat
+  climate: climate.home
+  temp_delta: 0
+  temp_source: weather.home:temperature
+  # Rooms/areas
+  zones:
+    - name: Main House
+      mode: any
+      windows:
+        #- sensor.front_window_left_state
+        - sensor.front_window_right_state
+        #- sensor.dining_room_winndow_state
+        #- sensor.connors_office_south_window_state
+        #- sensor.connors_office_west_window_state
+        #- sensor.dianas_office_window_state
+        #- sensor.bedroom_window_state
+      doors:
+        - sensor.front_door_state
+    - name: Back Room Exterior
+      mode: any
+      doors:
+        - sensor.back_door_state
+      #windows:
+        #- sensor.back_left_window_state
+        #- sensor.back_right_window_state
+        #- sensor.laundry_window_state
+  # Rules - Dependencies for modifying climate settings
+  climate_rules:
+    # House is open
+    - name: Main House
+      mode: all
+      dependencies:
+        - zone: Main House
+    # House is open or door to back room is open
+    - name: Main House + Back Room Entry
+      mode: any
+      temperature_delta: 5
+      dependencies:
+        - zone: Main House
+        - door: sensor.back_entry_door_state
+    # House is open, door to back room is open, and door to exterior is open
+    - name: Main House + Back Room Entry + Back Room Exterior
+      mode: all
+      dependencies:
+        - zone: Main House
+        - zone: Back Room
+        - door: sensor.back_entry_door_state
