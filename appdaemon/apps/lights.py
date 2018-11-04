@@ -580,6 +580,7 @@ class Lights(hass.Hass):
             setting['next_action'] = None
             self.log('{}: Cancelling next action (humidity turn off), presence detected.'.format(light_friendly))
 
+
     # Keep the lights on if someone is showering
     def humidity_cb(self, entity, attribute, old, new, kwargs):
         light_entity = kwargs.get('light_entity')
