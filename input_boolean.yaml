@@ -34,6 +34,9 @@ smart_autolock_automation:
   name: Smart Autolock Automation
   icon: mdi:lock
 
+window_door_climate_automation:
+  name: Window/Door Climate Automation
+  icon: mdi:thermostat
 
 # region alarms
 alarm1_enabled:

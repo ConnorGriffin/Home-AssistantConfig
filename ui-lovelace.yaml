@@ -243,6 +243,7 @@ views:
           - input_boolean.light_presence_automation
           - input_boolean.alarm_clock_automation
           - input_boolean.ecobee_auto_home_away
+          - input_boolean.window_door_climate_automation
           - input_boolean.room_presence
           - input_boolean.low_battery_alert
       - title: Z-Wave
