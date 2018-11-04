@@ -609,26 +609,27 @@ class Lights(hass.Hass):
                 self.log('{}: Turning off, no presence detected.'.format(light_friendly))
 
 
-    def refresh_zwave_entity(self, entity):
+    def refresh_zwave_entity(self, kwargs):
+        entity_id = kwargs.get('entity_id')
         self.call_service(
             service = 'zwave/refresh_entity',
-            entity_id = entity
+            entity_id = entity_id
         )
 
 
-    def turn_off_and_refresh(self, entity):
-        self.turn_off(entity)
+    def turn_off_and_refresh(self, entity_id):
+        self.turn_off(entity_id)
         self.run_in(
             self.refresh_zwave_entity,
             seconds = 1,
-            entity_id = light_entity
+            entity_id = entity_id
         )
 
 
-    def turn_on_and_refresh(self, entity):
-        self.turn_on(entity)
+    def turn_on_and_refresh(self, entity_id):
+        self.turn_on(entity_id)
         self.run_in(
             self.refresh_zwave_entity,
             seconds = 1,
-            entity_id = light_entity
+            entity_id = entity_id
         )
