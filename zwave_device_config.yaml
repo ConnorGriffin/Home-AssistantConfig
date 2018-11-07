@@ -1,6 +1,3 @@
-light.ge_14294_inwall_smart_dimmer_level:
-  ignored: false
-  polling_intensity: 1
 light.bathroom_light:
   ignored: false
   polling_intensity: 1

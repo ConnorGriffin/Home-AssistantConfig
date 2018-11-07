@@ -240,3 +240,7 @@ door_window_climate:
 light_flash:
   module: light_flash
   class: LightFlash
+
+#test:
+#  module: test
+#  class: Test

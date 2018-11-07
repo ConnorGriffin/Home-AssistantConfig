@@ -1,5 +1,4 @@
 import appdaemon.plugins.hass.hassapi as hass
-from time import sleep
 
 class LightFlash(hass.Hass):
 
