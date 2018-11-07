@@ -1,19 +1,6 @@
 import appdaemon.plugins.hass.hassapi as hass
 import datetime
 
-class Testing(hass.Hass):
-
-    def initialize(self):
-        for entity in self.args["entities"]:
-            self.listen_state(
-                self.state_log,
-                entity = entity
-            )
-
-    def state_log(self, entity, attribute, old, new, kwargs):
-        self.log('{} - {}: old: {}, new: {}'.format(entity, attribute, old, new))
-
-
 class Lights(hass.Hass):
 
     def initialize(self):

@@ -258,6 +258,9 @@ views:
           - zwave.bathroom_light
           - zwave.front_door_lock
           - zwave.bathroom_multisensor_6
+          - zwave.front_door_sensor
+          - zwave.front_window_right_sensor
+          - zwave.back_door_sensor
 
       - title: Batteries
         type: entities

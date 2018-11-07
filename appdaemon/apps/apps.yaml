@@ -1,10 +1,4 @@
 ---
-#testing:
-#  module: lights
-#  class: Testing
-#  entities:
-#    - light.connors_office_light
-
 lock:
   module: lock
   class: Lock
@@ -19,7 +13,6 @@ lock:
   not_home_duration: 300
   lock_entity: lock.front_door_lock
   constrain_input_boolean: input_boolean.smart_unlock_automation
-
 
 lights:
   module: lights
@@ -187,7 +180,6 @@ door_autolock:
     - door: Back Door
       sensor: sensor.back_door_state
 
-
 door_window_climate:
   module: door_window_climate
   class: DoorWindowClimate
@@ -244,3 +236,7 @@ door_window_climate:
     #    - zone: sensor.main_house_zone
     #    - zone: sensor.back_room_exterior_zone
     #    #- door: sensor.back_entry_door_state
+
+light_flash:
+  module: light_flash
+  class: LightFlash
