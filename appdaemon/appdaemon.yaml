@@ -16,7 +16,8 @@ appdaemon:
     HASS:
       type: hass
       ha_url: !secret base_url
-      token: !secret ha_token
+      ha_key: !secret http_password
+      #token: !secret ha_token
   opnsense:
     api_key: !secret opnsense_api_key
     api_secret: !secret opnsense_api_secret

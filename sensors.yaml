@@ -68,6 +68,28 @@
             mdi:battery-unknown
           {%- endif -%}
 
+    front_window_left_sensor_battery:
+      friendly_name: 'Front Window (Left) Sensor'
+      value_template: '{{ states.zwave.front_window_left_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.front_window_left_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
     front_window_right_sensor_battery:
       friendly_name: 'Front Window (Right) Sensor'
       value_template: '{{ states.zwave.front_window_right_sensor.attributes.battery_level }}'
@@ -90,8 +112,185 @@
             mdi:battery-unknown
           {%- endif -%}
 
+    dining_room_window_sensor_battery:
+      friendly_name: 'Dining Room Window Sensor'
+      value_template: '{{ states.zwave.dining_room_window_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.dining_room_window_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    back_left_window_sensor_battery:
+      friendly_name: 'Back Left Window Sensor'
+      value_template: '{{ states.zwave.back_left_window_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.back_left_window_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+
+    back_right_window_sensor_battery:
+      friendly_name: 'Back Right Window Sensor'
+      value_template: '{{ states.zwave.back_right_window_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.back_right_window_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    dianas_office_window_sensor_battery:
+      friendly_name: "Diana's Office Window Sensor"
+      value_template: '{{ states.zwave.dianas_office_window_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.dianas_office_window_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    connors_office_south_window_sensor_battery:
+      friendly_name: "Connor's Office South Window Sensor"
+      value_template: '{{ states.zwave.connors_office_south_window_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.connors_office_south_window_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    connors_office_west_window_sensor_battery:
+      friendly_name: "Connor's Office West Window Sensor"
+      value_template: '{{ states.zwave.connors_office_west_window_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.connors_office_west_window_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    bedroom_window_sensor_battery:
+      friendly_name: 'Bedroom Window Sensor'
+      value_template: '{{ states.zwave.bedroom_window_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.bedroom_window_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
+    kitchen_door_sensor_battery:
+      friendly_name: 'Kitchen Door Sensor'
+      value_template: '{{ states.zwave.kitchen_door_sensor.attributes.battery_level }}'
+      unit_of_measurement: '%'
+      icon_template: >-
+          {%- set batteryLevel = state_attr('zwave.kitchen_door_sensor', 'battery_level') -%}
+          {%- if (batteryLevel != 'None') -%}
+            {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
+              {# Round to the nearest 10 if battery is between 5 and 95 #}
+              mdi:battery-{{(batteryLevel|float / 10)|round*10}}
+            {%- elif (batteryLevel >= 95) -%}
+              {# full battery #}
+              mdi:battery
+            {%- elif (batteryLevel <= 5) -%}
+              {# less than 5% battery #}
+              mdi:battery-outline
+            {%- endif -%}
+          {%- else -%}
+            {# If battery status is not known, use battery-unknown icon #}
+            mdi:battery-unknown
+          {%- endif -%}
+
     back_door_sensor_battery:
-      friendly_name: 'Back Door Sensor'
+      friendly_name: 'Backyard Door Sensor'
       value_template: '{{ states.zwave.back_door_sensor.attributes.battery_level }}'
       unit_of_measurement: '%'
       icon_template: >-
@@ -152,7 +351,7 @@
         {%- endif -%}
 
     back_door_state:
-      friendly_name: "Back Door State"
+      friendly_name: "Backyard Door State"
       value_template: >-
         {%- set access_control = states.sensor.back_door_sensor_access_control.state | int -%}
         {%- if (access_control == 23) -%}
@@ -168,8 +367,25 @@
           mdi:door-open
         {%- endif -%}
 
+    front_window_left_state:
+      friendly_name: "Front Window (Left Half) State"
+      value_template: >-
+        {%- set access_control = states.sensor.front_window_left_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.front_window_left_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:window-closed
+        {%- elif (access_control == 22) -%}
+          mdi:window-open
+        {%- endif -%}
+
     front_window_right_state:
-      friendly_name: "Front Window (Right) State"
+      friendly_name: "Front Window (Right Half) State"
       value_template: >-
         {%- set access_control = states.sensor.front_window_right_sensor_access_control.state | int -%}
         {%- if (access_control == 23) -%}
@@ -179,6 +395,142 @@
         {%- endif -%}
       icon_template: >-
         {%- set access_control = states.sensor.front_window_right_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:window-closed
+        {%- elif (access_control == 22) -%}
+          mdi:window-open
+        {%- endif -%}
+
+    dining_room_window_state:
+      friendly_name: "Dining Room Window State"
+      value_template: >-
+        {%- set access_control = states.sensor.dining_room_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.dining_room_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:window-closed
+        {%- elif (access_control == 22) -%}
+          mdi:window-open
+        {%- endif -%}
+
+    kitchen_door_state:
+      friendly_name: "Kitchen Door State"
+      value_template: >-
+        {%- set access_control = states.sensor.kitchen_door_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.kitchen_door_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:door-closed
+        {%- elif (access_control == 22) -%}
+          mdi:door-open
+        {%- endif -%}
+
+    back_left_window_state:
+      friendly_name: "Back Left Window State"
+      value_template: >-
+        {%- set access_control = states.sensor.back_left_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.back_left_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:window-closed
+        {%- elif (access_control == 22) -%}
+          mdi:window-open
+        {%- endif -%}
+
+    back_right_window_state:
+      friendly_name: "Back Right Window State"
+      value_template: >-
+        {%- set access_control = states.sensor.back_right_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.back_right_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:window-closed
+        {%- elif (access_control == 22) -%}
+          mdi:window-open
+        {%- endif -%}
+
+    dianas_office_window_state:
+      friendly_name: "Diana's Office Window State"
+      value_template: >-
+        {%- set access_control = states.sensor.dianas_office_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.dianas_office_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:window-closed
+        {%- elif (access_control == 22) -%}
+          mdi:window-open
+        {%- endif -%}
+
+    connors_office_south_window_state:
+      friendly_name: "Connor's Office South Window State"
+      value_template: >-
+        {%- set access_control = states.sensor.connors_office_south_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.connors_office_south_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:window-closed
+        {%- elif (access_control == 22) -%}
+          mdi:window-open
+        {%- endif -%}
+
+    connors_office_west_window_state:
+      friendly_name: "Connor's Office West Window State"
+      value_template: >-
+        {%- set access_control = states.sensor.connors_office_west_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.connors_office_west_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          mdi:window-closed
+        {%- elif (access_control == 22) -%}
+          mdi:window-open
+        {%- endif -%}
+
+    bedroom_window_state:
+      friendly_name: "Bedroom Window State"
+      value_template: >-
+        {%- set access_control = states.sensor.bedroom_window_sensor_access_control.state | int -%}
+        {%- if (access_control == 23) -%}
+          Closed
+        {%- elif (access_control == 22) -%}
+          Open
+        {%- endif -%}
+      icon_template: >-
+        {%- set access_control = states.sensor.bedroom_window_sensor_access_control.state | int -%}
         {%- if (access_control == 23) -%}
           mdi:window-closed
         {%- elif (access_control == 22) -%}

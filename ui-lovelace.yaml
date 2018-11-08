@@ -27,6 +27,8 @@ views:
             type: custom:slider-entity-row
           - entity: input_select.bedroom_light_mode
             name: Light Mode
+          - entity: sensor.bedroom_window_state
+            name: Window
           - entity: binary_sensor.bedroom_occupancy
             name: Occupancy
           - entity: sensor.bedroom_temperature
@@ -41,6 +43,10 @@ views:
             type: custom:slider-entity-row
           - entity: input_select.connors_office_light_mode
             name: Light Mode
+          - entity: sensor.connors_office_south_window_state
+            name: South Window
+          - entity: sensor.connors_office_west_window_state
+            name: West Window
           - entity: binary_sensor.connor_office_occupancy
             name: Occupancy
           - entity: sensor.connor_office_temperature
@@ -55,6 +61,8 @@ views:
             type: custom:slider-entity-row
           - entity: input_select.dianas_office_light_mode
             name: Light Mode
+          - entity: sensor.dianas_office_window_state
+            name: Window
           - entity: binary_sensor.diana_office_occupancy
             name: Occupancy
           - entity: sensor.diana_office_temperature
@@ -66,7 +74,10 @@ views:
         entities:
           - lock.front_door_lock
           - sensor.front_door_state
-          - sensor.front_window_right_state
+          - entity: sensor.front_window_left_state
+            name: Window (Left Half)
+          - entity: sensor.front_window_right_state
+            name: Window (Right Half)
           - entity: binary_sensor.living_room_occupancy
             name: Occupancy
           - entity: sensor.living_room_temperature
@@ -81,6 +92,8 @@ views:
             type: custom:slider-entity-row
           - entity: input_select.dining_room_light_mode
             name: Light Mode
+          - entity: sensor.dining_room_window_state
+            name: Window
 
       - title: Hallway
         type: entities
@@ -110,6 +123,11 @@ views:
         show_header_toggle: false
         entities:
           - sensor.back_door_state
+          - sensor.kitchen_door_state
+          - entity: sensor.back_left_window_state
+            name: Left Window
+          - entity: sensor.back_right_window_state
+            name: Right Window
 
       - title: Lights
         type: entities
@@ -259,17 +277,37 @@ views:
           - zwave.front_door_lock
           - zwave.bathroom_multisensor_6
           - zwave.front_door_sensor
+          - zwave.front_window_left_sensor
           - zwave.front_window_right_sensor
+          - zwave.dining_room_window_sensor
+          - zwave.dianas_office_window_sensor
+          - zwave.connors_office_south_window_sensor
+          - zwave.connors_office_west_window_sensor
+          - zwave.bedroom_window_sensor
+          - zwave.kitchen_door_sensor
+          - zwave.back_left_window_sensor
+          - zwave.back_right_window_sensor
           - zwave.back_door_sensor
+
 
       - title: Batteries
         type: entities
         entities:
           - sensor.front_door_lock_battery
           - sensor.front_door_sensor_battery
+          - sensor.front_window_left_sensor_battery
           - sensor.front_window_right_sensor_battery
+          - sensor.dining_room_window_sensor_battery
           - sensor.bathroom_multisensor_6_battery
+          - sensor.dianas_office_window_sensor_battery
+          - sensor.connors_office_south_window_sensor_battery
+          - sensor.connors_office_west_window_sensor_battery
+          - sensor.bedroom_window_sensor_battery
+          - sensor.kitchen_door_sensor_battery
+          - sensor.back_left_window_sensor_battery
+          - sensor.back_right_window_sensor_battery
           - sensor.back_door_sensor_battery
+
 
       - title: Bathroom MultiSensor
         type: entities
@@ -291,33 +329,3 @@ views:
           - sensor.front_door_lock_power_management
           - sensor.front_door_lock_sourcenodeid
           - sensor.front_door_lock_system
-
-      - title: Front Door Sensor
-        type: entities
-        entities:
-          - binary_sensor.front_door_sensor
-          - sensor.front_door_sensor_access_control
-          - sensor.front_door_sensor_alarm_level
-          - sensor.front_door_sensor_alarm_type
-          - sensor.front_door_sensor_burglar
-          - sensor.front_door_sensor_sourcenodeid
-
-      - title: Front Window (Right) Sensor
-        type: entities
-        entities:
-          - binary_sensor.front_window_right_sensor
-          - sensor.front_window_right_sensor_access_control
-          - sensor.front_window_right_sensor_alarm_level
-          - sensor.front_window_right_sensor_alarm_type
-          - sensor.front_window_right_sensor_burglar
-          - sensor.front_window_right_sensor_sourcenodeid
-
-      - title: Back Door Sensor
-        type: entities
-        entities:
-          - binary_sensor.back_door_sensor
-          - sensor.back_door_sensor_access_control
-          - sensor.back_door_sensor_alarm_level
-          - sensor.back_door_sensor_alarm_type
-          - sensor.back_door_sensor_burglar
-          - sensor.back_door_sensor_sourcenodeid
