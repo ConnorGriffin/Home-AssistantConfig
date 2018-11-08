@@ -289,12 +289,12 @@
             mdi:battery-unknown
           {%- endif -%}
 
-    back_door_sensor_battery:
+    backyard_door_sensor_battery:
       friendly_name: 'Backyard Door Sensor'
-      value_template: '{{ states.zwave.back_door_sensor.attributes.battery_level }}'
+      value_template: '{{ states.zwave.backyard_door_sensor.attributes.battery_level }}'
       unit_of_measurement: '%'
       icon_template: >-
-          {%- set batteryLevel = state_attr('zwave.back_door_sensor', 'battery_level') -%}
+          {%- set batteryLevel = state_attr('zwave.backyard_door_sensor', 'battery_level') -%}
           {%- if (batteryLevel != 'None') -%}
             {%- if (batteryLevel < 95 and batteryLevel > 5) -%}
               {# Round to the nearest 10 if battery is between 5 and 95 #}
@@ -350,17 +350,17 @@
           mdi:door-open
         {%- endif -%}
 
-    back_door_state:
+    backyard_door_state:
       friendly_name: "Backyard Door State"
       value_template: >-
-        {%- set access_control = states.sensor.back_door_sensor_access_control.state | int -%}
+        {%- set access_control = states.sensor.backyard_door_sensor_access_control.state | int -%}
         {%- if (access_control == 23) -%}
           Closed
         {%- elif (access_control == 22) -%}
           open
         {%- endif -%}
       icon_template: >-
-        {%- set access_control = states.sensor.back_door_sensor_access_control.state | int -%}
+        {%- set access_control = states.sensor.backyard_door_sensor_access_control.state | int -%}
         {%- if (access_control == 23) -%}
           mdi:door-closed
         {%- elif (access_control == 22) -%}

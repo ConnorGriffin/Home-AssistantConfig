@@ -2,6 +2,9 @@ resources:
   - url: /local/slider-entity-row.js?v=2
     type: js
     git: https://github.com/thomasloven/lovelace-slider-entity-row
+  - url: /local/monster-card.js?v=1
+    type: js
+    git: https://raw.githubusercontent.com/ciotlosm/custom-lovelace/master/monster-card/monster-card.js
 
 title: Home
 views:
@@ -122,7 +125,7 @@ views:
         type: entities
         show_header_toggle: false
         entities:
-          - sensor.back_door_state
+          - sensor.backyard_door_state
           - sensor.kitchen_door_state
           - entity: sensor.back_left_window_state
             name: Left Window
@@ -248,66 +251,52 @@ views:
       - type: media-control
         entity: media_player.living_room_roku
 
-  - title: Advanced
-    icon: mdi:remote
+
+  - title: Automations
     cards:
-      - title: Automations
-        type: entities
-        entities:
-          - input_boolean.smart_unlock_automation
-          - input_boolean.smart_autolock_automation
-          - input_boolean.light_brightness_automation
-          - input_boolean.light_double_tap_automation
-          - input_boolean.light_presence_automation
-          - input_boolean.alarm_clock_automation
-          - input_boolean.ecobee_auto_home_away
-          - input_boolean.window_door_climate_automation
-          - input_boolean.room_presence
-          - input_boolean.low_battery_alert
-      - title: Z-Wave
-        type: entities
-        entities:
-          - zwave.aeotec_zw090_zstick_gen5_us
-          - zwave.connors_office_light
-          - zwave.dianas_office_light
-          - zwave.bedroom_light
-          - zwave.hallway_light
-          - zwave.dining_room_light
-          - zwave.bathroom_light
-          - zwave.front_door_lock
-          - zwave.bathroom_multisensor_6
-          - zwave.front_door_sensor
-          - zwave.front_window_left_sensor
-          - zwave.front_window_right_sensor
-          - zwave.dining_room_window_sensor
-          - zwave.dianas_office_window_sensor
-          - zwave.connors_office_south_window_sensor
-          - zwave.connors_office_west_window_sensor
-          - zwave.bedroom_window_sensor
-          - zwave.kitchen_door_sensor
-          - zwave.back_left_window_sensor
-          - zwave.back_right_window_sensor
-          - zwave.back_door_sensor
+      - type: "custom:monster-card"
+        card:
+          type: entities
+          title: All Automations
+        filter:
+          include:
+            - entity_id: "input_boolean.*_automation"
 
+  - title: Doors & Windows
+    cards:
+      - type: "custom:monster-card"
+        card:
+          type: entities
+          title: All Windows
+        filter:
+          include:
+            - entity_id: "sensor.*window*_state"
 
-      - title: Batteries
-        type: entities
-        entities:
-          - sensor.front_door_lock_battery
-          - sensor.front_door_sensor_battery
-          - sensor.front_window_left_sensor_battery
-          - sensor.front_window_right_sensor_battery
-          - sensor.dining_room_window_sensor_battery
-          - sensor.bathroom_multisensor_6_battery
-          - sensor.dianas_office_window_sensor_battery
-          - sensor.connors_office_south_window_sensor_battery
-          - sensor.connors_office_west_window_sensor_battery
-          - sensor.bedroom_window_sensor_battery
-          - sensor.kitchen_door_sensor_battery
-          - sensor.back_left_window_sensor_battery
-          - sensor.back_right_window_sensor_battery
-          - sensor.back_door_sensor_battery
+      - type: "custom:monster-card"
+        card:
+          type: entities
+          title: All Doors
+        filter:
+          include:
+            - entity_id: "sensor.*door_state"
 
+  - title: Z-Wave
+    cards:
+      - type: "custom:monster-card"
+        card:
+          type: entities
+          title: Z-Wave
+        filter:
+          include:
+            - domain: zwave
+
+      - type: "custom:monster-card"
+        card:
+          type: entities
+          title: Batteries
+        filter:
+          include:
+            - entity_id: "sensor.*_battery"
 
       - title: Bathroom MultiSensor
         type: entities

@@ -1,41 +1,41 @@
-ecobee_auto_home_away:
+ecobee_auto_home_away_automation:
   name: Ecobee Auto Home/Away
   icon: mdi:thermostat
 
-room_presence:
-  name: Room Presence Detection
+room_presence_automation:
+  name: Room Presence
   icon: mdi:home-map-marker
 
 light_brightness_automation:
-  name: Light Brightness Automation
+  name: Light Brightness
   icon: mdi:lightbulb-on
 
 light_double_tap_automation:
-  name: Light Double Tap Automation
+  name: Light Double Tap
   icon: mdi:light-switch
 
 light_presence_automation:
-  name: Light Presence Automation
+  name: Light Presence
   icon: mdi:track-light
 
 alarm_clock_automation:
-  name: Alarm Clock Automation
+  name: Alarm Clock
   icon: mdi:alarm
 
-low_battery_alert:
+low_battery_alert_automation:
   name: Z-Wave Low Battery Alert
   icon: mdi:battery-alert
 
 smart_unlock_automation:
-  name: Smart Unlock Automation
+  name: Smart Unlock
   icon: mdi:lock-open
 
 smart_autolock_automation:
-  name: Smart Autolock Automation
+  name: Smart Autolock
   icon: mdi:lock
 
 window_door_climate_automation:
-  name: Window/Door Climate Automation
+  name: Window/Door Climate
   icon: mdi:thermostat
 
 # region alarms
