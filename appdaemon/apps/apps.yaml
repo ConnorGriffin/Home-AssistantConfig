@@ -185,8 +185,8 @@ door_window_climate:
   class: DoorWindowClimate
   constrain_input_boolean: input_boolean.window_door_climate_automation
   # How long to wait before changing climate behaviours after each event
-  door_open_seconds: 0
-  door_closed_seconds: 0
+  door_open_seconds: 300
+  door_closed_seconds: 30
   window_open_seconds: 0
   window_closed_seconds: 0
   # Thermostat
