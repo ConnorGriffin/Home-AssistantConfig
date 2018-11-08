@@ -1,5 +1,8 @@
+# TODO: Add temperature delta dependent rules
+# TODO: Add notifications for when the AC is tunred on/off by the app, maybe incorporeate actionable notifications (windows open, do you want to turn off AC?)
+# TODO: Add door/window burglar detector (separate app)
+
 import appdaemon.plugins.hass.hassapi as hass
-import datetime
 
 class DoorWindowClimate(hass.Hass):
 
@@ -220,7 +223,7 @@ class DoorWindowClimate(hass.Hass):
         }
         self.eval_rule(eval_kwargs)
 
-
+    # Handles sensor state in the context of a rule, determines if the rule is active or not as a result, and takes action based on the state of other rules
     def eval_rule(self, kwargs):
         entity = kwargs.get('entity_id')
         rule = kwargs.get('rule')
@@ -256,62 +259,69 @@ class DoorWindowClimate(hass.Hass):
                     new_state = 'active'
                 else:
                     new_state = 'inactive'
-
             elif mode == 'all':
                 if closed_count >= 1:
                     new_state = 'inactive'
                 else:
                     new_state = 'active'
 
-        # Add rule to rule counts
-        active_rules = self.rule_counts['active_rules']
-        inactive_rules = self.rule_counts['inactive_rules']
-        total_rules = self.rule_counts['total_rules']
+            # Get the rule statuses
+            active_rules = self.rule_counts['active_rules']
+            inactive_rules = self.rule_counts['inactive_rules']
 
-        # Add/remove the rule from the active/inactive lists
-        if new_state == 'inactive':
-            if entity not in inactive_rules:
-                self.rule_counts['inactive_rules'].append(entity)
-            if entity in active_rules:
-                self.rule_counts['active_rules'].remove(entity)
-        elif new_state == 'active':
-            if entity in inactive_rules:
-                self.rule_counts['inactive_rules'].remove(entity)
-            if entity not in active_rules:
-                self.rule_counts['active_rules'].append(entity)
+            # Add/remove the rule from the active/inactive lists
+            if new_state == 'inactive':
+                if rule_name not in inactive_rules:
+                    self.rule_counts['inactive_rules'].append(rule_name)
+                if rule_name in active_rules:
+                    self.rule_counts['active_rules'].remove(rule_name)
+            elif new_state == 'active':
+                if rule_name not in active_rules:
+                    self.rule_counts['active_rules'].append(rule_name)
+                if rule_name in inactive_rules:
+                    self.rule_counts['inactive_rules'].remove(rule_name)
 
+            # Take action based on rule state changes
+            if new_state == 'active' and new_state != current_state:
+                # Store the new state and climate data
+                self.rule_data[rule_name]['state'] = new_state
 
-        # Take action based on rule state changes
-        if new_state == 'active' and new_state != current_state and len(self.rule_counts['active_rules']) >= 1:
-            # Only make changes if this is the first rule to fire (rules are 'any' not 'all')
-            self.log('{} (rule) is {}, turning off AC.'.format(rule_name, new_state))
+                # Only make changes if this is the first rule to fire (rules are 'any' not 'all')
+                if len(self.rule_counts['active_rules']) == 1:
+                    self.log('{} (rule) is {}, turning off AC.'.format(rule_name, new_state))
 
-            # Store the new state and climate data
-            self.rule_data[rule_name]['state'] = new_state
-            self.climate_data['last_mode'] = self.get_state(climate, attribute='operation_mode')
-            self.climate_data['current_mode'] = 'off'
+                    self.climate_data['last_mode'] = self.get_state(climate, attribute='operation_mode')
+                    self.climate_data['current_mode'] = 'off'
 
-            self.call_service(
-                service = 'climate/set_operation_mode',
-                entity_id = climate,
-                operation_mode = 'off'
-            )
-        elif new_state == 'inactive' and new_state != current_state and len(self.rule_counts['active_rules']) == 0:
-            # Only make changes if this is the last rule to turn off
+                    self.call_service(
+                        service = 'climate/set_operation_mode',
+                        entity_id = climate,
+                        operation_mode = 'off'
+                    )
+                else:
+                    self.log('{} (rule) is {}, but another rule is active. Doing nothing.'.format(rule_name, new_state))
+            elif new_state == 'inactive' and new_state != current_state:
+                # Store the rule state
+                self.rule_data[rule_name]['state'] = new_state
 
-            self.rule_data[rule_name]['state'] = new_state
-            climate_mode = self.get_state(climate, attribute='operation_mode')
+                # Only make changes if this is the last rule to turn off
+                if len(self.rule_counts['active_rules']) == 0:
+                    climate_mode = self.get_state(climate, attribute='operation_mode')
 
-            # Change AC back to the previous mode, but only if it hasn't been manually changed since it was turned off
-            if climate_mode == self.climate_data['current_mode'] and self.climate_data['last_mode']:
-                new_mode = self.climate_data['last_mode']
-                self.log('{} (rule) is {}, setting AC back to {}.'.format(rule_name, new_state, new_mode))
-                self.call_service(
-                    service = 'climate/set_operation_mode',
-                    entity_id = climate,
-                    operation_mode = new_mode
-                )
-                self.climate_data['last_mode'] = 'off'
-                self.climate_data['current_mode'] = new_mode
-        #self.log('{}, {}'.format(current_state, new_state))
-        #self.log(self.rule_data[rule_name])
+                    # Change AC back to the previous mode, but only if it hasn't been manually changed since it was turned off
+                    if climate_mode == self.climate_data['current_mode'] and self.climate_data['last_mode']:
+                        new_mode = self.climate_data['last_mode']
+                        self.log('{} (rule) is {}, setting AC back to {}.'.format(rule_name, new_state, new_mode))
+                        self.call_service(
+                            service = 'climate/set_operation_mode',
+                            entity_id = climate,
+                            operation_mode = new_mode
+                        )
+                        self.climate_data['last_mode'] = climate_mode,
+                        self.climate_data['current_mode'] = new_mode
+                    elif self.climate_data['last_mode']:
+                        # Log why no action was taken if last_mode isn't None
+                        self.log('{} (rule) is {}, but AC has been modified since being turned off. Doing nothing.'.format(rule_name, new_state))
+                else:
+                    # Log why no action was taken
+                    self.log('{} (rule) is {}, but another rule is active. Doing nothing.'.format(rule_name, new_state))
