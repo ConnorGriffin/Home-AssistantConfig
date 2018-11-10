@@ -10,9 +10,11 @@ title: Home
 views:
   - title: Home
     icon: mdi:home
+    id: home
     #theme:
     cards:
       - title: General
+        id: general
         type: entities
         entities:
           - sensor.home_humidity
@@ -22,6 +24,7 @@ views:
           - device_tracker.diana_pixel2
 
       - title: Bedroom
+        id: bedroom
         type: entities
         show_header_toggle: false
         entities:
@@ -38,6 +41,7 @@ views:
             name: Temperature
 
       - title: Connor's Office
+        id: connors_office
         type: entities
         show_header_toggle: false
         entities:
@@ -56,6 +60,7 @@ views:
             name: Temperature
 
       - title: Diana's Office
+        id: dianas_office
         type: entities
         show_header_toggle: false
         entities:
@@ -72,6 +77,7 @@ views:
             name: Temperature
 
       - title: Living Room
+        id: living_room
         type: entities
         show_header_toggle: false
         entities:
@@ -87,6 +93,7 @@ views:
             name: Temperature
 
       - title: Dining Room
+        id: dining_room
         type: entities
         show_header_toggle: false
         entities:
@@ -99,6 +106,7 @@ views:
             name: Window
 
       - title: Hallway
+        id: hallway
         type: entities
         show_header_toggle: false
         entities:
@@ -109,6 +117,7 @@ views:
             name: Light Mode
 
       - title: Bathroom
+        id: bathroom
         type: entities
         show_header_toggle: false
         entities:
@@ -122,6 +131,7 @@ views:
           - sensor.bathroom_relative_humidity
 
       - title: Back Room
+        id: back_room
         type: entities
         show_header_toggle: false
         entities:
@@ -133,6 +143,7 @@ views:
             name: Right Window
 
       - title: Lights
+        id: light_groups
         type: entities
         entities:
           - entity: group.all_lights
@@ -141,9 +152,11 @@ views:
           - group.inside_lights_except_bedroom
 
   - title: Alarms
+    id: alarms
     icon: mdi:alarm
     cards:
       - title: Alarm1
+        id: alarm1
         type: entities
         show_header_toggle: false
         entities:
@@ -159,6 +172,7 @@ views:
         - input_boolean.alarm1_saturday
 
       - title: Alarm2
+        id: alarm2
         type: entities
         show_header_toggle: false
         entities:
@@ -174,6 +188,7 @@ views:
         - input_boolean.alarm2_saturday
 
       - title: Alarm3
+        id: alarm3
         type: entities
         show_header_toggle: false
         entities:
@@ -189,6 +204,7 @@ views:
         - input_boolean.alarm3_saturday
 
       - title: Alarm4
+        id: alarm4
         type: entities
         show_header_toggle: false
         entities:
@@ -204,6 +220,7 @@ views:
         - input_boolean.alarm4_saturday
 
       - title: Alarm5
+        id: alarm5
         type: entities
         show_header_toggle: false
         entities:
@@ -219,13 +236,17 @@ views:
         - input_boolean.alarm5_saturday
 
   - title: Climate
+    id: climate
     icon: mdi:weather-sunny
     cards:
       - type: thermostat
+        id: thermostat
         entity: climate.home
       - type: weather-forecast
+        id: forecast
         entity: weather.home
       - title: Climate Zones
+        id: climate_zones
         type: entities
         entities:
           - sensor.main_house_zone
@@ -233,28 +254,37 @@ views:
       - type: vertical-stack
         cards:
         - type: sensor
+          id: bedroom_temp
           entity: sensor.bedroom_temperature
         - type: sensor
+          id: living_room_temp
           entity: sensor.living_room_temperature
         - type: sensor
+          id: connors_office_temp
           entity: sensor.connor_office_temperature
         - type: sensor
+          id: dianas_office_temp
           entity: sensor.diana_office_temperature
 
       - type: iframe
+        id: temp_history
         title: History
         url: http://10.31.36.11:3000/dashboard-solo/snapshot/AHM5vJRewYGhx2eg6iJiy6KFhRYeu1I7?orgId=1&panelId=2&from=1530396946437&to=1530440146437&theme=light
 
   - title: Media
+    id: media
     icon: mdi:audio-video
     cards:
       - type: media-control
+        id: roku
         entity: media_player.living_room_roku
 
 
   - title: Automations
+    id: automations
     cards:
       - type: "custom:monster-card"
+        id: all_automations
         card:
           type: entities
           title: All Automations
@@ -263,8 +293,10 @@ views:
             - entity_id: "input_boolean.*_automation"
 
   - title: Doors & Windows
+    id: doors_windows
     cards:
       - type: "custom:monster-card"
+        id: all_windows
         card:
           type: entities
           title: All Windows
@@ -273,6 +305,7 @@ views:
             - entity_id: "sensor.*window*_state"
 
       - type: "custom:monster-card"
+        id: all_doors
         card:
           type: entities
           title: All Doors
@@ -281,8 +314,10 @@ views:
             - entity_id: "sensor.*door_state"
 
   - title: Z-Wave
+    id: zwave
     cards:
       - type: "custom:monster-card"
+        id: zwave_entities
         card:
           type: entities
           title: Z-Wave
@@ -291,6 +326,7 @@ views:
             - domain: zwave
 
       - type: "custom:monster-card"
+        id: zwave_batteries
         card:
           type: entities
           title: Batteries
@@ -299,6 +335,7 @@ views:
             - entity_id: "sensor.*_battery"
 
       - title: Bathroom MultiSensor
+        id: bathroom_multisensor
         type: entities
         entities:
           - sensor.bathroom_alarm_level
@@ -309,6 +346,7 @@ views:
           - sensor.bathroom_ultraviolet
 
       - title: Front Door Lock
+        id: front_door_lock
         type: entities
         entities:
           - sensor.front_door_lock_access_control
