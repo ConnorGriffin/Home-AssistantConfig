@@ -357,7 +357,7 @@
         {%- if (access_control == 23) -%}
           Closed
         {%- elif (access_control == 22) -%}
-          open
+          Open
         {%- endif -%}
       icon_template: >-
         {%- set access_control = states.sensor.backyard_door_sensor_access_control.state | int -%}
