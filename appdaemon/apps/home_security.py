@@ -23,14 +23,16 @@ class HomeSecurity(hass.Hass):
             entity_id = self.args['armed_sensor'],
             state = 'False',
             attributes = {
-                'friendly_name': "Home Security Armed"
+                'friendly_name': "Home Security Armed",
+                'icon': 'mdi:security-off'
             }
         )
         self.set_state(
             entity_id = self.args['fired_sensor'],
             state = 'Clear',
             attributes = {
-                'friendly_name': "Home Security Alarm"
+                'friendly_name': "Home Security Alarm",
+                'icon': 'mdi:security-home'
             }
         )
 
@@ -89,11 +91,17 @@ class HomeSecurity(hass.Hass):
         # Update the sensors in HA
         self.set_state(
             entity_id = self.args['armed_sensor'],
-            state = 'True'
+            state = 'True',
+            attributes = {
+                'icon': 'mdi:security'
+            }
         )
         self.set_state(
             entity_id = self.args['fired_sensor'],
-            state = 'Clear'
+            state = 'Clear',
+            attributes = {
+                'icon': 'mdi:security-home'
+            }
         )
 
         # Cancel any existing sensor listeners before re-enabling
@@ -204,7 +212,10 @@ class HomeSecurity(hass.Hass):
         # Update the sensor in HA
         self.set_state(
             entity_id = self.args['fired_sensor'],
-            state = 'Alarming'
+            state = 'Alarming',
+            attributes = {
+                'icon': 'mdi:alert-light'
+            }
         )
 
         # Send a notification
