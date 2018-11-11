@@ -38,6 +38,10 @@ window_door_climate_automation:
   name: Window/Door Climate
   icon: mdi:thermostat
 
+home_security_automation:
+  name: Home Security Automation
+  icon: mdi:security
+
 # region alarms
 alarm1_enabled:
   name: Enabled

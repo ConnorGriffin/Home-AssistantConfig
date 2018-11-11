@@ -243,9 +243,38 @@ door_window_climate:
         - zone: sensor.back_room_exterior_zone
         - door: sensor.kitchen_door_state
 
-light_flash:
-  module: light_flash
-  class: LightFlash
+home_security:
+  module: home_security
+  class: HomeSecurity
+  constrain_input_boolean: input_boolean.home_security_automation
+  # Device tracker group
+  presence_entity: group.all_devices
+  # How many seconds for all to be away before arming the alarm
+  arm_delay: 300
+  # How many seconds to wait for presence_entity to return home before issuing an alarm
+  return_delay: 120
+  # How long for a window/door to be open before firing the alarm
+  open_duration: 30
+  # HTML5 notification targets
+  notification_targets:
+    - Connor Phone
+  # Door and window sensors
+  door_window_sensors:
+    - sensor.front_window_left_state
+    - sensor.front_window_right_state
+    - sensor.dining_room_window_state
+    - sensor.connors_office_south_window_state
+    - sensor.connors_office_west_window_state
+    - sensor.dianas_office_window_state
+    - sensor.bedroom_window_state
+    - sensor.back_left_window_state
+    - sensor.back_right_window_state
+    - sensor.front_door_state
+    - sensor.backyard_door_state
+
+#light_flash:
+#  module: light_flash
+#  class: LightFlash
 
 #oneshot_test:
 #  module: test
