@@ -247,6 +247,9 @@ home_security:
   module: home_security
   class: HomeSecurity
   constrain_input_boolean: input_boolean.home_security_automation
+  # Sensors to create for reporting status in the UI
+  armed_sensor: sensor.home_security_armed
+  fired_sensor: sensor.home_security_fired
   # Device tracker group
   presence_entity: group.all_devices
   # How many seconds for all to be away before arming the alarm

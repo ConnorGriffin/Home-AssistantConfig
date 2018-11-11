@@ -18,6 +18,22 @@ class HomeSecurity(hass.Hass):
         self.alarm_armed = False
         self.alarm_fired = False
 
+        # Create the sensors in HA for reporting in the GUI
+        self.set_state(
+            entity_id = self.args['armed_sensor'],
+            state = 'False',
+            attributes = {
+                'friendly_name': "Home Security Armed"
+            }
+        )
+        self.set_state(
+            entity_id = self.args['fired_sensor'],
+            state = 'Clear',
+            attributes = {
+                'friendly_name': "Home Security Alarm"
+            }
+        )
+
         # Setup an array of handles to cancel later (until oneshot fix is live in 3.0.3)
         self.sensor_handles = []
         self.timer_handles = []
@@ -33,7 +49,6 @@ class HomeSecurity(hass.Hass):
         self.listen_state(
             cb = self.presence_cb,
             entity = self.args['presence_entity'],
-            old = 'home',
             new = 'not_home',
             duration = self.args['arm_delay'],
             immediate = True
@@ -68,8 +83,18 @@ class HomeSecurity(hass.Hass):
     # Arms or re-arms the alarm
     def arm_alarm(self):
         self.log('Alarm armed.')
-        self.alarm_fired = False
         self.alarm_armed = True
+        self.alarm_fired = False
+
+        # Update the sensors in HA
+        self.set_state(
+            entity_id = self.args['armed_sensor'],
+            state = 'True'
+        )
+        self.set_state(
+            entity_id = self.args['fired_sensor'],
+            state = 'Clear'
+        )
 
         # Cancel any existing sensor listeners before re-enabling
         for handle in self.sensor_handles:
@@ -114,8 +139,18 @@ class HomeSecurity(hass.Hass):
     # Disarms the alarm
     def disarm_alarm(self):
         self.log('Alarm disarmed.')
-        self.alarm_fired = False
         self.alarm_armed = False
+        self.alarm_fired = False
+
+        # Update the sensors in HA
+        self.set_state(
+            entity_id = self.args['armed_sensor'],
+            state = 'False'
+        )
+        self.set_state(
+            entity_id = self.args['fired_sensor'],
+            state = 'Clear'
+        )
 
         # Cancel any state listeners
         for handle in self.sensor_handles:
@@ -165,6 +200,12 @@ class HomeSecurity(hass.Hass):
     def fire_alarm(self, entity, old, new):
         self.log('Alarm triggered.')
         self.alarm_fired = True
+
+        # Update the sensor in HA
+        self.set_state(
+            entity_id = self.args['fired_sensor'],
+            state = 'Alarming'
+        )
 
         # Send a notification
         self.notify(

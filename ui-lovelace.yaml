@@ -245,27 +245,6 @@ views:
       - type: weather-forecast
         id: forecast
         entity: weather.home
-      - title: Climate Zones
-        id: climate_zones
-        type: entities
-        entities:
-          - sensor.main_house_zone
-          - sensor.back_room_exterior_zone
-      - type: vertical-stack
-        cards:
-        - type: sensor
-          id: bedroom_temp
-          entity: sensor.bedroom_temperature
-        - type: sensor
-          id: living_room_temp
-          entity: sensor.living_room_temperature
-        - type: sensor
-          id: connors_office_temp
-          entity: sensor.connor_office_temperature
-        - type: sensor
-          id: dianas_office_temp
-          entity: sensor.diana_office_temperature
-
       - type: iframe
         id: temp_history
         title: History
@@ -295,6 +274,20 @@ views:
   - title: Doors & Windows
     id: doors_windows
     cards:
+      - title: 'Home Security'
+        id: home_security
+        type: entities
+        entities:
+          - sensor.home_security_armed
+          - sensor.home_security_fired
+
+      - title: Climate Zones
+        id: climate_zones
+        type: entities
+        entities:
+          - sensor.main_house_zone
+          - sensor.back_room_exterior_zone
+
       - type: "custom:monster-card"
         id: all_windows
         card:
