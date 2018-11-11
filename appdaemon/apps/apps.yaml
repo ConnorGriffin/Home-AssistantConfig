@@ -58,7 +58,7 @@ lights:
       motion_sensor: binary_sensor.bathroom_motion
       humidity_sensor: sensor.bathroom_relative_humidity
       humidity_threshold: 65
-      off_delay: 470 # +30 built into sensor
+      off_delay: 570 # +30 built into sensor: 10 minutes
       on_delay: 0
 
     - name: hallway_light
@@ -171,8 +171,8 @@ door_autolock:
   module: door_autolock
   class: DoorAutolock
   constrain_input_boolean: input_boolean.smart_autolock_automation
-  closed_seconds: 60
-  unlocked_seconds: 60
+  closed_seconds: 120
+  unlocked_seconds: 120
   doors:
     - door: Front Door
       lock: lock.front_door_lock
