@@ -16,6 +16,10 @@ homeassistant:
 # Show links to resources in log and frontend
 #introduction:
 
+recorder:
+  purge_interval: 2
+  purge_keep_days: 7
+
 # Enables the frontend
 frontend:
 
@@ -39,10 +43,11 @@ cloud:
 http:
   # Secrets are defined in the file secrets.yaml
   api_password: !secret http_password
+  server_port: 443
   # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
   base_url: !secret base_url
-  #ssl_certificate: /ssl/fullchain.pem
-  #ssl_key: /ssl/privkey.pem
+  ssl_certificate: /config/ssl/fullchain.pem
+  ssl_key: /config/ssl/privkey.pem
   ip_ban_enabled: True
   login_attempts_threshold: 5
 
@@ -156,6 +161,10 @@ influxdb:
   password: !secret influx_password
 
 notify:
+  - name: gcm_html5
+    platform: html5
+    gcm_api_key: !secret gcm_api_key
+    gcm_sender_id: !secret gcm_sender_id
   - name: email
     platform: smtp
     sender: homeassistant@connorcg.com

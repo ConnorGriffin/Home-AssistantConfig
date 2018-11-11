@@ -5,10 +5,10 @@ lock:
   trackers:
     - tracker_name: Connor
       tracker: device_tracker.connor_galaxys8
-      notify_name: simplepush_connor
+      notification_target: Connor Phone
     - tracker_name: Diana
       tracker: device_tracker.diana_pixel2
-      #notify_name: simplepush_diana
+      #notification_target: Diana Phone
   # Time in seconds before arming the auto-unlock
   not_home_duration: 300
   lock_entity: lock.front_door_lock
@@ -247,6 +247,10 @@ light_flash:
   module: light_flash
   class: LightFlash
 
-#test:
+#oneshot_test:
 #  module: test
-#  class: Test
+#  class: OneshotTest
+
+#notify_test:
+#  module: test
+#  class: NotifyTest

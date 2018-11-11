@@ -23,7 +23,7 @@ class Lock(hass.Hass):
                 new = 'not_home',
                 duration = self.args['not_home_duration'],
                 immediate = True,
-                notify_name = tracker.get('notify_name', None),
+                notification_target = tracker.get('notification_target', None),
                 tracker_name = tracker_name
             )
 
@@ -37,7 +37,7 @@ class Lock(hass.Hass):
             cb = self.returned_home_cb,
             event = 'returned_home',
             name = tracker_name,
-            notify_name = kwargs.get('notify_name', None)
+            notification_target = kwargs.get('notification_target', None)
         )
 
         # Store the listen_event data so we can cancel it later
@@ -48,7 +48,7 @@ class Lock(hass.Hass):
     def returned_home_cb(self, event_name, data, kwargs):
         lock_friendly = self.friendly_name(self.args['lock_entity'])
         name = data['name']
-        notify_name = kwargs.get('notify_name', None)
+        notification_target = kwargs.get('notification_target', None)
         settings = self.trackers[name]
 
         # Cancel listening and reset settings (like a oneshot for listen_event)
@@ -63,9 +63,10 @@ class Lock(hass.Hass):
             entity_id = self.args['lock_entity']
         )
 
-        # Send a notification if a notify_name is provided, will probably turn this off after testing
-        if notify_name:
+        # Send a notification if a notification_target is provided, will probably turn this off after testing
+        if notification_target:
             self.notify(
                 message = '{} unlocked.'.format(lock_friendly),
-                name = notify_name
+                name = 'gcm_html5',
+                target = notification_target
             )
