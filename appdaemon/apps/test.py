@@ -30,5 +30,42 @@ class NotifyTest(hass.Hass):
         self.notify(
             message = 'Notification Test',
             name = 'gcm_html5',
-            target = 'Connor Phone'
+            target = 'Connor Desktop',
+            data = {
+                "actions": [
+                {
+                    "action": "open",
+                    "icon": "/static/icons/favicon-192x192.png",
+                    "title": "Open Home Assistant"
+                },
+                {
+                    "action": "open_door",
+                    "title": "Open door"
+                }
+                ]
+            }
         )
+
+        self.listen_event(
+            cb = self.event_cb,
+            event = 'html5_notification.received'
+        )
+
+        self.listen_event(
+            cb = self.event_cb,
+            event = 'html5_notification.clicked',
+            target = 'Connor Phone',
+            action = 'open'
+        )
+
+        self.listen_event(
+            cb = self.event_cb,
+            event = 'html5_notification.closed'
+        )
+
+
+
+    def event_cb(self, event_name, data, kwargs):
+        self.log(event_name)
+        self.log(data)
+
