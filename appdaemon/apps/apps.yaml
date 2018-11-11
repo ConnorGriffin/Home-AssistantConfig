@@ -261,6 +261,7 @@ home_security:
   # HTML5 notification targets
   notification_targets:
     - Connor Phone
+    - Diana Phone
   # Door and window sensors
   door_window_sensors:
     - sensor.front_window_left_state
