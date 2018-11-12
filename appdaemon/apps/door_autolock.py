@@ -28,7 +28,7 @@ class DoorAutolock(hass.Hass):
                 self.listen_state(
                     cb = self.closed_cb,
                     entity = sensor,
-                    new = 'Closed',
+                    new = 'off',
                     immediate = True,
                     duration = closed_seconds,
                     door_name = door_name,
@@ -70,7 +70,7 @@ class DoorAutolock(hass.Hass):
         since_changed_seconds = (now - door_state_time).total_seconds()
 
         # If the door has been closed for the required time, lock it
-        if door_state['state'] == 'Closed' and since_changed_seconds >= closed_seconds:
+        if door_state['state'] == 'off' and since_changed_seconds >= closed_seconds:
             self.log('{} closed and unlocked, locking.'.format(door_name))
             self.call_service(
                 service = 'lock/lock',

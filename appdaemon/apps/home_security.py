@@ -120,10 +120,10 @@ class HomeSecurity(hass.Hass):
         for sensor in self.args['door_window_sensors']:
             # Listen for the opposite of the current state
             current_state = self.get_state(sensor)
-            if current_state == 'Open':
-                new_state = 'Closed'
-            elif current_state == 'Closed':
-                new_state = 'Open'
+            if current_state == 'on':
+                new_state = 'off'
+            elif current_state == 'off':
+                new_state = 'on'
 
             # Setup the listeners and add the handler to the handle array, oneshots fixed in 3.0.3, not working right now.
             handle = self.listen_state(

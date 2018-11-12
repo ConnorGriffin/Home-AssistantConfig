@@ -59,7 +59,7 @@ class DoorWindowClimate(hass.Hass):
                 self.listen_state(
                     cb = self.sensor_cb,
                     entity = window,
-                    new = 'Closed',
+                    new = 'off',
                     duration = window_closed_seconds,
                     immediate = True,
                     zone = zone['name'],
@@ -69,7 +69,7 @@ class DoorWindowClimate(hass.Hass):
                 self.listen_state(
                     cb = self.sensor_cb,
                     entity = window,
-                    new = 'Open',
+                    new = 'on',
                     duration = window_open_seconds,
                     immediate = True,
                     zone = zone['name'],
@@ -82,7 +82,7 @@ class DoorWindowClimate(hass.Hass):
                 self.listen_state(
                     cb = self.sensor_cb,
                     entity = door,
-                    new = 'Closed',
+                    new = 'off',
                     duration = door_closed_seconds,
                     immediate = True,
                     zone = zone['name'],
@@ -92,7 +92,7 @@ class DoorWindowClimate(hass.Hass):
                 self.listen_state(
                     cb = self.sensor_cb,
                     entity = door,
-                    new = 'Open',
+                    new = 'on',
                     duration = door_open_seconds,
                     immediate = True,
                     zone = zone['name'],
@@ -142,7 +142,7 @@ class DoorWindowClimate(hass.Hass):
                     self.listen_state(
                         cb = self.dependency_cb,
                         entity = entity,
-                        new = 'Closed',
+                        new = 'off',
                         duration = door_closed_seconds,
                         immediate = True,
                         rule = rule
@@ -150,7 +150,7 @@ class DoorWindowClimate(hass.Hass):
                     self.listen_state(
                         cb = self.dependency_cb,
                         entity = entity,
-                        new = 'Open',
+                        new = 'on',
                         duration = door_closed_seconds,
                         immediate = True,
                         rule = rule
@@ -160,7 +160,7 @@ class DoorWindowClimate(hass.Hass):
                     self.listen_state(
                         cb = self.dependency_cb,
                         entity = entity,
-                        new = 'Closed',
+                        new = 'off',
                         duration = window_closed_seconds,
                         immediate = True,
                         rule = rule
@@ -168,7 +168,7 @@ class DoorWindowClimate(hass.Hass):
                     self.listen_state(
                         cb = self.dependency_cb,
                         entity = entity,
-                        new = 'Open',
+                        new = 'on',
                         duration = window_closed_seconds,
                         immediate = True,
                         rule = rule
@@ -181,11 +181,11 @@ class DoorWindowClimate(hass.Hass):
         sensor = kwargs.get('sensor')
 
         # Add or remove the sensor from the open_sensors and closed_sensors lists
-        if new == 'Closed':
+        if new == 'off':
             self.zone_data[zone]['closed_sensors'].append(entity)
             if entity in self.zone_data[zone]['open_sensors']:
                 self.zone_data[zone]['open_sensors'].remove(entity)
-        elif new == 'Open':
+        elif new == 'on':
             self.zone_data[zone]['open_sensors'].append(entity)
             if entity in self.zone_data[zone]['closed_sensors']:
                 self.zone_data[zone]['closed_sensors'].remove(entity)
@@ -237,12 +237,12 @@ class DoorWindowClimate(hass.Hass):
         new_state = None
 
         # Add/remove the sensor from the closed_sensors or open_sensors list
-        if state == 'closed':
+        if state in ['closed', 'off']:
             if entity not in closed_sensors:
                 self.rule_data[rule_name]['closed_sensors'].append(entity)
             if entity in open_sensors:
                 self.rule_data[rule_name]['open_sensors'].remove(entity)
-        elif state == 'open':
+        elif state in ['open', 'on']:
             if entity not in open_sensors:
                 self.rule_data[rule_name]['open_sensors'].append(entity)
             if entity in closed_sensors:

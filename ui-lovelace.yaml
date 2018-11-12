@@ -33,7 +33,7 @@ views:
             type: custom:slider-entity-row
           - entity: input_select.bedroom_light_mode
             name: Light Mode
-          - entity: sensor.bedroom_window_state
+          - entity: binary_sensor.bedroom_window
             name: Window
           - entity: binary_sensor.bedroom_occupancy
             name: Occupancy
@@ -50,9 +50,9 @@ views:
             type: custom:slider-entity-row
           - entity: input_select.connors_office_light_mode
             name: Light Mode
-          - entity: sensor.connors_office_south_window_state
+          - entity: binary_sensor.connors_office_south_window
             name: South Window
-          - entity: sensor.connors_office_west_window_state
+          - entity: binary_sensor.connors_office_west_window
             name: West Window
           - entity: binary_sensor.connor_office_occupancy
             name: Occupancy
@@ -69,7 +69,7 @@ views:
             type: custom:slider-entity-row
           - entity: input_select.dianas_office_light_mode
             name: Light Mode
-          - entity: sensor.dianas_office_window_state
+          - entity: binary_sensor.dianas_office_window
             name: Window
           - entity: binary_sensor.diana_office_occupancy
             name: Occupancy
@@ -82,10 +82,10 @@ views:
         show_header_toggle: false
         entities:
           - lock.front_door_lock
-          - sensor.front_door_state
-          - entity: sensor.front_window_left_state
+          - binary_sensor.front_door
+          - entity: binary_sensor.front_window_left
             name: Window (Left Half)
-          - entity: sensor.front_window_right_state
+          - entity: binary_sensor.front_window_right
             name: Window (Right Half)
           - entity: binary_sensor.living_room_occupancy
             name: Occupancy
@@ -102,7 +102,7 @@ views:
             type: custom:slider-entity-row
           - entity: input_select.dining_room_light_mode
             name: Light Mode
-          - entity: sensor.dining_room_window_state
+          - entity: binary_sensor.dining_room_window
             name: Window
 
       - title: Hallway
@@ -135,11 +135,11 @@ views:
         type: entities
         show_header_toggle: false
         entities:
-          - sensor.backyard_door_state
-          - sensor.kitchen_door_state
-          - entity: sensor.back_left_window_state
+          - binary_sensor.backyard_door
+          - binary_sensor.kitchen_door
+          - entity: binary_sensor.back_left_window
             name: Left Window
-          - entity: sensor.back_right_window_state
+          - entity: binary_sensor.back_right_window
             name: Right Window
 
       - title: Lights
@@ -295,7 +295,7 @@ views:
           title: All Windows
         filter:
           include:
-            - entity_id: "sensor.*window*_state"
+            - entity_id: "binary_sensor.*window(?:_left|_right)?"
 
       - type: "custom:monster-card"
         id: all_doors
@@ -304,7 +304,7 @@ views:
           title: All Doors
         filter:
           include:
-            - entity_id: "sensor.*door_state"
+            - entity_id: "binary_sensor.*door"
 
   - title: Z-Wave
     id: zwave
