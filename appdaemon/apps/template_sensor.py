@@ -5,7 +5,10 @@ class TemplateSensor(hass.Hass):
 
     def initialize(self):
 
-        # Setup
+        # If an attribute is provided use that, otherwise just get the state
+        attribute = self.args.get('attribute', 'state')
+
+        # Iterate over each entity to create listeners and sensors
         for entity in self.args.get('entities', []):
             # If entity is provide as a key/value pair, extract the entity_id
             if type(entity) is dict:
@@ -25,6 +28,7 @@ class TemplateSensor(hass.Hass):
             # Set the value immediately (on AppDaemon startup)
             self.update_sensor(
                 entity = entity_id,
+                attribute = attribute,
                 sensor = sensor,
                 friendly_name = friendly_name
             )
@@ -33,6 +37,7 @@ class TemplateSensor(hass.Hass):
             self.listen_state(
                 cb = self.sensor_cb,
                 entity = entity_id,
+                attribute = attribute,
                 sensor = sensor,
                 friendly_name = friendly_name
             )
@@ -42,28 +47,33 @@ class TemplateSensor(hass.Hass):
         # Call the update_sensor function when a sensor state changes
         self.update_sensor(
             entity = entity,
+            attribute = attribute,
             sensor = kwargs['sensor'],
             new = new,
             friendly_name = kwargs.get('friendly_name', None)
         )
 
 
-    def update_sensor(self, entity, sensor, **kwargs):
+    def update_sensor(self, entity, attribute, sensor, **kwargs):
         # Get the new value if provided, otherwise get state
-        new = kwargs.get('new', self.get_state(entity))
+        new = kwargs.get('new', self.get_state(entity, attribute=attribute))
 
         # Get the friendly name if provided, otherwise use a title-cased version of the entity ID
         friendly_name = kwargs.get('friendly_name', None)
         if not friendly_name:
             friendly_name = sensor.split('.')[1].replace('_', ' ').title()
 
-        # Compare the new value to the expected on/off values
-        if new == self.args['on_value']:
-            new_state = 'on'
-        elif new == self.args['off_value']:
-            new_state = 'off'
+        # Set new_state based on whether this is a binary_sensor or not
+        if self.args['type'] == 'binary_sensor':
+            # Compare the new value to the expected on/off values
+            if new == self.args['on_value']:
+                new_state = 'on'
+            elif new == self.args['off_value']:
+                new_state = 'off'
+            else:
+                new_state = 'unknown'
         else:
-            new_state = 'unknown'
+            new_state = new
 
         # Update the sensor
         self.set_state(

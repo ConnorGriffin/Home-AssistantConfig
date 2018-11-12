@@ -283,6 +283,7 @@ window_sensors:
   module: template_sensor
   class: TemplateSensor
   priority: 10
+  type: binary_sensor
   device_class: window
   on_value: '22'
   off_value: '23'
@@ -309,6 +310,7 @@ door_sensors:
   module: template_sensor
   class: TemplateSensor
   priority: 10
+  type: binary_sensor
   device_class: door
   sensor_name:
     find: '(sensor\.)(.*)_sensor_access_control'
@@ -319,6 +321,39 @@ door_sensors:
   - sensor.backyard_door_sensor_access_control
   - sensor.front_door_sensor_access_control
   - sensor.kitchen_door_sensor_access_control
+
+battery_sensors:
+  module: template_sensor
+  class: TemplateSensor
+  priority: 10
+  type: sensor
+  device_class: door
+  sensor_name:
+    find: '(zwave\.)(.*)'
+    replace: 'sensor.\2_battery'
+  attribute: battery_level
+  entities:
+  # Windows
+  - entity: zwave.front_window_left_sensor
+    name: Front Window (Left Half) Sensor Battery
+  - entity: zwave.front_window_right_sensor
+    name: Front Window (Right Half) Sensor Battery
+  - zwave.dining_room_window_sensor
+  - entity: zwave.dianas_office_window_sensor
+    name: "Diana's Office Window Sensor Battery"
+  - zwave.connors_office_west_window_sensor
+  - zwave.connors_office_south_window_sensor
+  - zwave.bedroom_window_sensor
+  - zwave.back_left_window_sensor
+  - zwave.back_right_window_sensor
+  # Doors
+  - zwave.front_door_sensor
+  - zwave.kitchen_door_sensor
+  - zwave.backyard_door_sensor
+  # Locks
+  - zwave.front_door_lock
+  # Motion/Multi
+  - zwave.bathroom_multisensor_6
 
 
 #light_flash:
