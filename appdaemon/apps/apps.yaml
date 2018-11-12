@@ -170,6 +170,7 @@ install_dependencies:
 door_autolock:
   module: door_autolock
   class: DoorAutolock
+  priority: 100
   constrain_input_boolean: input_boolean.smart_autolock_automation
   closed_seconds: 120
   unlocked_seconds: 120
@@ -183,6 +184,7 @@ door_autolock:
 door_window_climate:
   module: door_window_climate
   class: DoorWindowClimate
+  priority: 100
   constrain_input_boolean: input_boolean.window_door_climate_automation
   # How long to wait before changing climate behaviours after each event
   door_open_seconds: 300
@@ -246,6 +248,7 @@ door_window_climate:
 home_security:
   module: home_security
   class: HomeSecurity
+  priority: 100
   constrain_input_boolean: input_boolean.home_security_automation
   # Sensors to create for reporting status in the UI
   armed_sensor: sensor.home_security_armed
@@ -279,6 +282,7 @@ home_security:
 window_sensors:
   module: template_sensor
   class: TemplateSensor
+  priority: 10
   device_class: window
   on_value: '22'
   off_value: '23'
@@ -304,6 +308,7 @@ window_sensors:
 door_sensors:
   module: template_sensor
   class: TemplateSensor
+  priority: 10
   device_class: door
   sensor_name:
     find: '(sensor\.)(.*)_sensor_access_control'
