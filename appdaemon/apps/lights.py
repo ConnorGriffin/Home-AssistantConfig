@@ -409,12 +409,12 @@ class Lights(hass.Hass):
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
         # Cancel listening (doing this because oneshots don't work)
         self.cancel_listen_state(kwargs['handle'])
+        light_friendly = self.friendly_name(entity)
 
         # Don't call auto_brightness_cb if the mode dropdown isn't set to Automatic
         mode_entity = 'input_select.{}_mode'.format(entity.split('.')[1])
         mode_state = self.get_state(mode_entity)
         if mode_state == 'Automatic':
-            light_friendly = self.friendly_name(entity)
             self.log('{}: Turned on'.format(light_friendly))
 
             # Run twice, sets an instant brightness, then a slow transition (like if it was never taken off schedule)
@@ -423,8 +423,8 @@ class Lights(hass.Hass):
                 source = 'turned_on_cb',
                 immediate = True
             ))
-
-        self.log('{}: Turned on in manual mode.'.format(light_friendly))
+        else:
+            self.log('{}: Turned on in manual mode.'.format(light_friendly))
 
 
     # Set brightness automatically based on schedule
