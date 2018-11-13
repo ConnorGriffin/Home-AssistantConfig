@@ -339,7 +339,7 @@ battery_sensors:
   class: TemplateSensor
   priority: 10
   type: sensor
-  device_class: door
+  device_class: battery
   sensor_name:
     find: '(zwave\.)(.*)'
     replace: 'sensor.\2_battery'
@@ -353,8 +353,10 @@ battery_sensors:
   - zwave.dining_room_window_sensor
   - entity: zwave.dianas_office_window_sensor
     name: "Diana's Office Window Sensor Battery"
-  - zwave.connors_office_west_window_sensor
-  - zwave.connors_office_south_window_sensor
+  - entity: zwave.connors_office_west_window_sensor
+    name: "Connor's Office West Window Battery"
+  - entity: zwave.connors_office_south_window_sensor
+    name: "Connor's Office South Window Battery"
   - zwave.bedroom_window_sensor
   - zwave.back_left_window_sensor
   - zwave.back_right_window_sensor
