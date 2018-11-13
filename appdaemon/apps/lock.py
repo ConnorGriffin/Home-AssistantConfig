@@ -3,6 +3,7 @@ import appdaemon.plugins.hass.hassapi as hass
 class Lock(hass.Hass):
 
     # TODO: Don't unlock if the door has been unlocked/locked in the last few minutes
+    # TODO: Integrate with new presence sensors, stop listening for events directly
 
     def initialize(self):
         self.trackers = {}
@@ -51,12 +52,20 @@ class Lock(hass.Hass):
         notification_target = kwargs.get('notification_target', None)
         settings = self.trackers[name]
 
+
         # Cancel listening and reset settings (like a oneshot for listen_event)
         self.cancel_listen_event(settings['handle'])
         settings['listening'] = False
         settings['handle'] = None
 
-        # Unlock the door:
+        # Fire an event back to HomeAssistant, other apps can subscribe to this
+        self.fire_event(
+            "returned_home",
+            source = 'AppDaemon',
+            name = name
+        )
+
+        # Unlock the door
         self.log('{} has returned, unlocking {}.'.format(name, lock_friendly))
         self.call_service(
             service = 'lock/unlock',

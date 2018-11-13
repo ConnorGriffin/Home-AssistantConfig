@@ -20,8 +20,8 @@ views:
           - sensor.home_humidity
           - climate.home
           - type: divider
-          - device_tracker.connor_galaxys8
-          - device_tracker.diana_pixel2
+          - binary_sensor.connor_presence
+          - binary_sensor.diana_presence
 
       - title: Bedroom
         id: bedroom

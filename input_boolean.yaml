@@ -42,6 +42,12 @@ home_security_automation:
   name: Home Security Automation
   icon: mdi:security
 
+welcome_home_lighting_automation:
+  name: Welcome Home Lighting
+  icon: mdi:lightbulb-on
+
+
+
 # region alarms
 alarm1_enabled:
   name: Enabled

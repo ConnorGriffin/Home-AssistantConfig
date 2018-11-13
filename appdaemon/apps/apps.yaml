@@ -1,4 +1,16 @@
 ---
+combo_presence:
+  module: combo_presence
+  class: ComboPresence
+  priority: 10
+  trackers:
+    - name: Connor
+      presence_sensor: binary_sensor.connor_presence
+      device_tracker: device_tracker.connor_galaxys8
+    - name: Diana
+      presence_sensor: binary_sensor.diana_presence
+      device_tracker: device_tracker.diana_pixel2
+
 lock:
   module: lock
   class: Lock
@@ -355,6 +367,18 @@ battery_sensors:
   # Motion/Multi
   - zwave.bathroom_multisensor_6
 
+welcome_home_lighting:
+  module: welcome_home_lighting
+  class: WelcomeHomeLighting
+  constrain_input_boolean: input_boolean.welcome_home_lighting_automation
+  auto_off: 180
+  #brightness_pct: 50
+  presence_sensors:
+    - binary_sensor.connor_presence
+    - binary_sensor.diana_presence
+  lights:
+    - light.dining_room_light
+    - light.hallway_light
 
 #light_flash:
 #  module: light_flash
