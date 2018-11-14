@@ -65,11 +65,32 @@ class TemplateSensor(hass.Hass):
 
         # Set new_state based on whether this is a binary_sensor or not
         if self.args['type'] == 'binary_sensor':
-            # Compare the new value to the expected on/off values
-            if new == self.args['on_value']:
-                new_state = 'on'
-            elif new == self.args['off_value']:
-                new_state = 'off'
+            # Get values and expressions (only one or the other should be provided)
+            on_value = self.args.get('on_value', None)
+            off_value = self.args.get('off_value', None)
+            on_expression = self.args.get('on_expression', None)
+            off_expression = self.args.get('off_expression', None)
+
+            # Use the values or expressions depending on which is provided (prefer values over expressions)
+            if bool(on_value and off_value):
+                # Compare the new value to the expected on/off values
+                if new == on_value:
+                    new_state = 'on'
+                elif new == off_value:
+                    new_state = 'off'
+                else:
+                    new_state = 'unknown'
+            elif bool(on_expression and off_expression):
+                # Compare the new value to the expected on/off expressions
+                on_exp_string = '{} {}'.format(new, on_expression)
+                off_exp_string = '{} {}'.format(new, off_expression)
+
+                if eval(on_exp_string):
+                    new_state = 'on'
+                elif eval(off_exp_string):
+                    new_state = 'off'
+                else:
+                    new_state = 'unknown'
             else:
                 new_state = 'unknown'
         else:
