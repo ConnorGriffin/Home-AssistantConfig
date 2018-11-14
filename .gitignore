@@ -16,4 +16,5 @@ appdaemon/apps/__pycache__
 .bash*
 .profile
 .viminfo
+.storage
 tts
