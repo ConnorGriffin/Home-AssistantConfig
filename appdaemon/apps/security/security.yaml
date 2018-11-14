@@ -1,0 +1,63 @@
+---
+door_autolock:
+  module: door_autolock
+  class: DoorAutolock
+  priority: 100
+  constrain_input_boolean: input_boolean.smart_autolock_automation
+  closed_seconds: 120
+  unlocked_seconds: 120
+  doors:
+    - door: Front Door
+      lock: lock.front_door_lock
+      sensor: binary_sensor.front_door
+    - door: Back Door
+      sensor: binary_sensor.backyard_door
+
+home_security:
+  module: home_security
+  class: HomeSecurity
+  priority: 100
+  constrain_input_boolean: input_boolean.home_security_automation
+  # Sensors to create for reporting status in the UI
+  armed_sensor: sensor.home_security_armed
+  fired_sensor: sensor.home_security_fired
+  # Device tracker group
+  presence_entity: group.all_devices
+  # How many seconds for all to be away before arming the alarm
+  arm_delay: 300
+  # How many seconds to wait for presence_entity to return home before issuing an alarm
+  return_delay: 120
+  # How long for a window/door to be open before firing the alarm
+  open_duration: 30
+  # HTML5 notification targets
+  notification_targets:
+    - Connor Phone
+    - Diana Phone
+  # Door and window sensors
+  door_window_sensors:
+    - binary_sensor.front_window_left
+    - binary_sensor.front_window_right
+    - binary_sensor.dining_room_window
+    - binary_sensor.connors_office_south_window
+    - binary_sensor.connors_office_west_window
+    - binary_sensor.dianas_office_window
+    - binary_sensor.bedroom_window
+    - binary_sensor.back_left_window
+    - binary_sensor.back_right_window
+    - binary_sensor.front_door
+    - binary_sensor.backyard_door
+
+lock:
+  module: lock
+  class: Lock
+  trackers:
+    - tracker_name: Connor
+      tracker: device_tracker.connor_galaxys8
+      notification_target: Connor Phone
+    - tracker_name: Diana
+      tracker: device_tracker.diana_pixel2
+      #notification_target: Diana Phone
+  # Time in seconds before arming the auto-unlock
+  not_home_duration: 300
+  lock_entity: lock.front_door_lock
+  constrain_input_boolean: input_boolean.smart_unlock_automation

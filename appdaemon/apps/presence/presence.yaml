@@ -1,0 +1,24 @@
+---
+combo_presence:
+  module: combo_presence
+  class: ComboPresence
+  priority: 10
+  trackers:
+    - name: Connor
+      presence_sensor: binary_sensor.connor_presence
+      device_tracker: device_tracker.connor_galaxys8
+    - name: Diana
+      presence_sensor: binary_sensor.diana_presence
+      device_tracker: device_tracker.diana_pixel2
+
+presence:
+  module: presence
+  class: Presence
+  constrain_input_boolean: input_boolean.room_presence_automation
+  rooms:
+    - name: Bedroom
+      entity: binary_sensor.bedroom_occupancy
+    - name: Connor's Office
+      entity: binary_sensor.connor_office_occupancy
+    - name: Diana's Office
+      entity: binary_sensor.diana_office_occupancy

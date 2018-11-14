@@ -1,0 +1,20 @@
+---
+install_dependencies:
+  module: install_deps
+  class: InstallDeps
+  priority: 0
+  packages:
+    - lxml
+    - responses
+
+low_battery_alert:
+  module: battery
+  class: LowBattery
+  constrain_input_boolean: input_boolean.low_battery_alert_automation
+  level: 15
+  entities:
+    - zwave.front_door_lock
+    - zwave.front_door_sensor
+    - zwave.front_window_right_sensor
+    - zwave.bathroom_multisensor_6
+    - zwave.backyard_door_sensor
