@@ -126,6 +126,8 @@ views:
             type: custom:slider-entity-row
           - entity: input_select.bathroom_light_mode
             name: Light Mode
+          - entity: binary_sensor.bathroom_window
+            name: Window
           - binary_sensor.bathroom_motion
           - sensor.bathroom_luminance
           - sensor.bathroom_relative_humidity
@@ -136,6 +138,7 @@ views:
         show_header_toggle: false
         entities:
           - binary_sensor.backyard_door
+          - binary_sensor.carport_door
           - binary_sensor.kitchen_door
           - entity: binary_sensor.back_left_window
             name: Left Window
@@ -317,6 +320,24 @@ views:
         filter:
           include:
             - domain: zwave
+
+      - type: "custom:monster-card"
+        id: smart-plug-1
+        card:
+          type: entities
+          title: Smart Plug 1
+        filter:
+          include:
+            - entity_id: "*.smart_plug_1*"
+
+      - type: "custom:monster-card"
+        id: smart-plug-2
+        card:
+          type: entities
+          title: Smart Plug 2
+        filter:
+          include:
+            - entity_id: "*.smart_plug_2*"
 
       - type: "custom:monster-card"
         id: zwave_batteries
