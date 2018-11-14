@@ -80,3 +80,18 @@ battery_sensors:
   - zwave.front_door_lock
   # Motion/Multi
   - zwave.bathroom_multisensor_6
+
+smart_plugs:
+  module: template_sensor
+  class: TemplateSensor
+  priority: 10
+  type: binary_sensor
+  device_class: plug
+  sensor_name:
+    find: 'sensor.smart_plug_(.*)_current'
+    replace: 'binary_sensor.smart_plug_\1_active'
+  on_expression: '> 0'
+  off_expression: '== 0'
+  entities:
+    - sensor.smart_plug_1_current
+    - sensor.smart_plug_2_current
