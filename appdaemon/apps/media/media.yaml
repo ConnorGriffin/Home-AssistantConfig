@@ -1,0 +1,9 @@
+---
+media_power:
+  module: media_power
+  class: MediaPower
+  plug:
+    switch: switch.smart_plug_1_switch
+    status: binary_sensor.smart_plug_1_active
+  roku: media_player.living_room_roku
+  off_duration: 60
