@@ -91,6 +91,9 @@ views:
             name: Occupancy
           - entity: sensor.living_room_temperature
             name: Temperature
+          - entity: binary_sensor.smart_plug_2_active
+            name: Projector
+            icon: mdi:projector
 
       - title: Dining Room
         id: dining_room
@@ -131,6 +134,7 @@ views:
           - binary_sensor.bathroom_motion
           - sensor.bathroom_luminance
           - sensor.bathroom_relative_humidity
+          - binary_sensor.shower
 
       - title: Back Room
         id: back_room
@@ -260,6 +264,14 @@ views:
       - type: media-control
         id: roku
         entity: media_player.living_room_roku
+      - type: entities
+        id: media_entities
+        entities:
+          - entity: binary_sensor.smart_plug_2_active
+            name: Projector State
+            icon: mdi:projector
+          - entity: switch.smart_plug_2_switch
+            name: Projector Power
 
 
   - title: Automations
