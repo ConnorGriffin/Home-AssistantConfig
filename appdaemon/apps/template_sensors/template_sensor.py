@@ -96,12 +96,18 @@ class TemplateSensor(hass.Hass):
         else:
             new_state = new
 
+        # Dynamically build the attributes dict
+        attributes = {
+            'friendly_name': friendly_name
+        }
+        if self.args['device_class']:
+            attributes.update({'device_class': self.args['device_class']})
+        if self.args['icon']:
+            attributes.update({'icon': self.args['icon']})
+
         # Update the sensor
         self.set_state(
             entity_id = sensor,
             state = new_state,
-            attributes = {
-                'friendly_name': friendly_name,
-                'device_class': self.args['device_class']
-            }
+            attributes = attributes
         )
