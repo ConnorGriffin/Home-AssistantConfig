@@ -95,3 +95,17 @@ smart_plugs:
   entities:
     - sensor.smart_plug_1_current
     - sensor.smart_plug_2_current
+
+shower:
+  module: template_sensor
+  class: TemplateSensor
+  priority: 10
+  type: binary_sensor
+  sensor_name:
+    find: 'sensor.bathroom_relative_humidity'
+    replace: 'binary_sensor.shower'
+  on_expression: '>= 65'
+  off_expression: '< 65'
+  entities:
+    - sensor.bathroom_relative_humidity
+  icon: mdi:shower-head
