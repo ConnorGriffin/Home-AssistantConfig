@@ -91,7 +91,7 @@ views:
             name: Occupancy
           - entity: sensor.living_room_temperature
             name: Temperature
-          - entity: binary_sensor.smart_plug_2_active
+          - entity: binary_sensor.smart_plug_1_active
             name: Projector
             icon: mdi:projector
 
@@ -131,10 +131,10 @@ views:
             name: Light Mode
           - entity: binary_sensor.bathroom_window
             name: Window
+          - binary_sensor.shower
           - binary_sensor.bathroom_motion
           - sensor.bathroom_luminance
           - sensor.bathroom_relative_humidity
-          - binary_sensor.shower
 
       - title: Back Room
         id: back_room
@@ -267,10 +267,10 @@ views:
       - type: entities
         id: media_entities
         entities:
-          - entity: binary_sensor.smart_plug_2_active
+          - entity: binary_sensor.smart_plug_1_active
             name: Projector State
             icon: mdi:projector
-          - entity: switch.smart_plug_2_switch
+          - entity: switch.smart_plug_1_switch
             name: Projector Power
 
 
@@ -341,15 +341,6 @@ views:
         filter:
           include:
             - entity_id: "*.smart_plug_1*"
-
-      - type: "custom:monster-card"
-        id: smart-plug-2
-        card:
-          type: entities
-          title: Smart Plug 2
-        filter:
-          include:
-            - entity_id: "*.smart_plug_2*"
 
       - type: "custom:monster-card"
         id: zwave_batteries
