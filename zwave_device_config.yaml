@@ -19,3 +19,147 @@ light.dining_room_light:
 light.hallway_light:
   ignored: false
   polling_intensity: 1
+sensor.backyard_door_sensor_sourcenodeid:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.backyard_door_sensor:
+  ignored: true
+  polling_intensity: 0
+sensor.backyard_door_sensor_alarm_level:
+  ignored: true
+  polling_intensity: 0
+sensor.backyard_door_sensor_alarm_type:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_level_4:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_type_4:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.hank_hkzwdws01_doorwindow_sensor_sensor_4:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_sourcenodeid_4:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_level_3:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_type_3:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.hank_hkzwdws01_doorwindow_sensor_sensor_3:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_sourcenodeid_3:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_level_8:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_type_8:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.hank_hkzwdws01_doorwindow_sensor_sensor_9:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_sourcenodeid_9:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_level_7:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_type_7:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.hank_hkzwdws01_doorwindow_sensor_sensor_7:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_sourcenodeid_7:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_level_9:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_type_9:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.hank_hkzwdws01_doorwindow_sensor_sensor_8:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_sourcenodeid_8:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_level_6:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_type_6:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.hank_hkzwdws01_doorwindow_sensor_sensor_6:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_sourcenodeid_6:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_level_2:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_type_2:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.hank_hkzwdws01_doorwindow_sensor_sensor_2:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_sourcenodeid_2:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.front_door_sensor:
+  ignored: true
+  polling_intensity: 0
+sensor.front_door_sensor_alarm_level:
+  ignored: true
+  polling_intensity: 0
+sensor.front_door_sensor_alarm_type:
+  ignored: true
+  polling_intensity: 0
+sensor.front_door_sensor_sourcenodeid:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_level:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_type:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.hank_hkzwdws01_doorwindow_sensor_sensor:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_sourcenodeid:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.front_window_right_sensor:
+  ignored: true
+  polling_intensity: 0
+sensor.front_window_right_sensor_alarm_type:
+  ignored: true
+  polling_intensity: 0
+sensor.front_window_right_sensor_alarm_level:
+  ignored: true
+  polling_intensity: 0
+sensor.front_window_right_sensor_sourcenodeid:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_level_5:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_alarm_type_5:
+  ignored: true
+  polling_intensity: 0
+binary_sensor.hank_hkzwdws01_doorwindow_sensor_sensor_5:
+  ignored: true
+  polling_intensity: 0
+sensor.hank_hkzwdws01_doorwindow_sensor_sourcenodeid_5:
+  ignored: true
+  polling_intensity: 0
