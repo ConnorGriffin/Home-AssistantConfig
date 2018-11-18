@@ -2,7 +2,6 @@
 window_sensors:
   module: template_sensor
   class: TemplateSensor
-  priority: 10
   type: binary_sensor
   device_class: window
   on_value: '22'
@@ -12,9 +11,9 @@ window_sensors:
     replace: 'binary_sensor.\2'
   entities:
     - entity: sensor.front_window_left_sensor_access_control
-      name: Front Window (Left Half)
+      name: "Front Window (Left Half)"
     - entity: sensor.front_window_right_sensor_access_control
-      name: Front Window (Right Half)
+      name: "Front Window (Right Half)"
     - sensor.dining_room_window_sensor_access_control
     - entity: sensor.connors_office_south_window_sensor_access_control
       name: "Connor's Office South Window"
@@ -30,7 +29,6 @@ window_sensors:
 door_sensors:
   module: template_sensor
   class: TemplateSensor
-  priority: 10
   type: binary_sensor
   device_class: door
   sensor_name:
@@ -47,7 +45,6 @@ door_sensors:
 battery_sensors:
   module: template_sensor
   class: TemplateSensor
-  priority: 10
   type: sensor
   device_class: battery
   sensor_name:
@@ -84,7 +81,6 @@ battery_sensors:
 smart_plugs:
   module: template_sensor
   class: TemplateSensor
-  priority: 10
   type: binary_sensor
   device_class: plug
   sensor_name:
@@ -94,12 +90,10 @@ smart_plugs:
   off_expression: '== 0'
   entities:
     - sensor.smart_plug_1_current
-    - sensor.smart_plug_2_current
 
 shower:
   module: template_sensor
   class: TemplateSensor
-  priority: 10
   type: binary_sensor
   sensor_name:
     find: 'sensor.bathroom_relative_humidity'

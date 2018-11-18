@@ -2,7 +2,7 @@
 door_autolock:
   module: door_autolock
   class: DoorAutolock
-  priority: 100
+  dependency: door_sensors
   constrain_input_boolean: input_boolean.smart_autolock_automation
   closed_seconds: 120
   unlocked_seconds: 120
@@ -16,7 +16,9 @@ door_autolock:
 home_security:
   module: home_security
   class: HomeSecurity
-  priority: 100
+  dependencies:
+    - door_sensors
+    - window_sensors
   constrain_input_boolean: input_boolean.home_security_automation
   # Sensors to create for reporting status in the UI
   armed_sensor: sensor.home_security_armed
