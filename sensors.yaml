@@ -1,1 +1,26 @@
 - platform: yr
+
+#- platform: template
+#  sensors:
+#    blood_glucose_level:
+#      friendly_name: 'Blood Glucose Level'
+#      value_template: >
+#        {{ state_attr('sensor.blood_glucose', 'sgv') }}
+#      unit_of_measurement: 'mg/dL'
+#      icon_template: >
+#        {%- set direction = state_attr('sensor.blood_glucose', 'direction') -%}
+#        {%- if (direction == 'Flat') -%}
+#          mdi:arrow-right
+#        {%- elif (direction == 'FortyFiveUp') -%}
+#          mdi:arrow-top-right
+#        {%- elif (direction == 'FortyFiveDown') -%}
+#          mdi:arrow-bottom-right
+#        {%- elif (direction == 'SingleUp') -%}
+#          mdi:arrow-up
+#        {%- elif (direction == 'DoubleUp') -%}
+#          mdi:arrow-up-thick
+#        {%- elif (direction == 'SingleDown') -%}
+#          mdi:arrow-down
+#        {%- elif (direction == 'DoubleDown') -%}
+#          mdi:arrow-down-thick
+#        {%- endif -%}
