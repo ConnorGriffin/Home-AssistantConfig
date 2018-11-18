@@ -178,3 +178,9 @@ notify:
   - name: simplepush_connor
     platform: simplepush
     device_key: !secret connor_simplepush
+
+
+mqtt:
+  password: !secret http_password
+  discovery: true
+  discovery_prefix: homeassistant
