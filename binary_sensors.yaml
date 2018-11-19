@@ -115,3 +115,20 @@
       value_template: >-
         {{ states('sensor.bathroom_relative_humidity')|float >= 65 }}
       icon_template: 'mdi:shower-head'
+
+    bed_occupancy_connor:
+      entity_id: sensor.bed_sensor_connor_fsr
+      friendly_name: Bed Occupancy (Connor)
+      device_class: occupancy
+      delay_off:
+        seconds: 30
+      value_template: >-
+        {{ states('sensor.bed_sensor_connor_fsr')|float >= 0.6 }}
+      icon_template: >-
+        {%- set fsr = states('sensor.bed_sensor_connor_fsr')|float -%}
+        {%- if (fsr < 0.6) -%}
+          mdi:bed-empty
+        {%- elif (fsr >= 0.6) -%}
+          mdi:hotel
+        {%- endif -%}
+

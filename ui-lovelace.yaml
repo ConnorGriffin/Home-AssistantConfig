@@ -39,6 +39,7 @@ views:
             name: Occupancy
           - entity: sensor.bedroom_temperature
             name: Temperature
+          - binary_sensor.bed_occupancy_connor
 
       - title: Connor's Office
         id: connors_office
