@@ -1,0 +1,117 @@
+- platform: template
+  sensors:
+  ### DOORS ###
+    front_door:
+      entity_id: sensor.front_door_sensor_access_control
+      friendly_name: 'Front Door'
+      value_template: >-
+        {{ is_state('sensor.front_door_sensor_access_control', '22') }}
+      device_class: door
+
+    kitchen_door:
+      entity_id: sensor.kitchen_door_sensor_access_control
+      friendly_name: 'Kitchen Door'
+      value_template: >-
+        {{ is_state('sensor.kitchen_door_sensor_access_control', '22') }}
+      device_class: door
+
+    carport_door:
+      entity_id: sensor.carport_door_sensor_access_control
+      friendly_name: 'Carport Door'
+      value_template: >-
+        {{ is_state('sensor.carport_door_sensor_access_control', '22') }}
+      device_class: door
+
+    backyard_door:
+      entity_id: sensor.backyard_door_sensor_access_control
+      friendly_name: 'Backyard Door'
+      value_template: >-
+        {{ is_state('sensor.backyard_door_sensor_access_control', '22') }}
+      device_class: door
+
+  ### WINDOWS ###
+    front_window_left:
+      entity_id: sensor.front_window_left_sensor_access_control
+      friendly_name: 'Front Window (Left Half)'
+      value_template: >-
+        {{ is_state('sensor.front_window_left_sensor_access_control', '22') }}
+      device_class: window
+
+    front_window_right:
+      entity_id: sensor.front_window_right_sensor_access_control
+      friendly_name: 'Front Window (Right Half)'
+      value_template: >-
+        {{ is_state('sensor.front_window_right_sensor_access_control', '22') }}
+      device_class: window
+
+    dining_room_window:
+      entity_id: sensor.dining_room_window_sensor_access_control
+      friendly_name: 'Dining Room Window'
+      value_template: >-
+        {{ is_state('sensor.dining_room_window_sensor_access_control', '22') }}
+      device_class: window
+
+    connors_office_south_window:
+      entity_id: sensor.connors_office_south_window_sensor_access_control
+      friendly_name: "Connor's Office South Window"
+      value_template: >-
+        {{ is_state('sensor.connors_office_south_window_sensor_access_control', '22') }}
+      device_class: window
+
+    connors_office_west_window:
+      entity_id: sensor.connors_office_west_window_sensor_access_control
+      friendly_name: "Connor's Office West Window"
+      value_template: >-
+        {{ is_state('sensor.connors_office_west_window_sensor_access_control', '22') }}
+      device_class: window
+
+    dianas_office_window:
+      entity_id: sensor.dianas_office_window_sensor_access_control
+      friendly_name: "Diana's Office Window"
+      value_template: >-
+        {{ is_state('sensor.dianas_office_window_sensor_access_control', '22') }}
+      device_class: window
+
+    bedroom_window:
+      entity_id: sensor.bedroom_window_sensor_access_control
+      friendly_name: 'Bedroom Window'
+      value_template: >-
+        {{ is_state('sensor.bedroom_window_sensor_access_control', '22') }}
+      device_class: window
+
+    back_left_window:
+      entity_id: sensor.back_left_window_sensor_access_control
+      friendly_name: 'Back Left Window'
+      value_template: >-
+        {{ is_state('sensor.back_left_window_sensor_access_control', '22') }}
+      device_class: window
+
+    back_right_window:
+      entity_id: sensor.back_right_window_sensor_access_control
+      friendly_name: 'Back Right Window'
+      value_template: >-
+        {{ is_state('sensor.back_right_window_sensor_access_control', '22') }}
+      device_class: window
+
+    bathroom_window:
+      entity_id: sensor.bathroom_window_sensor_access_control
+      friendly_name: 'Bathroom Window'
+      value_template: >-
+        {{ is_state('sensor.bathroom_window_sensor_access_control', '22') }}
+      device_class: window
+
+  ### SMART PLUGS ###
+    smart_plug_1_active:
+      entity_id: sensor.smart_plug_1_current
+      friendly_name: 'Smart Plug 1 Active'
+      value_template: >-
+        {{ states('sensor.smart_plug_1_current')|float > 0 }}
+      device_class: plug
+
+  ### MISC. ###
+    shower:
+      entity_id: sensor.bathroom_relative_humidity
+      friendly_name: 'Shower'
+      value_template: >-
+        {{ states('sensor.bathroom_relative_humidity')|float >= 65 }}
+      icon_template: 'mdi:shower-head'

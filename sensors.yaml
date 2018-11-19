@@ -1,7 +1,6 @@
 - platform: yr
-
-#- platform: template
-#  sensors:
+- platform: template
+  sensors:
 #    blood_glucose_level:
 #      friendly_name: 'Blood Glucose Level'
 #      value_template: >
@@ -24,3 +23,100 @@
 #        {%- elif (direction == 'DoubleDown') -%}
 #          mdi:arrow-down-thick
 #        {%- endif -%}
+
+  ### BATTERIES ###
+    front_window_left_sensor_battery:
+      entity_id: zwave.front_window_left_sensor
+      friendly_name: 'Front Window (Left Half) Sensor Battery'
+      value_template: '{{ states.zwave.front_window_left_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    front_window_right_sensor_battery:
+      entity_id: zwave.front_window_right_sensor
+      friendly_name: 'Front Window (Right Half) Sensor Battery'
+      value_template: '{{ states.zwave.front_window_right_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    dining_room_window_sensor_battery:
+      entity_id: zwave.dining_room_window_sensor
+      friendly_name: 'Dining Room Window Sensor Battery'
+      value_template: '{{ states.zwave.dining_room_window_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    connors_office_west_window_sensor_battery:
+      entity_id: zwave.connors_office_west_window_sensor
+      friendly_name: "Connor's Office West Window Sensor Battery"
+      value_template: '{{ states.zwave.connors_office_west_window_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    connors_office_south_window_sensor_battery:
+      entity_id: zwave.connors_office_south_window_sensor
+      friendly_name: "Connor's Office South Window Sensor Battery"
+      value_template: '{{ states.zwave.connors_office_south_window_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    dianas_office_window_sensor_battery:
+      entity_id: zwave.dianas_office_window_sensor
+      friendly_name: "Dianas Office Window Sensor Battery"
+      value_template: '{{ states.zwave.dianas_office_window_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    bathroom_window_sensor_battery:
+      entity_id: zwave.bathroom_window_sensor
+      friendly_name: 'Bathroom Window Sensor Battery'
+      value_template: '{{ states.zwave.bathroom_window_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    bedroom_window_sensor_battery:
+      entity_id: zwave.bedroom_window_sensor
+      friendly_name: 'Bedroom Window Sensor Battery'
+      value_template: '{{ states.zwave.bedroom_window_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    back_left_window_sensor_battery:
+      entity_id: zwave.back_left_window_sensor
+      friendly_name: 'Back Left Winodw Sensor Battery'
+      value_template: '{{ states.zwave.back_left_window_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    back_right_window_sensor_battery:
+      entity_id: zwave.back_right_window_sensor
+      friendly_name: 'Back Right Window Sensor Battery'
+      value_template: '{{ states.zwave.back_right_window_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    front_door_sensor_battery:
+      entity_id: zwave.front_door_sensor
+      friendly_name: 'Front Door Sensor Battery'
+      value_template: '{{ states.zwave.front_door_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    kitchen_door_sensor_battery:
+      entity_id: zwave.kitchen_door_sensor
+      friendly_name: 'Kitchen Door Sensor Battery'
+      value_template: '{{ states.zwave.kitchen_door_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    backyard_door_sensor_battery:
+      entity_id: zwave.backyard_door_sensor
+      friendly_name: 'Backyard Door Sensor Battery'
+      value_template: '{{ states.zwave.backyard_door_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    carport_door_sensor_battery:
+      entity_id: zwave.carport_door_sensor
+      friendly_name: 'Carport Door Sensor Battery'
+      value_template: '{{ states.zwave.carport_door_sensor.attributes.battery_level }}'
+      device_class: battery
+
+    front_door_lock_battery:
+      entity_id: zwave.front_door_lock
+      friendly_name: 'Front Door Lock Battery'
+      value_template: '{{ states.zwave.front_door_lock.attributes.battery_level }}'
+      device_class: battery
+
+    bathroom_multisensor_6_battery:
+      entity_id: zwave.bathroom_multisensor_6
+      friendly_name: 'Bathroom MultiSensor 6 Battery'
+      value_template: '{{ states.zwave.bathroom_multisensor_6.attributes.battery_level }}'
+      device_class: battery

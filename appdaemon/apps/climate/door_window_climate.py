@@ -195,7 +195,7 @@ class DoorWindowClimate(hass.Hass):
                         cb = self.dependency_cb,
                         entity = entity,
                         new = 'on',
-                        duration = door_closed_seconds,
+                        duration = door_open_seconds,
                         immediate = True,
                         rule = rule
                     )
@@ -213,7 +213,7 @@ class DoorWindowClimate(hass.Hass):
                         cb = self.dependency_cb,
                         entity = entity,
                         new = 'on',
-                        duration = window_closed_seconds,
+                        duration = window_open_seconds,
                         immediate = True,
                         rule = rule
                     )
@@ -224,6 +224,8 @@ class DoorWindowClimate(hass.Hass):
         mode = kwargs.get('mode')
         sensor = kwargs.get('sensor')
         init_check = kwargs.get('init_check')
+
+        new_zone_state = None
 
         # Only run this code on app reload, sets initial sensor state
         # Checks if the state has been true for longer than the set duration, avoids an initial waiting period for Immediate=True to take effect
@@ -241,11 +243,13 @@ class DoorWindowClimate(hass.Hass):
 
         # Add or remove the sensor from the open_sensors and closed_sensors lists
         if new == 'off':
-            self.zone_data[zone]['closed_sensors'].append(entity)
+            if entity not in self.zone_data[zone]['closed_sensors']:
+                self.zone_data[zone]['closed_sensors'].append(entity)
             if entity in self.zone_data[zone]['open_sensors']:
                 self.zone_data[zone]['open_sensors'].remove(entity)
         elif new == 'on':
-            self.zone_data[zone]['open_sensors'].append(entity)
+            if entity not in self.zone_data[zone]['open_sensors']:
+                self.zone_data[zone]['open_sensors'].append(entity)
             if entity in self.zone_data[zone]['closed_sensors']:
                 self.zone_data[zone]['closed_sensors'].remove(entity)
 
@@ -257,22 +261,19 @@ class DoorWindowClimate(hass.Hass):
         if (open_count + closed_count) == self.zone_data[zone]['total_sensors']:
             if mode == 'any':
                 if open_count >= 1:
-                    self.log('{} (zone) is open'.format(zone))
-                    self.zone_data[zone]['state'] = 'open'
-                    self.set_state(sensor, state='Open', friendly_name=zone)
+                    new_zone_state = 'open'
                 else:
-                    self.log('{} (zone) is closed'.format(zone))
-                    self.zone_data[zone]['state'] = 'closed'
-                    self.set_state(sensor, state='Closed', friendly_name=zone)
+                    new_zone_state = 'closed'
             elif mode == 'all':
                 if closed_count >= 1:
-                    self.log('{} (zone) is closed'.format(zone))
-                    self.zone_data[zone]['state'] = 'closed'
-                    self.set_state(sensor, state='Closed', friendly_name=zone)
+                    new_zone_state = 'closed'
                 else:
-                    self.log('{} (zone) is open'.format(zone))
-                    self.zone_data[zone]['state'] = 'open'
-                    self.set_state(sensor, state='Open', friendly_name=zone)
+                    new_zone_state = 'open'
+
+        if new_zone_state and new_zone_state != self.zone_data[zone]['state']:
+            self.log('{} (zone) is {}'.format(zone, new_zone_state))
+            self.zone_data[zone]['state'] = new_zone_state
+            self.set_state(sensor, state=new_zone_state.title(), friendly_name=zone)
 
 
     def dependency_cb(self, entity, attribute, old, new, kwargs):

@@ -26,11 +26,6 @@ class TemplateSensor(hass.Hass):
                 string = entity_id
             )
 
-            # Do nothing until the base sensor exists. Sleeps are bad for AppDaemon but IDK, this seems alright.
-            while not self.get_state(entity_id):
-                self.log('Waiting for {} to exist.'.format(entity_id))
-                sleep(5)
-
             # Set the value on AppDaemon startup
             self.update_sensor(
                 entity = entity_id,

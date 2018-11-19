@@ -24,6 +24,7 @@ class MediaPower(hass.Hass):
 
         power_switch = self.args['plug']['switch']
         plug_status = self.args['plug']['status']
+        self.auto_on = None
 
         # Listen for plug to be inactive for 'off_duration' seconds
         self.listen_state(
@@ -56,13 +57,12 @@ class MediaPower(hass.Hass):
         else:
             # Turn off the plug once it's been inactive for a set amount of time
             self.log('Plug inactive for {} seconds, switching off.'.format(self.args['off_duration']))
-            #self.turn_off(power_switch)
+            self.turn_off(power_switch)
 
 
     def roku_cb(self, entity, attribute, old, new, kwargs):
         # Turn the smart switch on if roku changes from idle
         power_switch = kwargs['power_switch']
-        plug_status = kwargs['plug_status']
 
         if old in ['home', 'idle'] and new not in ['home', 'idle']:
             self.log('Roku channel changed from {}, turning on power.'.format(old))

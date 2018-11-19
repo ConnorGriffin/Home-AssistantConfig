@@ -2,7 +2,6 @@
 media_power:
   module: media_power
   class: MediaPower
-  dependency: smart_plugs
   plug:
     switch: switch.smart_plug_1_switch
     status: binary_sensor.smart_plug_1_active

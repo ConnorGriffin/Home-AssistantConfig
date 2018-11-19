@@ -1,105 +1,105 @@
 ---
-window_sensors:
-  module: template_sensor
-  class: TemplateSensor
-  type: binary_sensor
-  device_class: window
-  on_value: '22'
-  off_value: '23'
-  sensor_name:
-    find: '(sensor\.)(.*)_sensor_access_control'
-    replace: 'binary_sensor.\2'
-  entities:
-    - entity: sensor.front_window_left_sensor_access_control
-      name: "Front Window (Left Half)"
-    - entity: sensor.front_window_right_sensor_access_control
-      name: "Front Window (Right Half)"
-    - sensor.dining_room_window_sensor_access_control
-    - entity: sensor.connors_office_south_window_sensor_access_control
-      name: "Connor's Office South Window"
-    - entity: sensor.connors_office_west_window_sensor_access_control
-      name: "Connor's Office West Window"
-    - entity: sensor.dianas_office_window_sensor_access_control
-      name: "Diana's Office Window"
-    - sensor.bedroom_window_sensor_access_control
-    - sensor.back_left_window_sensor_access_control
-    - sensor.back_right_window_sensor_access_control
-    - sensor.bathroom_window_sensor_access_control
+#window_sensors:
+#  module: template_sensor
+#  class: TemplateSensor
+#  type: binary_sensor
+#  device_class: window
+#  on_value: '22'
+#  off_value: '23'
+#  sensor_name:
+#    find: '(sensor\.)(.*)_sensor_access_control'
+#    replace: 'binary_sensor.\2'
+#  entities:
+#    - entity: sensor.front_window_left_sensor_access_control
+#      name: "Front Window (Left Half)"
+#    - entity: sensor.front_window_right_sensor_access_control
+#      name: "Front Window (Right Half)"
+#    - sensor.dining_room_window_sensor_access_control
+#    - entity: sensor.connors_office_south_window_sensor_access_control
+#      name: "Connor's Office South Window"
+#    - entity: sensor.connors_office_west_window_sensor_access_control
+#      name: "Connor's Office West Window"
+#    - entity: sensor.dianas_office_window_sensor_access_control
+#      name: "Diana's Office Window"
+#    - sensor.bedroom_window_sensor_access_control
+#    - sensor.back_left_window_sensor_access_control
+#    - sensor.back_right_window_sensor_access_control
+#    - sensor.bathroom_window_sensor_access_control
 
-door_sensors:
-  module: template_sensor
-  class: TemplateSensor
-  type: binary_sensor
-  device_class: door
-  sensor_name:
-    find: '(sensor\.)(.*)_sensor_access_control'
-    replace: 'binary_sensor.\2'
-  on_value: '22'
-  off_value: '23'
-  entities:
-  - sensor.backyard_door_sensor_access_control
-  - sensor.front_door_sensor_access_control
-  - sensor.kitchen_door_sensor_access_control
-  - sensor.carport_door_sensor_access_control
+#door_sensors:
+#  module: template_sensor
+#  class: TemplateSensor
+#  type: binary_sensor
+#  device_class: door
+#  sensor_name:
+#    find: '(sensor\.)(.*)_sensor_access_control'
+#    replace: 'binary_sensor.\2'
+#  on_value: '22'
+#  off_value: '23'
+#  entities:
+#  - sensor.backyard_door_sensor_access_control
+#  - sensor.front_door_sensor_access_control
+#  - sensor.kitchen_door_sensor_access_control
+#  - sensor.carport_door_sensor_access_control
 
-battery_sensors:
-  module: template_sensor
-  class: TemplateSensor
-  type: sensor
-  device_class: battery
-  sensor_name:
-    find: '(zwave\.)(.*)'
-    replace: 'sensor.\2_battery'
-  attribute: battery_level
-  entities:
-  # Windows
-  - entity: zwave.front_window_left_sensor
-    name: Front Window (Left Half) Sensor Battery
-  - entity: zwave.front_window_right_sensor
-    name: Front Window (Right Half) Sensor Battery
-  - zwave.dining_room_window_sensor
-  - entity: zwave.dianas_office_window_sensor
-    name: "Diana's Office Window Sensor Battery"
-  - entity: zwave.connors_office_west_window_sensor
-    name: "Connor's Office West Window Sensor Battery"
-  - entity: zwave.connors_office_south_window_sensor
-    name: "Connor's Office South Window Sensor Battery"
-  - zwave.bathroom_window_sensor
-  - zwave.bedroom_window_sensor
-  - zwave.back_left_window_sensor
-  - zwave.back_right_window_sensor
-  # Doors
-  - zwave.front_door_sensor
-  - zwave.kitchen_door_sensor
-  - zwave.backyard_door_sensor
-  - zwave.carport_door_sensor
-  # Locks
-  - zwave.front_door_lock
-  # Motion/Multi
-  - zwave.bathroom_multisensor_6
+#battery_sensors:
+#  module: template_sensor
+#  class: TemplateSensor
+#  type: sensor
+#  device_class: battery
+#  sensor_name:
+#    find: '(zwave\.)(.*)'
+#    replace: 'sensor.\2_battery'
+#  attribute: battery_level
+#  entities:
+#  # Windows
+#  - entity: zwave.front_window_left_sensor
+#    name: Front Window (Left Half) Sensor Battery
+#  - entity: zwave.front_window_right_sensor
+#    name: Front Window (Right Half) Sensor Battery
+#  - zwave.dining_room_window_sensor
+#  - entity: zwave.dianas_office_window_sensor
+#    name: "Diana's Office Window Sensor Battery"
+#  - entity: zwave.connors_office_west_window_sensor
+#    name: "Connor's Office West Window Sensor Battery"
+#  - entity: zwave.connors_office_south_window_sensor
+#    name: "Connor's Office South Window Sensor Battery"
+#  - zwave.bathroom_window_sensor
+#  - zwave.bedroom_window_sensor
+#  - zwave.back_left_window_sensor
+#  - zwave.back_right_window_sensor
+#  # Doors
+#  - zwave.front_door_sensor
+#  - zwave.kitchen_door_sensor
+#  - zwave.backyard_door_sensor
+#  - zwave.carport_door_sensor
+#  # Locks
+#  - zwave.front_door_lock
+#  # Motion/Multi
+#  - zwave.bathroom_multisensor_6
 
-smart_plugs:
-  module: template_sensor
-  class: TemplateSensor
-  type: binary_sensor
-  device_class: plug
-  sensor_name:
-    find: 'sensor.smart_plug_(.*)_current'
-    replace: 'binary_sensor.smart_plug_\1_active'
-  on_expression: '> 0'
-  off_expression: '== 0'
-  entities:
-    - sensor.smart_plug_1_current
+#smart_plugs:
+#  module: template_sensor
+#  class: TemplateSensor
+#  type: binary_sensor
+#  device_class: plug
+#  sensor_name:
+#    find: 'sensor.smart_plug_(.*)_current'
+#    replace: 'binary_sensor.smart_plug_\1_active'
+#  on_expression: '> 0'
+#  off_expression: '== 0'
+#  entities:
+#    - sensor.smart_plug_1_current
 
-shower:
-  module: template_sensor
-  class: TemplateSensor
-  type: binary_sensor
-  sensor_name:
-    find: 'sensor.bathroom_relative_humidity'
-    replace: 'binary_sensor.shower'
-  on_expression: '>= 65'
-  off_expression: '< 65'
-  entities:
-    - sensor.bathroom_relative_humidity
-  icon: mdi:shower-head
+#shower:
+#  module: template_sensor
+#  class: TemplateSensor
+#  type: binary_sensor
+#  sensor_name:
+#    find: 'sensor.bathroom_relative_humidity'
+#    replace: 'binary_sensor.shower'
+#  on_expression: '>= 65'
+#  off_expression: '< 65'
+#  entities:
+#    - sensor.bathroom_relative_humidity
+#  icon: mdi:shower-head
