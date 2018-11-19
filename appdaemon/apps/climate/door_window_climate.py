@@ -3,6 +3,7 @@
 # TODO: Add door/window burglar detector (separate app)
 
 import appdaemon.plugins.hass.hassapi as hass
+from datetime import datetime
 
 class DoorWindowClimate(hass.Hass):
 
@@ -56,6 +57,28 @@ class DoorWindowClimate(hass.Hass):
 
             # Setup listeners for each window
             for window in windows:
+
+                # Make an initial call to set the sensor data right away (avoid delay on reload)
+                window_state = self.get_state(window)
+                if window_state == 'off':
+                    init_duration = window_closed_seconds
+                elif window_state == 'on':
+                    init_duration = window_open_seconds
+
+                self.sensor_cb(
+                    entity = window,
+                    new = window_state,
+                    old = None,
+                    attribute = None,
+                    kwargs = {
+                        'init_check': True,
+                        'duration': init_duration,
+                        'zone': zone['name'],
+                        'mode':  zone['mode'],
+                        'sensor':  zone['sensor']
+                    }
+                )
+
                 self.listen_state(
                     cb = self.sensor_cb,
                     entity = window,
@@ -79,6 +102,27 @@ class DoorWindowClimate(hass.Hass):
 
             # Setup listeners for each door
             for door in doors:
+                # Make an initial call to set the sensor data right away (avoid delay on reload)
+                door_state = self.get_state(door)
+                if door_state == 'off':
+                    init_duration = door_closed_seconds
+                elif door_state == 'on':
+                    init_duration = door_open_seconds
+
+                self.sensor_cb(
+                    entity = door,
+                    new = door_state,
+                    old = None,
+                    attribute = None,
+                    kwargs = {
+                        'init_check': True,
+                        'duration': init_duration,
+                        'zone': zone['name'],
+                        'mode':  zone['mode'],
+                        'sensor':  zone['sensor']
+                    }
+                )
+
                 self.listen_state(
                     cb = self.sensor_cb,
                     entity = door,
@@ -179,6 +223,21 @@ class DoorWindowClimate(hass.Hass):
         zone = kwargs.get('zone')
         mode = kwargs.get('mode')
         sensor = kwargs.get('sensor')
+        init_check = kwargs.get('init_check')
+
+        # Only run this code on app reload, sets initial sensor state
+        # Checks if the state has been true for longer than the set duration, avoids an initial waiting period for Immediate=True to take effect
+        if init_check:
+            duration = kwargs.get('duration')
+            last_changed = self.get_state(entity, attribute='last_changed')
+            last_changed_sec = (datetime.utcnow() - self.convert_utc(last_changed).replace(tzinfo=None)).total_seconds()
+            if last_changed_sec >= duration:
+                new = new
+            else:
+                if new == 'off':
+                    new = 'on'
+                elif new == 'on':
+                    new = 'off'
 
         # Add or remove the sensor from the open_sensors and closed_sensors lists
         if new == 'off':
