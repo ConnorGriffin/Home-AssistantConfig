@@ -123,12 +123,12 @@
       delay_off:
         seconds: 30
       value_template: >-
-        {{ states('sensor.bed_sensor_connor_fsr')|float >= 0.6 }}
+        {{ states('sensor.bed_sensor_connor_fsr')|float >= 0.15 }}
       icon_template: >-
         {%- set fsr = states('sensor.bed_sensor_connor_fsr')|float -%}
-        {%- if (fsr < 0.6) -%}
+        {%- if (fsr < 0.15) -%}
           mdi:bed-empty
-        {%- elif (fsr >= 0.6) -%}
+        {%- elif (fsr >= 0.15) -%}
           mdi:hotel
         {%- endif -%}
 
