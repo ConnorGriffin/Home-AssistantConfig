@@ -22,66 +22,42 @@ ecobee:
     no_action:
       - Pre Peak
 
-commented_out:
-  door_window_climate:
-    module: door_window_climate
-    class: DoorWindowClimate
-    constrain_input_boolean: input_boolean.window_door_climate_automation
-    # How long to wait before changing climate behaviours after each event
-    door_open_seconds: 10 #300
-    door_closed_seconds: 10 #30
-    window_open_seconds: 0
-    window_closed_seconds: 0
-    # Thermostat
-    climate: climate.home
-    # Rooms/areas
-    zones:
-      - name: Main House
-        sensor: sensor.main_house_zone
-        mode: any
-        windows:
-          - binary_sensor.front_window_left
-          - binary_sensor.front_window_right
-          - binary_sensor.dining_room_window
-          - binary_sensor.connors_office_south_window
-          - binary_sensor.connors_office_west_window
-          - binary_sensor.dianas_office_window
-          - binary_sensor.bedroom_window
-        doors:
-          - binary_sensor.front_door
-      - name: Back Room Exterior
-        sensor: sensor.back_room_exterior_zone
-        mode: any
-        doors:
-          - binary_sensor.backyard_door
-        windows:
-          - binary_sensor.back_left_window
-          - binary_sensor.back_right_window
-          #- binary_sensor.laundry_window
-    # Rules - Dependency groups for modifying climate settings
-    climate_rules:
-      # House is open
-      - name: Main House
-        mode: all
-        dependencies:
-          - zone: sensor.main_house_zone
-      # Back room and kitchen door are open
-      - name: Back Room + Kitchen Door
-        mode: all
-        dependencies:
-          - zone: sensor.back_room_exterior_zone
-          - door: binary_sensor.kitchen_door
-      # House is open or door to back room is open
-      #- name: Main House + Back Room Entry
-      #  mode: any
-      #  temperature_delta: 5
-      #  dependencies:
-      #    - zone: sensor.main_house_zone
-      #    - door: binary_sensor.kitchen_door
-      # House is open, door to back room is open, and door/windows to back yard is open
-      - name: Main House + Kitchen Door + Back Room
-        mode: all
-        dependencies:
-          - zone: sensor.main_house_zone
-          - zone: sensor.back_room_exterior_zone
-          - door: binary_sensor.kitchen_door
+
+door_window_climate:
+  module: door_window_climate
+  class: DoorWindowClimate
+  constrain_input_boolean: input_boolean.window_door_climate_automation
+  # How long to wait before changing climate behaviours after each event
+  door_open_seconds: 300
+  door_closed_seconds: 30
+  window_open_seconds: 0
+  window_closed_seconds: 0
+  # Thermostat
+  climate: climate.home
+  # Rules - Dependency groups for modifying climate settings
+  climate_rules:
+    # House is open
+    - name: Main House
+      mode: all
+      dependencies:
+        - zone: binary_sensor.main_house_zone
+    # Back room and kitchen door are open
+    - name: Back Room + Kitchen Door
+      mode: all
+      dependencies:
+        - zone: binary_sensor.back_room_exterior_zone
+        - door: binary_sensor.kitchen_door
+    # House is open or door to back room is open
+    #- name: Main House + Back Room Entry
+    #  mode: any
+    #  temperature_delta: 5
+    #  dependencies:
+    #    - zone: sensor.main_house_zone
+    #    - door: binary_sensor.kitchen_door
+    # House is open, door to back room is open, and door/windows to back yard is open
+    - name: Main House + Kitchen Door + Back Room
+      mode: all
+      dependencies:
+        - zone: binary_sensor.main_house_zone
+        - zone: binary_sensor.back_room_exterior_zone
+        - door: binary_sensor.kitchen_door

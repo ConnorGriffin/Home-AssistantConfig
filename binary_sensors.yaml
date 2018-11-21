@@ -132,3 +132,84 @@
           mdi:hotel
         {%- endif -%}
 
+  ### CLIMATE ZONE DATA ###
+    main_house_windows:
+      friendly_name: Main House Windows
+      device_class: window
+      entity_id:
+        - binary_sensor.front_window_left
+        - binary_sensor.front_window_right
+        - binary_sensor.dining_room_window
+        - binary_sensor.connors_office_south_window
+        - binary_sensor.connors_office_west_window
+        - binary_sensor.dianas_office_window
+        - binary_sensor.bedroom_window
+      value_template: >-
+        {{   is_state('binary_sensor.front_window_left', 'on')
+          or is_state('binary_sensor.front_window_right', 'on')
+          or is_state('binary_sensor.dining_room_window', 'on')
+          or is_state('binary_sensor.connors_office_south_window', 'on')
+          or is_state('binary_sensor.connors_office_south_window', 'on')
+          or is_state('binary_sensor.dianas_office_window', 'on')
+          or is_state('binary_sensor.bedroom_window', 'on')
+        }}
+
+    main_hourse_doors:
+      friendly_name: Main House Doors
+      device_class: door
+      entity_id:
+        - binary_sensor.front_door
+      delay_on:
+        minutes: 5
+      delay_off:
+        seconds: 30
+      value_template: >-
+        {{ is_state('binary_sensor.front_door', 'on') }}
+
+    main_house_zone:
+      friendly_name: Main House Zone
+      device_class: opening
+      entity_id:
+        - binary_sensor.main_house_windows
+        - binary_sensor.main_house_doors
+      value_template: >-
+        {{   is_state('binary_sensor.main_house_windows', 'on')
+          or is_state('binary_sensor.front_window_right', 'on')
+        }}
+
+    back_room_exterior_windows:
+      friendly_name: Back Room Exterior Windows
+      device_class: window
+      entity_id:
+        - binary_sensor.back_left_window
+        - binary_sensor.back_right_window
+      value_template: >-
+        {{   is_state('binary_sensor.back_left_window', 'on')
+          or is_state('binary_sensor.back_right_window', 'on')
+        }}
+
+    back_room_exterior_doors:
+      friendly_name: Back Room Exterior Doors
+      device_class: door
+      entity_id:
+        - binary_sensor.backyard_door
+        - binary_sensor.carport_door
+      delay_on:
+        minutes: 5
+      delay_off:
+        seconds: 30
+      value_template: >-
+        {{   is_state('binary_sensor.backyard_door', 'on')
+          or is_state('binary_sensor.carport_door', 'on')
+        }}
+
+    back_room_exterior_zone:
+      friendly_name: Back Room Exterior Zone
+      device_class: opening
+      entity_id:
+        - binary_sensor.back_room_exterior_windows
+        - binary_sensor.back_room_exterior_doors
+      value_template: >-
+        {{   is_state('binary_sensor.back_room_exterior_windows', 'on')
+          or is_state('binary_sensor.back_room_exterior_doors', 'on')
+        }}

@@ -22,8 +22,10 @@ views:
         entities:
           - label: Climate
             type: section
-          - climate.home
-          - sensor.home_humidity
+          - entity: climate.home
+            name: Ecobee
+          - binary_sensor.main_house_zone
+          - binary_sensor.back_room_exterior_zone
           #- sensor.main_house_zone
           #- sensor.back_room_exterior_zone
           - label: Presence
@@ -35,6 +37,16 @@ views:
           - lock.front_door_lock
           - sensor.home_security_armed
           - sensor.home_security_fired
+
+      - title: Routines
+        id: routines
+        type: entities
+        entities:
+          - name: Turn off all lights
+            type: call-service
+            icon: mdi:lightbulb
+            action_name: Run
+            service: light.turn_off
 
       - title: Bedroom
         type: custom:vertical-stack-in-card
@@ -379,8 +391,8 @@ views:
         id: climate_zones
         type: entities
         entities:
-          - sensor.main_house_zone
-          - sensor.back_room_exterior_zone
+          - binary_sensor.main_house_zone
+          - binary_sensor.back_room_exterior_zone
 
       - type: "custom:monster-card"
         id: all_windows
