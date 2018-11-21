@@ -26,8 +26,6 @@ views:
             name: Ecobee
           - binary_sensor.main_house_zone
           - binary_sensor.back_room_exterior_zone
-          #- sensor.main_house_zone
-          #- sensor.back_room_exterior_zone
           - label: Presence
             type: section
           - binary_sensor.connor_presence
@@ -129,6 +127,7 @@ views:
         cards:
         - id: living_room_glance
           type: glance
+          columns: 3
           entities:
             - entity: sensor.living_room_temperature
               name: Temp
@@ -143,20 +142,11 @@ views:
                 entity_id: switch.smart_plug_1_switch
             - name: Roku
               entity: media_player.living_room_roku
-        - id: living_room_entity
-          type: entities
-          show_header_toggle: false
-          entities:
-            - label: Door
-              type: section
-            - lock.front_door_lock
             - binary_sensor.front_door
-            - label: Window
-              type: section
             - entity: binary_sensor.front_window_left
-              name: Window (Left Half)
+              name: Left Half
             - entity: binary_sensor.front_window_right
-              name: Window (Right Half)
+              name: Right Half
 
       - title: Dining Room
         type: custom:vertical-stack-in-card
@@ -367,6 +357,7 @@ views:
 
   - title: Automations
     id: automations
+    icon: mdi:robot
     cards:
       - type: "custom:monster-card"
         id: all_automations
@@ -377,43 +368,9 @@ views:
           include:
             - entity_id: "input_boolean.*_automation"
 
-  - title: Doors & Windows
-    id: doors_windows
-    cards:
-      - title: 'Home Security'
-        id: home_security
-        type: entities
-        entities:
-          - sensor.home_security_armed
-          - sensor.home_security_fired
-
-      - title: Climate Zones
-        id: climate_zones
-        type: entities
-        entities:
-          - binary_sensor.main_house_zone
-          - binary_sensor.back_room_exterior_zone
-
-      - type: "custom:monster-card"
-        id: all_windows
-        card:
-          type: entities
-          title: All Windows
-        filter:
-          include:
-            - entity_id: "binary_sensor.*window(?:_left|_right)?"
-
-      - type: "custom:monster-card"
-        id: all_doors
-        card:
-          type: entities
-          title: All Doors
-        filter:
-          include:
-            - entity_id: "binary_sensor.*door"
-
   - title: Z-Wave
     id: zwave
+    icon: mdi:z-wave
     cards:
       - type: "custom:monster-card"
         id: zwave_entities
