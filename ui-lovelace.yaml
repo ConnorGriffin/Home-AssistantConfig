@@ -5,6 +5,9 @@ resources:
   - url: /local/monster-card.js?v=1
     type: js
     git: https://raw.githubusercontent.com/ciotlosm/custom-lovelace/master/monster-card/monster-card.js
+  - url: /local/vertical-stack-in-card.js?v=1
+    type: js
+    git: https://github.com/custom-cards/vertical-stack-in-card
 
 title: Home
 views:
@@ -17,147 +20,222 @@ views:
         id: general
         type: entities
         entities:
-          - sensor.home_humidity
+          - label: Climate
+            type: section
           - climate.home
-          - type: divider
+          - sensor.home_humidity
+          #- sensor.main_house_zone
+          #- sensor.back_room_exterior_zone
+          - label: Presence
+            type: section
           - binary_sensor.connor_presence
           - binary_sensor.diana_presence
+          - label: Security
+            type: section
+          - lock.front_door_lock
+          - sensor.home_security_armed
+          - sensor.home_security_fired
 
       - title: Bedroom
-        id: bedroom
-        type: entities
-        show_header_toggle: false
-        entities:
-          - entity: light.bedroom_light
-            name: Light
-            type: custom:slider-entity-row
-          - entity: input_select.bedroom_light_mode
-            name: Light Mode
-          - entity: binary_sensor.bedroom_window
-            name: Window
-          - entity: binary_sensor.bedroom_occupancy
-            name: Occupancy
-          - entity: sensor.bedroom_temperature
-            name: Temperature
-          - binary_sensor.bed_occupancy_connor
+        type: custom:vertical-stack-in-card
+        id: bedroom_stack
+        cards:
+          - id: bedroom_light
+            type: light
+            entity: light.bedroom_light
+          - id: bedroom_glance
+            type: glance
+            entities:
+              - entity: sensor.bedroom_temperature
+                name: Temp
+              #- entity: binary_sensor.bedroom_occupancy
+              #  name: Presence
+              - entity: input_select.bedroom_light_mode
+                name: Light Mode
+                hold_action: call-service
+                service: input_select.select_option
+                service_data:
+                  entity_id: input_select.bedroom_light_mode
+                  option: Automatic
+              - entity: binary_sensor.bedroom_window
+                name: Window
+              #- binary_sensor.bed_occupancy_connor
 
       - title: Connor's Office
-        id: connors_office
-        type: entities
-        show_header_toggle: false
-        entities:
-          - entity: light.connors_office_light
-            name: Light
-            type: custom:slider-entity-row
-          - entity: input_select.connors_office_light_mode
-            name: Light Mode
-          - entity: binary_sensor.connors_office_south_window
-            name: South Window
-          - entity: binary_sensor.connors_office_west_window
-            name: West Window
-          - entity: binary_sensor.connor_office_occupancy
-            name: Occupancy
-          - entity: sensor.connor_office_temperature
-            name: Temperature
+        type: custom:vertical-stack-in-card
+        id: connors_office_stack
+        cards:
+          - id: connors_office_light
+            type: light
+            entity: light.connors_office_light
+          - id: connors_office_glance
+            type: glance
+            entities:
+              - entity: sensor.connor_office_temperature
+                name: Temp
+              #- entity: binary_sensor.connor_office_occupancy
+              #  name: Presence
+              - entity: input_select.connors_office_light_mode
+                name: Light Mode
+                hold_action: call-service
+                service: input_select.select_option
+                service_data:
+                  entity_id: input_select.connors_office_light_mode
+                  option: Automatic
+              - entity: binary_sensor.connors_office_south_window
+                name: South
+              - entity: binary_sensor.connors_office_west_window
+                name: West
 
       - title: Diana's Office
-        id: dianas_office
-        type: entities
-        show_header_toggle: false
-        entities:
-          - entity: light.dianas_office_light
-            name: Light
-            type: custom:slider-entity-row
-          - entity: input_select.dianas_office_light_mode
-            name: Light Mode
-          - entity: binary_sensor.dianas_office_window
-            name: Window
-          - entity: binary_sensor.diana_office_occupancy
-            name: Occupancy
-          - entity: sensor.diana_office_temperature
-            name: Temperature
+        type: custom:vertical-stack-in-card
+        id: dianas_office_stack
+        cards:
+          - id: dianas_office_light
+            type: light
+            entity: light.dianas_office_light
+          - id: dianas_office_glance
+            type: glance
+            entities:
+              - entity: sensor.diana_office_temperature
+                name: Temp
+              #- entity: binary_sensor.diana_office_occupancy
+              #  name: Presence
+              - entity: input_select.dianas_office_light_mode
+                name: Light Mode
+                hold_action: call-service
+                service: input_select.select_option
+                service_data:
+                  entity_id: input_select.dianas_office_light_mode
+                  option: Automatic
+              - entity: binary_sensor.dianas_office_window
+                name: Window
 
       - title: Living Room
-        id: living_room
-        type: entities
-        show_header_toggle: false
-        entities:
-          - lock.front_door_lock
-          - binary_sensor.front_door
-          - entity: binary_sensor.front_window_left
-            name: Window (Left Half)
-          - entity: binary_sensor.front_window_right
-            name: Window (Right Half)
-          - entity: binary_sensor.living_room_occupancy
-            name: Occupancy
-          - entity: sensor.living_room_temperature
-            name: Temperature
-          - entity: binary_sensor.smart_plug_1_active
-            name: Projector
-            icon: mdi:projector
+        type: custom:vertical-stack-in-card
+        id: living_room_stack
+        cards:
+        - id: living_room_glance
+          type: glance
+          entities:
+            - entity: sensor.living_room_temperature
+              name: Temp
+            #- entity: binary_sensor.living_room_occupancy
+            #  name: Presence
+            - entity: binary_sensor.smart_plug_1_active
+              name: Projector
+              icon: mdi:projector
+              hold_action: call-service
+              service: switch.turn_on
+              service_data:
+                entity_id: switch.smart_plug_1_switch
+            - name: Roku
+              entity: media_player.living_room_roku
+        - id: living_room_entity
+          type: entities
+          show_header_toggle: false
+          entities:
+            - label: Door
+              type: section
+            - lock.front_door_lock
+            - binary_sensor.front_door
+            - label: Window
+              type: section
+            - entity: binary_sensor.front_window_left
+              name: Window (Left Half)
+            - entity: binary_sensor.front_window_right
+              name: Window (Right Half)
 
       - title: Dining Room
-        id: dining_room
-        type: entities
-        show_header_toggle: false
-        entities:
-          - entity: light.dining_room_light
-            name: Light
-            type: custom:slider-entity-row
-          - entity: input_select.dining_room_light_mode
-            name: Light Mode
-          - entity: binary_sensor.dining_room_window
-            name: Window
+        type: custom:vertical-stack-in-card
+        id: dining_room_stack
+        cards:
+          - id: dining_room_light
+            type: light
+            entity: light.dining_room_light
+          - id: dining_room_glance
+            type: glance
+            entities:
+            - entity: input_select.dining_room_light_mode
+              name: Light Mode
+              hold_action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.dining_room_light_mode
+                option: Automatic
+            - entity: binary_sensor.dining_room_window
+              name: Window
 
       - title: Hallway
-        id: hallway
-        type: entities
-        show_header_toggle: false
-        entities:
-          - entity: light.hallway_light
-            name: Light
-            type: custom:slider-entity-row
-          - entity: input_select.hallway_light_mode
-            name: Light Mode
+        type: custom:vertical-stack-in-card
+        id: hallway_stack
+        cards:
+          - id: hallway_light
+            type: light
+            entity: light.hallway_light
+          - id: hallway_glance
+            type: glance
+            entities:
+            - entity: sensor.home_temperature
+              name: Temp
+            - entity: input_select.hallway_light_mode
+              name: Light Mode
+              hold_action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.hallway_light_mode
+                option: Automatic
 
       - title: Bathroom
-        id: bathroom
-        type: entities
-        show_header_toggle: false
-        entities:
-          - entity: light.bathroom_light
-            name: Light
-            type: custom:slider-entity-row
-          - entity: input_select.bathroom_light_mode
-            name: Light Mode
-          - entity: binary_sensor.bathroom_window
-            name: Window
-          - binary_sensor.shower
-          - binary_sensor.bathroom_motion
-          - sensor.bathroom_luminance
-          - sensor.bathroom_relative_humidity
+        type: custom:vertical-stack-in-card
+        id: bathroom_stack
+        cards:
+          - id: bathroom_light
+            type: light
+            entity: light.bathroom_light
+          - id: bathroom_glance
+            type: glance
+            columns: 4
+            entities:
+            - entity: sensor.bathroom_temperature
+              name: Temp
+            - entity: binary_sensor.bathroom_motion
+              name: Motion
+            - entity: input_select.bathroom_light_mode
+              name: Light Mode
+            - binary_sensor.shower
+            - entity: binary_sensor.bathroom_window
+              name: Window
+            - entity: sensor.bathroom_luminance
+              name: Lux
+            - entity: sensor.bathroom_relative_humidity
+              name: Humidity
 
       - title: Back Room
         id: back_room
-        type: entities
-        show_header_toggle: false
+        type: glance
+        columns: 3
+        show_state: false
         entities:
-          - binary_sensor.backyard_door
-          - binary_sensor.carport_door
-          - binary_sensor.kitchen_door
+          - entity: binary_sensor.backyard_door
+            name: Backyard Door
+          - entity: binary_sensor.carport_door
+            name: Carport Door
+          - entity: binary_sensor.kitchen_door
+            name: Kitchen Door
           - entity: binary_sensor.back_left_window
             name: Left Window
           - entity: binary_sensor.back_right_window
             name: Right Window
 
-      - title: Lights
-        id: light_groups
-        type: entities
-        entities:
-          - entity: group.all_lights
-            name: All Lights
-          - group.inside_lights
-          - group.inside_lights_except_bedroom
+      #- title: Lights
+      #  id: light_groups
+      #  type: entities
+      #  entities:
+      #    - entity: group.all_lights
+      #      name: All Lights
+      #    - group.inside_lights
+      #    - group.inside_lights_except_bedroom
 
   - title: Alarms
     id: alarms
@@ -374,3 +452,6 @@ views:
           - sensor.front_door_lock_power_management
           - sensor.front_door_lock_sourcenodeid
           - sensor.front_door_lock_system
+
+
+
