@@ -177,6 +177,13 @@ class Lights(hass.Hass):
             setting['setpoint'] = 0
             self.auto_brightness_cb(dict(entity_id = light_entity))
 
+        # Refresh the zwave regardless of any changes
+        self.run_in(
+            self.refresh_zwave_entity,
+            seconds = 1,
+            entity_id = light_entity
+        )
+
 
     def timestr_delta(self, start_time_str, now, end_time_str, name=None):
         start_time = self.parse_time(start_time_str, name)
