@@ -11,7 +11,6 @@ class DoorWindowClimate(hass.Hass):
         rules = self.args.get('climate_rules', [])
 
         # We'll put data in these later
-        self.zone_data = {}
         self.rule_data = {}
         self.rule_counts = {
             'active_rules': [],
@@ -23,127 +22,6 @@ class DoorWindowClimate(hass.Hass):
             'current_mode': self.get_state(self.args.get('climate'), attribute='operation_mode')
         }
 
-        # Determine if each zone is open or closed based on the sensors in the zone
-        for zone in self.args.get('zones', []):
-            windows = zone.get('windows', [])
-            doors = zone.get('doors', [])
-
-            #temp_source = zone.get('temp_source', self.args.get('temp_source')).split(':')
-            #temp_entity = temp_source[0]
-            #temp_attribute = temp_source[1]
-
-            # Create each zone sensor in HA
-            self.set_state(
-                entity_id = zone['sensor'],
-                state = 'Unknown',
-                attributes = {
-                    'friendly_name': zone['name']
-                }
-            )
-
-            # Setup a persistent data store for each zone
-            self.zone_data[zone['name']] = {
-                'state': None,
-                'open_sensors': [],
-                'closed_sensors': [],
-                'total_sensors': len(windows) + len(doors)
-            }
-
-            # Pull in the settings for each zone, otherwise use the default settings
-            door_open_seconds = zone.get('door_open_seconds', self.args['door_open_seconds'])
-            door_closed_seconds = zone.get('door_closed_seconds', self.args['door_closed_seconds'])
-            window_open_seconds = zone.get('window_open_seconds', self.args['window_open_seconds'])
-            window_closed_seconds = zone.get('window_closed_seconds', self.args['window_closed_seconds'])
-
-            # Setup listeners for each window
-            for window in windows:
-
-                # Make an initial call to set the sensor data right away (avoid delay on reload)
-                window_state = self.get_state(window)
-                if window_state == 'off':
-                    init_duration = window_closed_seconds
-                elif window_state == 'on':
-                    init_duration = window_open_seconds
-
-                self.sensor_cb(
-                    entity = window,
-                    new = window_state,
-                    old = None,
-                    attribute = None,
-                    kwargs = {
-                        'init_check': True,
-                        'duration': init_duration,
-                        'zone': zone['name'],
-                        'mode':  zone['mode'],
-                        'sensor':  zone['sensor']
-                    }
-                )
-
-                self.listen_state(
-                    cb = self.sensor_cb,
-                    entity = window,
-                    new = 'off',
-                    duration = window_closed_seconds,
-                    immediate = True,
-                    zone = zone['name'],
-                    mode = zone['mode'],
-                    sensor = zone['sensor']
-                )
-                self.listen_state(
-                    cb = self.sensor_cb,
-                    entity = window,
-                    new = 'on',
-                    duration = window_open_seconds,
-                    immediate = True,
-                    zone = zone['name'],
-                    mode = zone['mode'],
-                    sensor = zone['sensor']
-                )
-
-            # Setup listeners for each door
-            for door in doors:
-                # Make an initial call to set the sensor data right away (avoid delay on reload)
-                door_state = self.get_state(door)
-                if door_state == 'off':
-                    init_duration = door_closed_seconds
-                elif door_state == 'on':
-                    init_duration = door_open_seconds
-
-                self.sensor_cb(
-                    entity = door,
-                    new = door_state,
-                    old = None,
-                    attribute = None,
-                    kwargs = {
-                        'init_check': True,
-                        'duration': init_duration,
-                        'zone': zone['name'],
-                        'mode':  zone['mode'],
-                        'sensor':  zone['sensor']
-                    }
-                )
-
-                self.listen_state(
-                    cb = self.sensor_cb,
-                    entity = door,
-                    new = 'off',
-                    duration = door_closed_seconds,
-                    immediate = True,
-                    zone = zone['name'],
-                    mode = zone['mode'],
-                    sensor = zone['sensor']
-                )
-                self.listen_state(
-                    cb = self.sensor_cb,
-                    entity = door,
-                    new = 'on',
-                    duration = door_open_seconds,
-                    immediate = True,
-                    zone = zone['name'],
-                    mode = zone['mode'],
-                    sensor = zone['sensor']
-                )
-
         # Figure out if each rule is open or closed based on a combination of zones and sensors
         for rule in rules:
             dependencies = rule.get('dependencies', [])
@@ -151,8 +29,6 @@ class DoorWindowClimate(hass.Hass):
             # Pull in the settings for each rule, otherwise use the default settings
             door_open_seconds = rule.get('door_open_seconds', self.args['door_open_seconds'])
             door_closed_seconds = rule.get('door_closed_seconds', self.args['door_closed_seconds'])
-            window_open_seconds = rule.get('window_open_seconds', self.args['window_open_seconds'])
-            window_closed_seconds = rule.get('window_closed_seconds', self.args['window_closed_seconds'])
 
             # Setup a persistent data store for each rule
             self.rule_data[rule['name']] = {
@@ -199,82 +75,6 @@ class DoorWindowClimate(hass.Hass):
                         immediate = True,
                         rule = rule
                     )
-                elif dependency.get('window'):
-                    entity = dependency['window']
-                    self.listen_state(
-                        cb = self.dependency_cb,
-                        entity = entity,
-                        new = 'off',
-                        duration = window_closed_seconds,
-                        immediate = True,
-                        rule = rule
-                    )
-                    self.listen_state(
-                        cb = self.dependency_cb,
-                        entity = entity,
-                        new = 'on',
-                        duration = window_open_seconds,
-                        immediate = True,
-                        rule = rule
-                    )
-
-
-    def sensor_cb(self, entity, attribute, old, new, kwargs):
-        zone = kwargs.get('zone')
-        mode = kwargs.get('mode')
-        sensor = kwargs.get('sensor')
-        init_check = kwargs.get('init_check')
-
-        new_zone_state = None
-
-        # Only run this code on app reload, sets initial sensor state
-        # Checks if the state has been true for longer than the set duration, avoids an initial waiting period for Immediate=True to take effect
-        if init_check:
-            duration = kwargs.get('duration')
-            last_changed = self.get_state(entity, attribute='last_changed')
-            last_changed_sec = (datetime.utcnow() - self.convert_utc(last_changed).replace(tzinfo=None)).total_seconds()
-            if last_changed_sec >= duration:
-                new = new
-            else:
-                if new == 'off':
-                    new = 'on'
-                elif new == 'on':
-                    new = 'off'
-
-        # Add or remove the sensor from the open_sensors and closed_sensors lists
-        if new == 'off':
-            if entity not in self.zone_data[zone]['closed_sensors']:
-                self.zone_data[zone]['closed_sensors'].append(entity)
-            if entity in self.zone_data[zone]['open_sensors']:
-                self.zone_data[zone]['open_sensors'].remove(entity)
-        elif new == 'on':
-            if entity not in self.zone_data[zone]['open_sensors']:
-                self.zone_data[zone]['open_sensors'].append(entity)
-            if entity in self.zone_data[zone]['closed_sensors']:
-                self.zone_data[zone]['closed_sensors'].remove(entity)
-
-        # Determine if the zone should be considered opened or closed based on mode and sensor counts
-        open_count = len(self.zone_data[zone]['open_sensors'])
-        closed_count = len(self.zone_data[zone]['closed_sensors'])
-
-        # Set zone state once all sensors are accounted for
-        if (open_count + closed_count) == self.zone_data[zone]['total_sensors']:
-            if mode == 'any':
-                if open_count >= 1:
-                    new_zone_state = 'open'
-                else:
-                    new_zone_state = 'closed'
-            elif mode == 'all':
-                if closed_count >= 1:
-                    new_zone_state = 'closed'
-                else:
-                    new_zone_state = 'open'
-
-        if new_zone_state and new_zone_state != self.zone_data[zone]['state']:
-            self.log('{} (zone) is {}'.format(zone, new_zone_state))
-            self.zone_data[zone]['state'] = new_zone_state
-            self.set_state(sensor, state=new_zone_state.title(), friendly_name=zone)
-
 
     def dependency_cb(self, entity, attribute, old, new, kwargs):
         eval_kwargs = {
