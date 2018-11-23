@@ -20,7 +20,8 @@ class WelcomeHomeLighting(hass.Hass):
             self.listen_state(
                 cb = self.returned_home_cb,
                 entity = entity,
-                new = 'off',
+                old = 'off',
+                new = 'on',
                 type = 'presence'
             )
 
