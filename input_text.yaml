@@ -1,14 +1,18 @@
 alarm1_name:
-  name: Name 
+  name: Name
 
 alarm2_name:
-  name: Name 
+  name: Name
 
 alarm3_name:
-  name: Name 
+  name: Name
 
 alarm4_name:
-  name: Name 
+  name: Name
 
 alarm5_name:
-  name: Name 
+  name: Name
+
+### APPDAEMON DUMMY SENSORS ###
+appdaemon_prev_climate_mode:
+  name: Previous Climate Mode
