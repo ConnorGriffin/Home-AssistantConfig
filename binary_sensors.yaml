@@ -213,3 +213,18 @@
         {{   is_state('binary_sensor.back_room_exterior_windows', 'on')
           or is_state('binary_sensor.back_room_exterior_doors', 'on')
         }}
+
+  ### PRESENCE ###
+    connor_presence:
+      friendly_name: Connor
+      device_class: presence
+      entity_id: device_tracker.connor_galaxys8
+      value_template: >-
+        {{ is_state('device_tracker.connor_galaxys8', 'home') }}
+
+    diana_presence:
+      friendly_name: Diana
+      device_class: presence
+      entity_id: device_tracker.diana_pixel2
+      value_template: >-
+        {{ is_state('device_tracker.diana_pixel2', 'home') }}

@@ -51,7 +51,7 @@ class HomeSecurity(hass.Hass):
         self.listen_state(
             cb = self.presence_cb,
             entity = self.args['presence_entity'],
-            new = 'not_home',
+            new = 'off',
             duration = self.args['arm_delay'],
             immediate = True
         )
@@ -60,8 +60,8 @@ class HomeSecurity(hass.Hass):
         self.listen_state(
             cb = self.presence_cb,
             entity = self.args['presence_entity'],
-            old = 'not_home',
-            new = 'home'
+            old = 'off',
+            new = 'on'
         )
 
         # Listen for the notification to be clicked
@@ -74,10 +74,10 @@ class HomeSecurity(hass.Hass):
 
     # Arm or disarm the alarm depending on the presence and alarm states
     def presence_cb(self, entity, attribute, old, new, kwargs):
-        if new == 'not_home' and not self.alarm_armed:
+        if new == 'off' and not self.alarm_armed:
             # Arm the alarm when nobody is home
             self.arm_alarm()
-        elif new == 'home' and self.alarm_armed:
+        elif new == 'on' and self.alarm_armed:
             # Disarm the alarm when someone is home
             self.disarm_alarm()
 
@@ -202,7 +202,7 @@ class HomeSecurity(hass.Hass):
     def check_returned_home(self, kwargs):
         if self.alarm_armed and not self.alarm_fired:
             state = self.get_state(self.args['presence_entity'])
-            if state == 'not_home':
+            if state == 'off':
                 self.fire_alarm(
                     entity = kwargs['entity_id'],
                     old = kwargs['old'],

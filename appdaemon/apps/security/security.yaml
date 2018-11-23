@@ -1,6 +1,6 @@
 ---
-door_autolock:
-  module: door_autolock
+door_auto_lock:
+  module: door_auto_lock
   class: DoorAutolock
   constrain_input_boolean: input_boolean.smart_autolock_automation
   closed_seconds: 120
@@ -20,7 +20,7 @@ home_security:
   armed_sensor: sensor.home_security_armed
   fired_sensor: sensor.home_security_fired
   # Device tracker group
-  presence_entity: group.all_devices
+  presence_entity: group.people
   # How many seconds for all to be away before arming the alarm
   arm_delay: 300
   # How many seconds to wait for presence_entity to return home before issuing an alarm
@@ -45,17 +45,17 @@ home_security:
     - binary_sensor.front_door
     - binary_sensor.backyard_door
 
-lock:
-  module: lock
-  class: Lock
+door_auto_unlock:
+  module: door_auto_unlock
+  class: DoorAutoUnlock
   trackers:
     - tracker_name: Connor
-      tracker: device_tracker.connor_galaxys8
+      tracker: binary_sensor.connor_presence
       notification_target: Connor Phone
     - tracker_name: Diana
-      tracker: device_tracker.diana_pixel2
+      tracker: binary_sensor.diana_presence
       #notification_target: Diana Phone
   # Time in seconds before arming the auto-unlock
-  not_home_duration: 300
+  not_home_duration: 10 #300
   lock_entity: lock.front_door_lock
   constrain_input_boolean: input_boolean.smart_unlock_automation

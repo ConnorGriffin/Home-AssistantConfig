@@ -60,8 +60,8 @@ people:
     name: Presence
     view: no
     entities:
-      - device_tracker.connor_galaxys8
-      - device_tracker.diana_pixel2
+      - binary_sensor.connor_presence
+      - binary_sensor.diana_presence
 
 inside_lights:
     name: Inside Lights
