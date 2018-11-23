@@ -52,14 +52,6 @@ class DoorAutoUnlock(hass.Hass):
                 entity_id = lock
             )
 
-            # Refresh the lock status in HomeAssistant
-            self.run_in(
-                self.refresh_zwave_entity,
-                seconds = 2,
-                entity_id = lock
-            )
-
-
             # Send a notification if a notification_target is provided, will probably turn this off after testing
             if notification_target:
                 self.notify(
@@ -67,11 +59,3 @@ class DoorAutoUnlock(hass.Hass):
                     name = 'gcm_html5',
                     target = notification_target
                 )
-
-
-    def refresh_zwave_entity(self, kwargs):
-        entity_id = kwargs.get('entity_id')
-        self.call_service(
-            service = 'zwave/refresh_entity',
-            entity_id = entity_id
-        )
