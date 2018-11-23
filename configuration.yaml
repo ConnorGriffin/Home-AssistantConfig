@@ -179,8 +179,14 @@ notify:
     platform: simplepush
     device_key: !secret connor_simplepush
 
-
 mqtt:
   password: !secret http_password
   discovery: true
   discovery_prefix: homeassistant
+
+hdmi_cec:
+  host: raspberrypi.home.connorcg.com
+  platform: switch
+  devices:
+    Roku: 1.1.0.0
+    Receiver: 1.0.0.0
