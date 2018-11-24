@@ -56,6 +56,6 @@ door_auto_unlock:
       tracker: binary_sensor.diana_presence
       #notification_target: Diana Phone
   # Time in seconds before arming the auto-unlock
-  not_home_duration: 10 #300
+  not_home_duration: 300
   lock_entity: lock.front_door_lock
   constrain_input_boolean: input_boolean.smart_unlock_automation
