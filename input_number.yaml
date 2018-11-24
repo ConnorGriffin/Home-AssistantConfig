@@ -1,0 +1,8 @@
+### AV ###
+receiver_volume_slider:
+  name: Receiver Volume
+  unit_of_measurement: '%'
+  min: 0
+  max: 100
+  step: 1
+  icon: mdi:speaker

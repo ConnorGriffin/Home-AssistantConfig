@@ -353,7 +353,15 @@ views:
             icon: mdi:projector
           - entity: switch.smart_plug_1_switch
             name: Projector Power
-
+      - type: "custom:monster-card"
+        id: hdmi_control
+        card:
+          type: entities
+          title: HDMI Control
+        filter:
+          include:
+            - entity_id: "*.cec_*"
+            - entity_id: "input_number.receiver_volume_slider"
 
   - title: Automations
     id: automations

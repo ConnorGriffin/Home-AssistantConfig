@@ -1,0 +1,35 @@
+### AV ###
+- name: CEC Projector
+  platform: mqtt
+  device_class: power
+  icon: mdi:projector
+  availability_topic: "media/bridge/status"
+  state_topic: "media/cec/0"
+  state_on: "on"
+  state_off: "off"
+  command_topic: "media/cec/0/cmd"
+  payload_on: "on"
+  payload_off: "off"
+
+- name: CEC Receiver
+  platform: mqtt
+  device_class: power
+  icon: mdi:video-input-hdmi
+  availability_topic: "media/bridge/status"
+  state_topic: "media/cec/5"
+  state_on: "on"
+  state_off: "off"
+  command_topic: "media/cec/5/cmd"
+  payload_on: "on"
+  payload_off: "off"
+
+- name: CEC Receiver Mute
+  platform: mqtt
+  icon: mdi:volume-off
+  availability_topic: "media/bridge/status"
+  state_topic: "media/cec/mute"
+  state_on: "on"
+  state_off: "off"
+  command_topic: "media/cec/cmd"
+  payload_on: "mute"
+  payload_off: "unmute"

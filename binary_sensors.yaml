@@ -228,3 +228,15 @@
       entity_id: device_tracker.diana_pixel2
       value_template: >-
         {{ is_state('device_tracker.diana_pixel2', 'home') }}
+
+
+### AV ###
+- name: CEC Roku
+  platform: mqtt
+  device_class: power
+  availability_topic: "media/bridge/status"
+  #icon: mdi:play-circle
+  state_topic: "media/cec/4"
+  payload_on: "on"
+  payload_off: "off"
+

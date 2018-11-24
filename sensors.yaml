@@ -120,3 +120,11 @@
       friendly_name: 'Bathroom MultiSensor 6 Battery'
       value_template: '{{ states.zwave.bathroom_multisensor_6.attributes.battery_level }}'
       device_class: battery
+
+
+### AV ###
+- name: CEC Receiver Volume
+  platform: mqtt
+  state_topic: "media/cec/volume"
+  availability_topic: "media/bridge/status"
+  unit_of_measurement: '%'

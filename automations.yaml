@@ -1,0 +1,24 @@
+- alias: Set Receiver Volume Level from Slider
+  trigger:
+    platform: state
+    entity_id: input_number.receiver_volume_slider
+  action:
+  - service: mqtt.publish
+    data_template:
+      topic: media/cec/volume/set
+      payload: "{{ states.input_number.receiver_volume_slider.state | int }}"
+  id: 0e280794a57046b38499e3414f4511f3
+
+
+# Need to move this to Appdaemon, not enough flexibility here.
+# The two automations collide and cause the volume to constantly shift
+#- alias: Set Receiver Volume Slider from Sensor
+#  trigger:
+#    platform: state
+#    entity_id: sensor.cec_receiver_volume
+#  action:
+#  - service: input_number.set_value
+#    data_template:
+#      entity_id: input_number.receiver_volume_slider
+#      value: "{{ states.sensor.cec_receiver_volume.state | int }}"
+#  id: 3qwbn8kual4k5kyqhp21b8tbrjace8vs
