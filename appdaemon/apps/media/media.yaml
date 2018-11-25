@@ -1,9 +1,14 @@
 ---
-media_power:
-  module: media_power
-  class: MediaPower
-  plug:
-    switch: switch.smart_plug_1_switch
-    status: binary_sensor.smart_plug_1_active
+roku_power_control:
+  module: hdmi_control
+  class: RokuPowerControl
   roku: media_player.living_room_roku
-  off_duration: 60
+  projector: switch.cec_projector
+  idle_duration: 300
+  constrain_input_boolean: roku_projector_power_control_automation
+
+projector_switch:
+  module: hdmi_control
+  class: ProjectorSwitch
+  projector: switch.cec_projector
+  receiver: switch.cec_receiver

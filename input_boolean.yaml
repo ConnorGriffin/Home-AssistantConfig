@@ -2,10 +2,6 @@ ecobee_auto_home_away_automation:
   name: Ecobee Auto Home/Away
   icon: mdi:thermostat
 
-room_presence_automation:
-  name: Room Presence
-  icon: mdi:home-map-marker
-
 light_brightness_automation:
   name: Light Brightness
   icon: mdi:lightbulb-on
@@ -46,6 +42,9 @@ welcome_home_lighting_automation:
   name: Welcome Home Lighting
   icon: mdi:lightbulb-on
 
+roku_projector_power_control_automation:
+  name: Roku Projector Power Control
+  icon: mdi:projector
 
 
 # region alarms

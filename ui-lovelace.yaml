@@ -133,13 +133,13 @@ views:
               name: Temp
             #- entity: binary_sensor.living_room_occupancy
             #  name: Presence
-            - entity: binary_sensor.smart_plug_1_active
+            - entity: switch.cec_projector
               name: Projector
               icon: mdi:projector
               hold_action: call-service
-              service: switch.turn_on
+              service: switch.toggle
               service_data:
-                entity_id: switch.smart_plug_1_switch
+                entity_id: switch.cec_projector
             - name: Roku
               entity: media_player.living_room_roku
             - binary_sensor.front_door
@@ -345,23 +345,21 @@ views:
       - type: media-control
         id: roku
         entity: media_player.living_room_roku
-      - type: entities
-        id: media_entities
-        entities:
-          - entity: binary_sensor.smart_plug_1_active
-            name: Projector State
-            icon: mdi:projector
-          - entity: switch.smart_plug_1_switch
-            name: Projector Power
-      - type: "custom:monster-card"
+
+      - title: HDMI Control
         id: hdmi_control
-        card:
-          type: entities
-          title: HDMI Control
-        filter:
-          include:
-            - entity_id: "*.cec_*"
-            - entity_id: "input_number.receiver_volume_slider"
+        type: entities
+        show_header_toggle: false
+        entities:
+          - entity: switch.cec_receiver
+            name: Receiver
+          - entity: switch.cec_projector
+            name: Projector
+            icon: mdi:projector
+          - entity: input_number.receiver_volume_slider
+            name: Volume
+          - entity: switch.cec_receiver_mute
+            name: Mute
 
   - title: Automations
     id: automations
