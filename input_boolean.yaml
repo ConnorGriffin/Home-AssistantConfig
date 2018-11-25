@@ -3,15 +3,15 @@ ecobee_auto_home_away_automation:
   icon: mdi:thermostat
 
 light_brightness_automation:
-  name: Light Brightness
+  name: Light Brightness Schedule
   icon: mdi:lightbulb-on
 
 light_double_tap_automation:
-  name: Light Double Tap
+  name: Light Double Tap Actions
   icon: mdi:light-switch
 
 light_presence_automation:
-  name: Light Presence
+  name: Motion Lighting
   icon: mdi:track-light
 
 alarm_clock_automation:
@@ -23,19 +23,19 @@ low_battery_alert_automation:
   icon: mdi:battery-alert
 
 smart_unlock_automation:
-  name: Smart Unlock
+  name: Front Door Auto Unlock
   icon: mdi:lock-open
 
 smart_autolock_automation:
-  name: Smart Autolock
+  name: Front Door Auto Lock
   icon: mdi:lock
 
 window_door_climate_automation:
-  name: Window/Door Climate
+  name: Window/Door Climate Control
   icon: mdi:thermostat
 
 home_security_automation:
-  name: Home Security Automation
+  name: Home Security System
   icon: mdi:security
 
 welcome_home_lighting_automation:
