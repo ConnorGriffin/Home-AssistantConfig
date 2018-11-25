@@ -386,7 +386,6 @@ class Lights(hass.Hass):
                 on_threshold = on_threshold,
                 off_threshold = off_threshold
             )
-            self.log('{}: armed {}'.format(self.friendly_name(entity), target_cb))
 
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
