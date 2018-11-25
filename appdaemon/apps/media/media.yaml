@@ -6,9 +6,15 @@ roku_power_control:
   projector: switch.cec_projector
   idle_duration: 300
   constrain_input_boolean: roku_projector_power_control_automation
-
 projector_switch:
   module: hdmi_control
   class: ProjectorSwitch
   projector: switch.cec_projector
   receiver: switch.cec_receiver
+
+receiver_volume:
+  module: hdmi_control
+  class: ReceiverVolume
+  global_dependencies: helpers
+  volume_sensor: sensor.cec_receiver_volume
+  volume_slider: input_number.receiver_volume_slider
