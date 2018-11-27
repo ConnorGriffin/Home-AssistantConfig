@@ -61,12 +61,12 @@ views:
 
       - title: Bedroom
         type: custom:vertical-stack-in-card
-        id: bedroom_stack
+        id: bedroom-stack
         cards:
-          - id: bedroom_light
+          - id: bedroom-light
             type: light
             entity: light.bedroom_light
-          - id: bedroom_glance
+          - id: bedroom-glance
             type: glance
             entities:
               - entity: sensor.bedroom_temperature
@@ -86,12 +86,12 @@ views:
 
       - title: Connor's Office
         type: custom:vertical-stack-in-card
-        id: connors_office_stack
+        id: connors-office-stack
         cards:
-          - id: connors_office_light
+          - id: connors-office-light
             type: light
             entity: light.connors_office_light
-          - id: connors_office_glance
+          - id: connors-office-glance
             type: glance
             entities:
               - entity: sensor.connor_office_temperature
@@ -112,12 +112,12 @@ views:
 
       - title: Diana's Office
         type: custom:vertical-stack-in-card
-        id: dianas_office_stack
+        id: dianas-office-stack
         cards:
-          - id: dianas_office_light
+          - id: dianas-office-light
             type: light
             entity: light.dianas_office_light
-          - id: dianas_office_glance
+          - id: dianas-office-glance
             type: glance
             entities:
               - entity: sensor.diana_office_temperature
@@ -136,9 +136,9 @@ views:
 
       - title: Living Room
         type: custom:vertical-stack-in-card
-        id: living_room_stack
+        id: living-room-stack
         cards:
-        - id: living_room_glance
+        - id: living-room-glance
           type: glance
           columns: 3
           entities:
@@ -163,12 +163,12 @@ views:
 
       - title: Dining Room
         type: custom:vertical-stack-in-card
-        id: dining_room_stack
+        id: dining-room-stack
         cards:
-          - id: dining_room_light
+          - id: dining-room-light
             type: light
             entity: light.dining_room_light
-          - id: dining_room_glance
+          - id: dining-room-glance
             type: glance
             entities:
             - entity: input_select.dining_room_light_mode
@@ -183,12 +183,12 @@ views:
 
       - title: Hallway
         type: custom:vertical-stack-in-card
-        id: hallway_stack
+        id: hallway-stack
         cards:
-          - id: hallway_light
+          - id: hallway-light
             type: light
             entity: light.hallway_light
-          - id: hallway_glance
+          - id: hallway-glance
             type: glance
             entities:
             - entity: sensor.home_temperature
@@ -203,12 +203,12 @@ views:
 
       - title: Bathroom
         type: custom:vertical-stack-in-card
-        id: bathroom_stack
+        id: bathroom-stack
         cards:
-          - id: bathroom_light
+          - id: bathroom-light
             type: light
             entity: light.bathroom_light
-          - id: bathroom_glance
+          - id: bathroom-glance
             type: glance
             columns: 4
             entities:
@@ -227,7 +227,7 @@ views:
               name: Humidity
 
       - title: Back Room
-        id: back_room
+        id: back-room
         type: glance
         columns: 3
         show_state: false
@@ -244,7 +244,7 @@ views:
             name: Right Window
 
       #- title: Lights
-      #  id: light_groups
+      #  id: light-groups
       #  type: entities
       #  entities:
       #    - entity: group.all_lights
@@ -347,7 +347,7 @@ views:
         id: forecast
         entity: weather.home
       - type: iframe
-        id: temp_history
+        id: temp-history
         title: History
         url: http://10.31.36.11:3000/dashboard-solo/snapshot/AHM5vJRewYGhx2eg6iJiy6KFhRYeu1I7?orgId=1&panelId=2&from=1530396946437&to=1530440146437&theme=light
 
@@ -360,7 +360,7 @@ views:
         entity: media_player.living_room_roku
 
       - title: HDMI Control
-        id: hdmi_control
+        id: hdmi-control
         type: entities
         show_header_toggle: false
         entities:
@@ -374,12 +374,17 @@ views:
           - entity: switch.cec_receiver_mute
             name: Mute
 
+      - id: sonarr
+        type: entities
+        entities:
+          - sensor.sonarr_upcoming
+
   - title: Automations
     id: automations
     icon: mdi:robot
     cards:
       - type: "custom:monster-card"
-        id: all_automations
+        id: all-automations
         card:
           type: entities
           title: All Automations
@@ -392,7 +397,7 @@ views:
     icon: mdi:z-wave
     cards:
       - type: "custom:monster-card"
-        id: zwave_entities
+        id: zwave-entities
         card:
           type: entities
           title: Z-Wave
@@ -410,7 +415,7 @@ views:
             - entity_id: "*.smart_plug_1*"
 
       - type: "custom:monster-card"
-        id: zwave_batteries
+        id: zwave-batteries
         card:
           type: entities
           title: Batteries
@@ -419,7 +424,7 @@ views:
             - entity_id: "sensor.*_battery"
 
       - title: Bathroom MultiSensor
-        id: bathroom_multisensor
+        id: bathroom-multisensor
         type: entities
         entities:
           - sensor.bathroom_alarm_level
@@ -430,7 +435,7 @@ views:
           - sensor.bathroom_ultraviolet
 
       - title: Front Door Lock
-        id: front_door_lock
+        id: front-door-lock
         type: entities
         entities:
           - sensor.front_door_lock_access_control
