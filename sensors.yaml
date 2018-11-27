@@ -127,3 +127,7 @@
   state_topic: "media/cec/volume"
   availability_topic: "media/bridge/status"
   unit_of_measurement: '%'
+
+- platform: sonarr
+  api_key: !secret sonarr_api_key
+  host: media.ipa.connorcg.com
