@@ -75,7 +75,7 @@
 
     back_left_window_sensor_battery:
       entity_id: zwave.back_left_window_sensor
-      friendly_name: 'Back Left Winodw Sensor Battery'
+      friendly_name: 'Back Left Window Sensor Battery'
       value_template: '{{ states.zwave.back_left_window_sensor.attributes.battery_level }}'
       device_class: battery
 
@@ -120,7 +120,6 @@
       friendly_name: 'Bathroom MultiSensor 6 Battery'
       value_template: '{{ states.zwave.bathroom_multisensor_6.attributes.battery_level }}'
       device_class: battery
-
 
 ### AV ###
 - name: CEC Receiver Volume

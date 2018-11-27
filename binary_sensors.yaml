@@ -23,10 +23,10 @@
       device_class: door
 
     backyard_door:
-      entity_id: sensor.backyard_door_sensor_access_control
+      entity_id: sensor.backyard_door_sensor2_access_control
       friendly_name: 'Backyard Door'
       value_template: >-
-        {{ is_state('sensor.backyard_door_sensor_access_control', '22') }}
+        {{ is_state('sensor.backyard_door_sensor2_access_control', '22') }}
       device_class: door
 
   ### WINDOWS ###
@@ -113,7 +113,7 @@
       entity_id: sensor.bathroom_relative_humidity
       friendly_name: 'Shower'
       value_template: >-
-        {{ states('sensor.bathroom_relative_humidity')|float >= 65 }}
+        {{ states('sensor.bathroom_relative_humidity')|float >= 80 }}
       icon_template: 'mdi:shower-head'
 
     bed_occupancy_connor:
@@ -228,7 +228,6 @@
       entity_id: device_tracker.diana_pixel2
       value_template: >-
         {{ is_state('device_tracker.diana_pixel2', 'home') }}
-
 
 ### AV ###
 - name: CEC Roku
