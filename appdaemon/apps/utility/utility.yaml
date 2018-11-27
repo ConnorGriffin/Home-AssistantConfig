@@ -6,6 +6,7 @@ install_dependencies:
   packages:
     - lxml
     - responses
+    - mechanicalsoup
 
 low_battery_alert:
   module: battery

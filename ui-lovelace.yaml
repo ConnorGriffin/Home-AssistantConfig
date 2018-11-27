@@ -16,8 +16,7 @@ views:
     id: home
     #theme:
     cards:
-      - title: General
-        id: general
+      - id: general
         type: entities
         entities:
           - label: Climate
@@ -35,6 +34,20 @@ views:
           - lock.front_door_lock
           - sensor.home_security_armed
           - sensor.home_security_fired
+
+      - title: Internet Usage
+        id: internet-usage
+        type: entities
+        entities:
+          - entity: sensor.cox_utilization
+            name: Utilization
+          - entity: sensor.cox_days_left
+            name: Days Left
+          - entity: sensor.cox_average_daily_usage
+            name: Average Daily Usage
+          - entity: sensor.cox_remaining_daily_usage
+            name: Remaining Daily Usage
+
 
       - title: Routines
         id: routines

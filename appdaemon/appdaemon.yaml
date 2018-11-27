@@ -17,10 +17,13 @@ appdaemon:
       type: hass
       ha_url: !secret base_url
       ha_key: !secret http_password
-      #token: !secret ha_token
+      token: !secret ha_token
   opnsense:
     api_key: !secret opnsense_api_key
     api_secret: !secret opnsense_api_secret
+  cox:
+    username: !secret cox_username
+    password: !secret cox_password
 hadashboard:
   dash_url: !secret hadash_url
   dash_dir: /conf/dashboards
