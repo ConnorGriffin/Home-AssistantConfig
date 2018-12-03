@@ -5,14 +5,15 @@ resources:
   - url: /local/monster-card.js?v=1
     type: js
     git: https://raw.githubusercontent.com/ciotlosm/custom-lovelace/master/monster-card/monster-card.js
-  - url: /local/vertical-stack-in-card.js?v=1
+  - url: /local/vertical-stack-in-card.js?v=7
     type: js
     git: https://github.com/custom-cards/vertical-stack-in-card
 
 title: Home
 views:
+### HOME / GENERAL VIEW ###
   - title: Home
-    icon: mdi:home
+    icon: mdi:home-assistant
     id: home
     #theme:
     cards:
@@ -29,25 +30,13 @@ views:
             type: section
           - binary_sensor.connor_presence
           - binary_sensor.diana_presence
+          #- entity: device_tracker.connor_galaxys8
+          #- entity: device_tracker.diana_pixel2
           - label: Security
             type: section
           - lock.front_door_lock
           - sensor.home_security_armed
           - sensor.home_security_fired
-
-      - title: Internet Usage
-        id: internet-usage
-        type: entities
-        entities:
-          - entity: sensor.cox_utilization
-            name: Utilization
-          - entity: sensor.cox_days_left
-            name: Days Left
-          - entity: sensor.cox_average_daily_usage
-            name: Average Daily Usage
-          - entity: sensor.cox_remaining_daily_usage
-            name: Remaining Daily Usage
-
 
       - title: Routines
         id: routines
@@ -59,6 +48,157 @@ views:
             action_name: Run
             service: light.turn_off
 
+      # Use conditional cards and vertical stack to only show reciever volume controls if receiver is on
+      - type: custom:vertical-stack-in-card
+        id: media-center-stack
+        cards:
+          - id: media-center-conditional-off
+            type: conditional
+            conditions:
+              - entity: switch.cec_receiver
+                state: "off"
+            card:
+              title: Media Center
+              type: entities
+              show_header_toggle: false
+              entities:
+                - entity: sensor.sonarr_upcoming
+                - entity: switch.cec_projector
+                  name: Projector
+                  icon: mdi:projector
+                - entity: switch.cec_receiver
+                  name: Receiver
+          - id: media-center-conditional-on
+            type: conditional
+            conditions:
+              - entity: switch.cec_receiver
+                state: "on"
+            card:
+              title: Media Center
+              type: entities
+              show_header_toggle: false
+              entities:
+                - entity: sensor.sonarr_upcoming
+                - entity: switch.cec_projector
+                  name: Projector
+                  icon: mdi:projector
+                - entity: switch.cec_receiver
+                  name: Receiver
+                - entity: input_number.receiver_volume_slider
+                  name: Volume
+                - entity: switch.cec_receiver_mute
+                  name: Mute
+
+      # Show the roku card if projector is on
+      - id: roku-conditional
+        type: conditional
+        conditions:
+          - entity: switch.cec_projector
+            state: "on"
+        card:
+            type: media-control
+            entity: media_player.living_room_roku
+
+      # Show all lights with a toggle and slider using custom card
+      - title: Lights
+        id: lights
+        type: entities
+        entities:
+          - entity: light.bathroom_light
+            name: Bathroom
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.bedroom_light
+            name: Bedroom
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.connors_office_light
+            name: "Connor's Office"
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.dianas_office_light
+            name: "Diana's Office"
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.dining_room_light
+            name: Dining Room
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.hallway_light
+            name: Hallway
+            type: custom:slider-entity-row
+            toggle: true
+
+      # Show only open windows
+      - id: open-windows
+        type: entity-filter
+        show_empty: false
+        card:
+          title: Open Windows
+        state_filter:
+          - "on"
+        entities:
+          - binary_sensor.back_left_window
+          - binary_sensor.back_right_window
+          - binary_sensor.bathroom_window
+          - binary_sensor.bedroom_window
+          - binary_sensor.connors_office_south_window
+          - binary_sensor.connors_office_west_window
+          - binary_sensor.dianas_office_window
+          - binary_sensor.front_window_left
+          - binary_sensor.front_window_right
+
+      # Show only open doors
+      - id: open-doors
+        type: entity-filter
+        show_empty: false
+        card:
+          title: Open Doors
+        state_filter:
+          - "on"
+        entities:
+          - binary_sensor.front_door
+          - binary_sensor.kitchen_door
+          - binary_sensor.backyard_door
+          - binary_sensor.carport_door
+
+      - title: Shopping List
+        id: shopping-list
+        type: shopping-list
+
+      # Combine internet usage guage and more cox details with custom stack card
+      - title: Internet Usage
+        type: custom:vertical-stack-in-card
+        id: internet-usage-stack
+        cards:
+          - id: internet-usage-gauge
+            title: Data Usage
+            type: gauge
+            entity: sensor.cox_usage_percent
+            min: 0
+            max: 100
+            severity:
+              green: 0
+              yellow: 70
+              red: 85
+          - id: internet-usage-entities
+            type: entities
+            entities:
+              - entity: sensor.cox_utilization
+                name: Utilization
+              - entity: sensor.cox_days_left
+                name: Days Left
+              #- entity: sensor.cox_average_daily_usage
+              #  name: Average Daily Usage
+              #- entity: sensor.cox_remaining_daily_usage
+              #  name: Remaining Daily Usage
+
+### ROOM VIEW ###
+  - title: Rooms
+    icon: mdi:home
+    id: rooms
+    #theme:
+    cards:
       - title: Bedroom
         type: custom:vertical-stack-in-card
         id: bedroom-stack
@@ -243,15 +383,66 @@ views:
           - entity: binary_sensor.back_right_window
             name: Right Window
 
-      #- title: Lights
-      #  id: light-groups
-      #  type: entities
-      #  entities:
-      #    - entity: group.all_lights
-      #      name: All Lights
-      #    - group.inside_lights
-      #    - group.inside_lights_except_bedroom
+### MEDIA VIEW ###
+  - title: Media
+    id: media
+    icon: mdi:audio-video
+    cards:
+      - type: media-control
+        id: roku
+        entity: media_player.living_room_roku
 
+      - title: HDMI Control
+        id: hdmi-control
+        type: entities
+        show_header_toggle: false
+        entities:
+          - entity: switch.cec_receiver
+            name: Receiver
+          - entity: switch.cec_projector
+            name: Projector
+            icon: mdi:projector
+          - entity: input_number.receiver_volume_slider
+            name: Volume
+          - entity: switch.cec_receiver_mute
+            name: Mute
+
+      - id: sonarr
+        type: entities
+        entities:
+          - sensor.sonarr_upcoming
+
+### CLIMATE VIEW ###
+  - title: Climate
+    id: climate
+    icon: mdi:weather-sunny
+    cards:
+      - type: thermostat
+        id: thermostat
+        entity: climate.home
+      - type: weather-forecast
+        id: forecast
+        entity: weather.home
+      - type: iframe
+        id: temp-history
+        title: History
+        url: http://10.31.36.11:3000/dashboard-solo/snapshot/AHM5vJRewYGhx2eg6iJiy6KFhRYeu1I7?orgId=1&panelId=2&from=1530396946437&to=1530440146437&theme=light
+
+### AUTOMATIONS VIEW ###
+  - title: Automations
+    id: automations
+    icon: mdi:robot
+    cards:
+      - type: "custom:monster-card"
+        id: all-automations
+        card:
+          type: entities
+          title: All Automations
+        filter:
+          include:
+            - entity_id: "input_boolean.*_automation"
+
+            ### ALARM VIEW ###
   - title: Alarms
     id: alarms
     icon: mdi:alarm
@@ -336,62 +527,7 @@ views:
         - input_boolean.alarm5_friday
         - input_boolean.alarm5_saturday
 
-  - title: Climate
-    id: climate
-    icon: mdi:weather-sunny
-    cards:
-      - type: thermostat
-        id: thermostat
-        entity: climate.home
-      - type: weather-forecast
-        id: forecast
-        entity: weather.home
-      - type: iframe
-        id: temp-history
-        title: History
-        url: http://10.31.36.11:3000/dashboard-solo/snapshot/AHM5vJRewYGhx2eg6iJiy6KFhRYeu1I7?orgId=1&panelId=2&from=1530396946437&to=1530440146437&theme=light
-
-  - title: Media
-    id: media
-    icon: mdi:audio-video
-    cards:
-      - type: media-control
-        id: roku
-        entity: media_player.living_room_roku
-
-      - title: HDMI Control
-        id: hdmi-control
-        type: entities
-        show_header_toggle: false
-        entities:
-          - entity: switch.cec_receiver
-            name: Receiver
-          - entity: switch.cec_projector
-            name: Projector
-            icon: mdi:projector
-          - entity: input_number.receiver_volume_slider
-            name: Volume
-          - entity: switch.cec_receiver_mute
-            name: Mute
-
-      - id: sonarr
-        type: entities
-        entities:
-          - sensor.sonarr_upcoming
-
-  - title: Automations
-    id: automations
-    icon: mdi:robot
-    cards:
-      - type: "custom:monster-card"
-        id: all-automations
-        card:
-          type: entities
-          title: All Automations
-        filter:
-          include:
-            - entity_id: "input_boolean.*_automation"
-
+### ZWAVE / SANDBOX VIEW ###
   - title: Z-Wave
     id: zwave
     icon: mdi:z-wave
@@ -445,6 +581,3 @@ views:
           - sensor.front_door_lock_power_management
           - sensor.front_door_lock_sourcenodeid
           - sensor.front_door_lock_system
-
-
-
