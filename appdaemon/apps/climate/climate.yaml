@@ -62,12 +62,16 @@ door_window_climate:
 bathroom_vent:
   module: bathroom_vent
   class: BathroomVent
-  constrain_input_boolean: input_boolean.bathroom_vent_notification
-  open_duration: 300
+  constrain_input_boolean: input_boolean.bathroom_vent_notification_automation
+  open_duration: 900
+  window: binary_sensor.bathroom_window
   trackers:
     - tracker_name: Connor
       tracker: binary_sensor.connor_presence
-      notification_target: Connor Phone
+      notification_target:
+        - Connor Desktop
+        - Connor Phone
     - tracker_name: Diana
       tracker: binary_sensor.diana_presence
-      notification_target: Diana Phone
+      notification_target:
+        - Diana Phone
