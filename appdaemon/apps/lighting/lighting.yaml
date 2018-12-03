@@ -89,6 +89,7 @@ welcome_home_lighting:
   constrain_input_boolean: input_boolean.welcome_home_lighting_automation
   state_sensor: binary_sensor.welcome_home_lighting_active
   auto_off: 300
+  not_home_duration: 300
   #brightness_pct: 50
   presence_sensors:
     - binary_sensor.connor_presence

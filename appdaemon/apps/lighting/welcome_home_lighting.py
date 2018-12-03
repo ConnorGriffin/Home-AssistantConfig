@@ -21,23 +21,42 @@ class WelcomeHomeLighting(hass.Hass):
             type = 'lock'
         )
 
-        # Listen for return_home events
+        # Wait for each person to be not_home for a set duration, which will trigger another listen_state waiting for them to return
         for entity in self.args.get('presence_sensors', []):
             self.listen_state(
-                cb = self.returned_home_cb,
+                cb = self.not_home_cb,
                 entity = entity,
-                old = 'off',
-                new = 'on',
+                new = 'off',
+                duration = self.args['not_home_duration'],
+                immediate = True,
                 type = 'presence'
             )
 
 
+    def not_home_cb(self, entity, attribute, old, new, kwargs):
+        # Setup a oneshot listen_state that will fire when the person returns
+        self.log('Waiting for {} to return home.'.format(self.friendly_name(entity)))
+        self.listen_state(
+            cb = self.returned_home_cb,
+            entity = entity,
+            old = 'off',
+            new = 'on',
+            type = 'presence'
+        )
+
+
     def returned_home_cb(self, entity, attribute, old, new, kwargs):
+        trigger_type = kwargs['type']
+
+        if trigger_type == 'presence':
+            # Cancel listening (doing this because oneshots don't work)
+            self.cancel_listen_state(kwargs['handle'])
+
         # Turn on lights if sun is down and someone unlocks the front door
         if self.sun_down():
-            if kwargs['type'] == 'lock':
+            if trigger_type == 'lock':
                 self.log('Lock unlocked, turning on lights.')
-            elif kwargs['type'] == 'presence':
+            elif trigger_type == 'presence':
                 self.log('{} returned home, turning on lights.'.format(self.friendly_name(entity)))
 
             auto_off = self.args.get('auto_off', 300)
