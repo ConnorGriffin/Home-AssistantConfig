@@ -77,7 +77,11 @@ class VerticalStackInCard extends HTMLElement {
                     this._card(searchEles[i]);
                 }
             } else {
-                element.shadowRoot.querySelector('ha-card').style.boxShadow = 'none';
+                if (element.tagName == 'HUI-GAUGE-CARD') {
+                    element.shadowRoot.querySelector('ha-card').setAttribute('style', '--base-unit: 50px; box-shadow: none; margin-bottom: -20px;');
+                } else {
+                    element.shadowRoot.querySelector('ha-card').style.boxShadow = 'none';
+                }
             }
         } else {
             let searchEles = element.childNodes;
@@ -87,7 +91,7 @@ class VerticalStackInCard extends HTMLElement {
             }
         }
     }
-    
+
     getCardSize() {
         let totalSize = 0;
         this._refCards.forEach((element) => {
