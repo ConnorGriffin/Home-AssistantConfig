@@ -153,11 +153,23 @@ class DoorWindowClimate(hass.Hass):
                     self.climate_data['last_mode'] = self.get_state(climate, attribute='operation_mode')
                     self.climate_data['current_mode'] = 'off'
 
+                    # Set the AC mode
                     self.call_service(
                         service = 'climate/set_operation_mode',
                         entity_id = climate,
                         operation_mode = 'off'
                     )
+
+                    # Set the automation status sensor
+                    self.set_state(
+                        entity_id = 'binary_sensor.door_window_climate_control_active',
+                        state = 'on',
+                        attributes = {
+                            'friendly_name': 'Door/Window Climate Control',
+                            'icon': 'mdi:thermostat'
+                        }
+                    )
+
                 else:
                     self.log('{} (rule) is {}, but another rule is active. Doing nothing.'.format(rule_name, new_state))
             elif new_state == 'inactive' and new_state != current_state:
@@ -166,6 +178,18 @@ class DoorWindowClimate(hass.Hass):
 
                 # Only make changes if this is the last rule to turn off
                 if len(self.rule_counts['active_rules']) == 0:
+
+                    # Set the automation status sensor
+                    self.set_state(
+                        entity_id = 'binary_sensor.door_window_climate_control_active',
+                        state = 'off',
+                        attributes = {
+                            'friendly_name': 'Door/Window Climate Control',
+                            'icon': 'mdi:thermostat'
+                        }
+                    )
+
+
                     climate_mode = self.get_state(climate, attribute='operation_mode')
 
                     # Change AC back to the previous mode, but only if it hasn't been manually changed since it was turned off

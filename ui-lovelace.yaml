@@ -48,6 +48,16 @@ views:
       #      action_name: Run
       #      service: light.turn_off
 
+       # Show active automations
+      - id: active-automations
+        type: entity-filter
+        show_empty: false
+        card:
+          title: Active Automations
+        state_filter:
+          - "on"
+        entities:
+          - binary_sensor.door_window_climate_control_active
 
       # Use conditional cards and vertical stack to only show reciever volume controls if receiver is on
       - type: custom:vertical-stack-in-card
