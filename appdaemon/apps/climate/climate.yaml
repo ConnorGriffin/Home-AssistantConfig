@@ -22,11 +22,10 @@ ecobee:
     no_action:
       - Pre Peak
 
-
 door_window_climate:
   module: door_window_climate
   class: DoorWindowClimate
-  constrain_input_boolean: input_boolean.window_door_climate_automation
+  constrain_input_boolean: input_boolean.door_window_climate_automation
   # How long to wait before changing climate behaviours after each event
   door_open_seconds: 300
   door_closed_seconds: 30
@@ -59,3 +58,16 @@ door_window_climate:
         - zone: binary_sensor.main_house_zone
         - zone: binary_sensor.back_room_exterior_zone
         - door: binary_sensor.kitchen_door
+
+bathroom_vent:
+  module: bathroom_vent
+  class: BathroomVent
+  constrain_input_boolean: input_boolean.bathroom_vent_notification
+  open_duration: 300
+  trackers:
+    - tracker_name: Connor
+      tracker: binary_sensor.connor_presence
+      notification_target: Connor Phone
+    - tracker_name: Diana
+      tracker: binary_sensor.diana_presence
+      notification_target: Diana Phone

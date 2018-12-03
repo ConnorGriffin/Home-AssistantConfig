@@ -30,8 +30,8 @@ smart_autolock_automation:
   name: Front Door Auto Lock
   icon: mdi:lock
 
-window_door_climate_automation:
-  name: Window/Door Climate Control
+door_window_climate_automation:
+  name: Door/Window Climate Control
   icon: mdi:thermostat
 
 home_security_automation:
