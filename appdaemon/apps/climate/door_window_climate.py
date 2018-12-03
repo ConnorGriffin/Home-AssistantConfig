@@ -178,7 +178,6 @@ class DoorWindowClimate(hass.Hass):
 
                 # Only make changes if this is the last rule to turn off
                 if len(self.rule_counts['active_rules']) == 0:
-
                     # Set the automation status sensor
                     self.set_state(
                         entity_id = 'binary_sensor.door_window_climate_control_active',
@@ -189,10 +188,8 @@ class DoorWindowClimate(hass.Hass):
                         }
                     )
 
-
-                    climate_mode = self.get_state(climate, attribute='operation_mode')
-
                     # Change AC back to the previous mode, but only if it hasn't been manually changed since it was turned off
+                    climate_mode = self.get_state(climate, attribute='operation_mode')
                     if climate_mode == self.climate_data['current_mode'] and self.climate_data['last_mode']:
                         new_mode = self.climate_data['last_mode']
                         self.log('{} (rule) is {}, setting AC back to {}.'.format(rule_name, new_state, new_mode))
