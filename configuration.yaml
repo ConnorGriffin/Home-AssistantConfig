@@ -35,7 +35,12 @@ cloud:
         - lock
         - climate
         - media_player
-      #include_entities:
+      include_entities:
+        - switch.cec_projector
+        - switch.cec_receiver
+        - switch.cec_receiver_mute
+        - input_number.receiver_volume_slider
+
       #  - group.inside_lights
       #  - group.inside_lights_except_bedroom
 
@@ -185,3 +190,6 @@ mqtt:
   password: !secret http_password
   discovery: true
   discovery_prefix: homeassistant
+
+
+shopping_list:
