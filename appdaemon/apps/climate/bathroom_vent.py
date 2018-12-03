@@ -1,5 +1,4 @@
 import appdaemon.plugins.hass.hassapi as hass
-from helpers import Helpers as helpers
 
 class BathroomVent(hass.Hass):
 
