@@ -58,6 +58,7 @@ views:
           - "on"
         entities:
           - binary_sensor.door_window_climate_control_active
+          - binary_sensor.welcome_home_lighting_active
 
       # Use conditional cards and vertical stack to only show reciever volume controls if receiver is on
       - type: custom:vertical-stack-in-card

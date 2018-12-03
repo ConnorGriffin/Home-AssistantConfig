@@ -87,7 +87,8 @@ welcome_home_lighting:
   module: welcome_home_lighting
   class: WelcomeHomeLighting
   constrain_input_boolean: input_boolean.welcome_home_lighting_automation
-  auto_off: 180
+  state_sensor: binary_sensor.welcome_home_lighting_active
+  auto_off: 300
   #brightness_pct: 50
   presence_sensors:
     - binary_sensor.connor_presence

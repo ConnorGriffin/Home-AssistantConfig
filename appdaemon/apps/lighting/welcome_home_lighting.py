@@ -6,6 +6,9 @@ import appdaemon.plugins.hass.hassapi as hass
 class WelcomeHomeLighting(hass.Hass):
 
     def initialize(self):
+        # Store future scheduler call details here so we can cancel/extend them as needed
+        self.handles = []
+        self.lights = []
 
         # Listen for lock to change to unlocked at the keypad (avoid keyturn triggering)
         self.listen_state(
@@ -25,31 +28,60 @@ class WelcomeHomeLighting(hass.Hass):
                 type = 'presence'
             )
 
+
     def returned_home_cb(self, entity, attribute, old, new, kwargs):
         # Turn on lights if sun is down and someone unlocks the front door
         if self.sun_down():
-            lights = self.args['lights']
             if kwargs['type'] == 'lock':
                 self.log('Lock unlocked, turning on lights.')
             elif kwargs['type'] == 'presence':
                 self.log('{} returned home, turning on lights.'.format(self.friendly_name(entity)))
 
+            auto_off = self.args.get('auto_off', 300)
+
+            # If automation is already triggered, just extend the existing timers
+            automation_state = self.get_state(self.args['state_sensor'])
+            if automation_state == 'on':
+                # Cancel any existing timers
+                for handle in self.handles:
+                    self.cancel_timer(handle)
+                self.handles = []
+
+                # Set lights equal to the previously activated lights instead of all lights
+                lights = self.lights
+                self.lights = []
+            else:
+                lights = self.args['lights']
+
+            # Set the automation state
+            self.set_automation_state({'state': 'on'})
+            handle = self.run_in(
+                self.set_automation_state,
+                seconds = auto_off,
+                state = 'off'
+            )
+            self.handles.append(handle)
+
             # Turn on each light if it isn't already on
             for light in lights:
                 current_state = self.get_state(light)
-                if current_state == 'off':
+                if current_state == 'off' or automation_state == 'on':
+                    # Turn on the light and refresh the zwave details
                     self.turn_on_and_refresh(
                         kwargs = {'entity_id': light}
                     )
 
-                    # Turn off the lights after a set time if auto_off is specified
-                    auto_off = self.args.get('auto_off', None)
-                    if auto_off:
-                        self.run_in(
-                            self.turn_off_and_refresh,
-                            seconds = auto_off,
-                            entity_id = light
-                        )
+                    # Add to the light array so we know which lights we've turned on (for extending times on multiple welcome homes)
+                    if light not in self.lights:
+                        self.lights.append(light)
+
+                    # Turn off the lights after a set time
+                    handle = self.run_in(
+                        self.turn_off_and_refresh,
+                        seconds = auto_off,
+                        entity_id = light
+                    )
+                    self.handles.append(handle)
 
 
     def refresh_zwave_entity(self, kwargs):
@@ -69,6 +101,9 @@ class WelcomeHomeLighting(hass.Hass):
             seconds = 1,
             entity_id = entity_id
         )
+
+        if entity_id in self.lights:
+            self.lights.remove(entity_id)
 
 
     def turn_on_and_refresh(self, kwargs):
@@ -92,3 +127,20 @@ class WelcomeHomeLighting(hass.Hass):
             seconds = 1,
             entity_id = entity_id
         )
+
+
+    def set_automation_state(self, kwargs):
+        state = kwargs['state']
+        # Set the automation status sensor state
+        self.set_state(
+            entity_id = self.args['state_sensor'],
+            state = state,
+            attributes = {
+                'friendly_name': 'Welcome Home Lighting',
+                'icon': 'mdi:lightbulb-on'
+            }
+        )
+
+        # Cleare the handles list if automation is changing to off
+        if state == 'off':
+            self.handles = []
