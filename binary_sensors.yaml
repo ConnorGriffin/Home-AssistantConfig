@@ -149,7 +149,7 @@
           or is_state('binary_sensor.front_window_right', 'on')
           or is_state('binary_sensor.dining_room_window', 'on')
           or is_state('binary_sensor.connors_office_south_window', 'on')
-          or is_state('binary_sensor.connors_office_south_window', 'on')
+          or is_state('binary_sensor.connors_office_west_window', 'on')
           or is_state('binary_sensor.dianas_office_window', 'on')
           or is_state('binary_sensor.bedroom_window', 'on')
         }}
