@@ -1,7 +1,7 @@
 import appdaemon.plugins.hass.hassapi as hass
 from datetime import datetime
 
-class Utils(hass.Hass):
+class Helpers(hass.Hass):
 
     def initialize(self):
         return

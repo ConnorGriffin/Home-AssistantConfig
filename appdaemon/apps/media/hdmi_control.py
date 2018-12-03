@@ -1,5 +1,5 @@
 import appdaemon.plugins.hass.hassapi as hass
-from helpers import Utils
+from helpers import Helpers as helpers
 
 class ProjectorSwitch(hass.Hass):
 
@@ -53,7 +53,7 @@ class RokuPowerControl(hass.Hass):
                 self.turn_on(self.args['projector'])
 
 
-class ReceiverVolume(Utils):
+class ReceiverVolume(hass.Hass):
 
     def initialize(self):
 
@@ -79,7 +79,7 @@ class ReceiverVolume(Utils):
         state = self.get_state(volume_sensor)
 
         if state == value:
-            duration = self.state_duration(volume_sensor)
+            duration = helpers.state_duration(self, volume_sensor)
             if abs(duration - 5) < 1:
                 self.log('Setting volume slider to: {}%'.format(value))
                 self.call_service(
