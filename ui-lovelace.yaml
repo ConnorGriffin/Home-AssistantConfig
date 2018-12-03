@@ -38,15 +38,16 @@ views:
           - sensor.home_security_armed
           - sensor.home_security_fired
 
-      - title: Routines
-        id: routines
-        type: entities
-        entities:
-          - name: Turn off all lights
-            type: call-service
-            icon: mdi:lightbulb
-            action_name: Run
-            service: light.turn_off
+      #- title: Routines
+      #  id: routines
+      #  type: entities
+      #  entities:
+      #    - name: Turn off all lights
+      #      type: call-service
+      #      icon: mdi:lightbulb-outline
+      #      action_name: Run
+      #      service: light.turn_off
+
 
       # Use conditional cards and vertical stack to only show reciever volume controls if receiver is on
       - type: custom:vertical-stack-in-card
