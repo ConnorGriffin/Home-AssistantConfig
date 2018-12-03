@@ -12,7 +12,3 @@ alarm4_name:
 
 alarm5_name:
   name: Name
-
-### APPDAEMON DUMMY SENSORS ###
-appdaemon_prev_climate_mode:
-  name: Previous Climate Mode
