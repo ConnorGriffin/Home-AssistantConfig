@@ -27,7 +27,7 @@ class DoorAutoUnlock(hass.Hass):
 
         # Setup listeners if the new state is off (away)
         if new == 'off':
-            self.log('Arming, waiting for {} to return home.'.format(tracker_name))
+            self.log('Waiting for {} to return home.'.format(tracker_name))
 
             # Listen for the person to return home
             self.listen_state(

@@ -51,14 +51,12 @@ class Lights(hass.Hass):
                 # Check if the light is on or off at init, arm the appropriate callback
                 state = self.get_state(light_entity)
                 if state == 'on':
-                    self.log('Listening for {} to turn off.'.format(light_friendly))
                     self.listen_state(
                         self.turned_off_cb,
                         entity = light_entity,
                         new = 'off'
                     )
                 elif state == 'off':
-                    self.log('Listening for {} to turn on.'.format(light_friendly))
                     self.listen_state(
                         self.turned_on_cb,
                         entity = light_entity,
@@ -375,7 +373,6 @@ class Lights(hass.Hass):
                 on_threshold = on_threshold,
                 off_threshold = off_threshold
             )
-            self.log('{}: armed {}'.format(self.friendly_name(entity), target_cb))
         elif target_cb == "turned_off_cb" and setting['armed_cb'] != 'turned_off_cb':
             setting['armed_cb'] = 'turned_off_cb'
             # Wait for the light to get turned off, trigger immediately
