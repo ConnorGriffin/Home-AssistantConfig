@@ -10,6 +10,9 @@ class WelcomeHomeLighting(hass.Hass):
         self.handles = []
         self.lights = []
 
+        # Set the automation state
+        self.set_automation_state({'state': 'off'})
+
         # Listen for lock to change to unlocked at the keypad (avoid keyturn triggering)
         self.listen_state(
             cb = self.returned_home_cb,
