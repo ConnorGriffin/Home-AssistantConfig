@@ -24,14 +24,6 @@ class RokuPowerControl(hass.Hass):
 
     def initialize(self):
 
-        # Turn projector off if Roku is on home screen for 5 minutes and the projector is on
-        self.listen_state(
-            cb = self.roku_cb,
-            entity = self.args['roku'],
-            duration = self.args['idle_duration'],
-            constrain_input_boolean = self.args['projector']
-        )
-
         # Turn projector on if Roku changes from home/idle and the projector is off
         self.listen_state(
             cb = self.roku_cb,
@@ -41,16 +33,9 @@ class RokuPowerControl(hass.Hass):
 
     def roku_cb(self, entity, attribute, old, new, kwargs):
         # Don't do anything if old is None (having issues after restarts)
-        if old:
-            # Turn off if idle
-            if new in ['home', 'idle']:
-                self.log('Roku changed from {} to {}, turning off projector.'.format(old, new))
-                self.turn_off(self.args['projector'])
-
-            # Turn on if channel changes
-            elif old in ['home', 'idle'] and new not in ['home', 'idle']:
-                self.log('Roku channel changed from {} to {}, turning on projector.'.format(old, new))
-                self.turn_on(self.args['projector'])
+        if old in ['home', 'idle'] and new not in ['home', 'idle']:
+            self.log('Roku channel changed from {} to {}, turning on projector.'.format(old, new))
+            self.turn_on(self.args['projector'])
 
 
 class ReceiverVolume(hass.Hass):
