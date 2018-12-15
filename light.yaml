@@ -1,0 +1,18 @@
+- platform: group
+  name: Inside Lights
+  entities:
+    - light.connors_office_light
+    - light.dianas_office_light
+    - light.bedroom_light
+    - light.hallway_light
+    - light.dining_room_light
+    - light.bathroom_light
+
+- platform: group
+  name: Inside Lights Except Bedroom
+  entities:
+    - light.connors_office_light
+    - light.dianas_office_light
+    - light.hallway_light
+    - light.dining_room_light
+    - light.bathroom_light

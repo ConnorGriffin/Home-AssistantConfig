@@ -107,6 +107,7 @@ tts:
 
 group: !include groups.yaml
 automation: !include automations.yaml
+light: !include light.yaml
 script: !include scripts.yaml
 sensor: !include sensors.yaml
 switch: !include switch.yaml
