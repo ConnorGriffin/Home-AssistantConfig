@@ -33,3 +33,15 @@
   command_topic: "media/cec/cmd"
   payload_on: "mute"
   payload_off: "unmute"
+
+### Computer Control ###
+- name: "Connor's Monitors"
+  platform: mqtt
+  device_class: power
+  icon: mdi:monitor
+  state_topic: "connorpc/monitor/status"
+  #state_on: "on"
+  #state_off: "off"
+  command_topic: "connorpc/monitor"
+  payload_on: "on"
+  payload_off: "off"
