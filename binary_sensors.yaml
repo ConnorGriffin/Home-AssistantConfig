@@ -109,6 +109,15 @@
       device_class: plug
 
   ### MISC. ###
+    bathroom_occupancy:
+      friendly_name: Bathroom Occupancy
+      entity_id: binary_sensor.bathroom_motion
+      device_class: occupancy
+      delay_off:
+        seconds: 570
+      value_template: >-
+        {{ is_state('binary_sensor.bathroom_motion', 'on') }}
+
     shower:
       entity_id: sensor.bathroom_relative_humidity
       friendly_name: 'Shower'
@@ -238,4 +247,3 @@
   state_topic: "media/cec/4"
   payload_on: "on"
   payload_off: "off"
-
