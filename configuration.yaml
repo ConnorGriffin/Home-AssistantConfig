@@ -192,5 +192,7 @@ mqtt:
   discovery: true
   discovery_prefix: homeassistant
 
-
 shopping_list:
+
+lovelace:
+  mode: yaml

@@ -60,6 +60,36 @@ views:
           - binary_sensor.door_window_climate_control_active
           - binary_sensor.welcome_home_lighting_active
 
+      # Show all lights with a toggle and slider using custom card
+      - title: Lights
+        id: lights
+        type: entities
+        entities:
+          - entity: light.bathroom_light
+            name: Bathroom
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.bedroom_light
+            name: Bedroom
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.connors_office_light
+            name: "Connor's Office"
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.dianas_office_light
+            name: "Diana's Office"
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.dining_room_light
+            name: Dining Room
+            type: custom:slider-entity-row
+            toggle: true
+          - entity: light.hallway_light
+            name: Hallway
+            type: custom:slider-entity-row
+            toggle: true
+
       # Use conditional cards and vertical stack to only show reciever volume controls if receiver is on
       - type: custom:vertical-stack-in-card
         id: media-center-stack
@@ -111,35 +141,18 @@ views:
             type: media-control
             entity: media_player.living_room_roku
 
-      # Show all lights with a toggle and slider using custom card
-      - title: Lights
-        id: lights
+      - title: Smart Switches
+        id: smart-switches
+        show_header_toggle: false
         type: entities
         entities:
-          - entity: light.bathroom_light
-            name: Bathroom
-            type: custom:slider-entity-row
-            toggle: true
-          - entity: light.bedroom_light
-            name: Bedroom
-            type: custom:slider-entity-row
-            toggle: true
-          - entity: light.connors_office_light
-            name: "Connor's Office"
-            type: custom:slider-entity-row
-            toggle: true
-          - entity: light.dianas_office_light
-            name: "Diana's Office"
-            type: custom:slider-entity-row
-            toggle: true
-          - entity: light.dining_room_light
-            name: Dining Room
-            type: custom:slider-entity-row
-            toggle: true
-          - entity: light.hallway_light
-            name: Hallway
-            type: custom:slider-entity-row
-            toggle: true
+          - name: Bedroom Space Heater
+            icon: mdi:radiator
+            entity: switch.smart_plug_2
+          - name: Christmas Tree Lights
+            icon: mdi:ornament
+            entity: switch.smart_plug_1
+
 
       # Show only open windows
       - id: open-windows
@@ -184,7 +197,7 @@ views:
         id: internet-usage-stack
         cards:
           - id: internet-usage-gauge
-            title: Data Usage
+            name: Data Usage
             type: gauge
             entity: sensor.cox_usage_percent
             min: 0
@@ -227,11 +240,12 @@ views:
               #  name: Presence
               - entity: input_select.bedroom_light_mode
                 name: Light Mode
-                hold_action: call-service
-                service: input_select.select_option
-                service_data:
-                  entity_id: input_select.bedroom_light_mode
-                  option: Automatic
+                hold_action:
+                  action: call-service
+                  service: input_select.select_option
+                  service_data:
+                    entity_id: input_select.bedroom_light_mode
+                    option: Automatic
               - entity: binary_sensor.bedroom_window
                 name: Window
               #- binary_sensor.bed_occupancy_connor
@@ -252,11 +266,12 @@ views:
               #  name: Presence
               - entity: input_select.connors_office_light_mode
                 name: Light Mode
-                hold_action: call-service
-                service: input_select.select_option
-                service_data:
-                  entity_id: input_select.connors_office_light_mode
-                  option: Automatic
+                hold_action:
+                  action: call-service
+                  service: input_select.select_option
+                  service_data:
+                    entity_id: input_select.connors_office_light_mode
+                    option: Automatic
               - entity: binary_sensor.connors_office_south_window
                 name: South
               - entity: binary_sensor.connors_office_west_window
@@ -278,11 +293,12 @@ views:
               #  name: Presence
               - entity: input_select.dianas_office_light_mode
                 name: Light Mode
-                hold_action: call-service
-                service: input_select.select_option
-                service_data:
-                  entity_id: input_select.dianas_office_light_mode
-                  option: Automatic
+                hold_action:
+                  action: call-service
+                  service: input_select.select_option
+                  service_data:
+                    entity_id: input_select.dianas_office_light_mode
+                    option: Automatic
               - entity: binary_sensor.dianas_office_window
                 name: Window
 
@@ -301,10 +317,11 @@ views:
             - entity: switch.cec_projector
               name: Projector
               icon: mdi:projector
-              hold_action: call-service
-              service: switch.toggle
-              service_data:
-                entity_id: switch.cec_projector
+              hold_action:
+                action: call-service
+                service: switch.toggle
+                service_data:
+                  entity_id: switch.cec_projector
             - name: Roku
               entity: media_player.living_room_roku
             - binary_sensor.front_door
@@ -325,11 +342,12 @@ views:
             entities:
             - entity: input_select.dining_room_light_mode
               name: Light Mode
-              hold_action: call-service
-              service: input_select.select_option
-              service_data:
-                entity_id: input_select.dining_room_light_mode
-                option: Automatic
+              hold_action:
+                action: call-service
+                service: input_select.select_option
+                service_data:
+                  entity_id: input_select.dining_room_light_mode
+                  option: Automatic
             - entity: binary_sensor.dining_room_window
               name: Window
 
@@ -347,11 +365,12 @@ views:
               name: Temp
             - entity: input_select.hallway_light_mode
               name: Light Mode
-              hold_action: call-service
-              service: input_select.select_option
-              service_data:
-                entity_id: input_select.hallway_light_mode
-                option: Automatic
+              hold_action:
+                action: call-service
+                service: input_select.select_option
+                service_data:
+                  entity_id: input_select.hallway_light_mode
+                  option: Automatic
 
       - title: Bathroom
         type: custom:vertical-stack-in-card
@@ -370,6 +389,12 @@ views:
               name: Motion
             - entity: input_select.bathroom_light_mode
               name: Light Mode
+              hold_action:
+                action: call-service
+                service: input_select.select_option
+                service_data:
+                  entity_id: input_select.bathroom_light_mode
+                  option: Automatic
             - binary_sensor.shower
             - entity: binary_sensor.bathroom_window
               name: Window
