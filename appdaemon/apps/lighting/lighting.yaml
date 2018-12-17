@@ -102,3 +102,9 @@ alarm_clock:
   module: alarm_clock
   class: AlarmClock
   constrain_input_boolean: input_boolean.alarm_clock_automation
+
+christmas_tree_lights:
+  module: christmas_lights
+  class: ChristmasTreeLights
+  constrain_input_boolean: input_boolean.christmas_light_schedule_automation
+
