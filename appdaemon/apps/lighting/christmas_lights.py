@@ -9,7 +9,7 @@ class ChristmasTreeLights(hass.Hass):
         self.run_at_sunrise(self.plug_cb, action='off')
 
         # Turn on lights at sunset as long as projector is off
-        self.run_at_sunrise(
+        self.run_at_sunset(
             self.plug_cb,
             constrain_input_boolean = 'switch.cec_projector,off',
             action = 'on'
