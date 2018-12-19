@@ -121,6 +121,19 @@ input_number: !include input_number.yaml
 ecobee:
   api_key: !secret ecobee_api_key
 
+climate:
+  - platform: generic_thermostat
+    name: Bedroom
+    heater: switch.smart_plug_2
+    target_sensor: sensor.bedroom_temperature
+    min_temp: 68
+    max_temp: 78
+    ac_mode: false
+    min_cycle_duration:
+      minutes: 10
+    precision: .1
+    away_temp: 68
+
 media_player:
   - platform: roku
   - platform: plex

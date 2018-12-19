@@ -75,3 +75,16 @@ bathroom_vent:
       tracker: binary_sensor.diana_presence
       notification_target:
         - Diana Phone
+
+space_heaters:
+  module: space_heaters
+  class: SpaceHeaters
+  #constrain_input_boolean: input_boolean.space_heater_climate_automation
+  heaters:
+    - room: Bedroom
+      climate: climate.bedroom
+      schedule:
+        - start: "23:00:00"
+          end: "6:00:00"
+          start_operation: heat
+          end_operation: 'off'
