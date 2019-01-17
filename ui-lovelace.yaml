@@ -176,6 +176,7 @@ views:
           - binary_sensor.dianas_office_window
           - binary_sensor.front_window_left
           - binary_sensor.front_window_right
+          - binary_sensor.dining_room_window
 
       # Show only open doors
       - id: open-doors
