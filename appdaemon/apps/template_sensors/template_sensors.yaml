@@ -38,7 +38,7 @@
 #  off_value: '23'
 #  entities:
 #  - sensor.backyard_door_sensor_access_control
-#  - sensor.front_door_sensor_access_control
+#  - sensor.front_door_sensor_2_access_control
 #  - sensor.kitchen_door_sensor_access_control
 #  - sensor.carport_door_sensor_access_control
 
@@ -69,7 +69,7 @@
 #  - zwave.back_left_window_sensor
 #  - zwave.back_right_window_sensor
 #  # Doors
-#  - zwave.front_door_sensor
+#  - zwave.front_door_sensor_2
 #  - zwave.kitchen_door_sensor
 #  - zwave.backyard_door_sensor
 #  - zwave.carport_door_sensor

@@ -85,10 +85,10 @@
       value_template: '{{ states.zwave.back_right_window_sensor.attributes.battery_level }}'
       device_class: battery
 
-    front_door_sensor_battery:
-      entity_id: zwave.front_door_sensor
+    front_door_sensor_2_battery:
+      entity_id: zwave.front_door_sensor_2
       friendly_name: 'Front Door Sensor Battery'
-      value_template: '{{ states.zwave.front_door_sensor.attributes.battery_level }}'
+      value_template: '{{ states.zwave.front_door_sensor_2.attributes.battery_level }}'
       device_class: battery
 
     kitchen_door_sensor_battery:

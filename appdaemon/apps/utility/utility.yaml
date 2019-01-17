@@ -15,7 +15,7 @@ low_battery_alert:
   level: 15
   entities:
     - zwave.front_door_lock
-    - zwave.front_door_sensor
+    - zwave.front_door_sensor_2
     - zwave.front_window_right_sensor
     - zwave.bathroom_multisensor_6
     - zwave.backyard_door_sensor
