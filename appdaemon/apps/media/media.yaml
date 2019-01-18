@@ -23,7 +23,7 @@ receiver_volume:
 nhl_autoplay:
   module: nhl_autoplay
   class: NHLAutoplay
-  #constrain_input_boolean: input_boolean.nhl_projector_autoplay_automation
+  constrain_input_boolean: input_boolean.nhl_projector_autoplay_automation
   roku_entity: media_player.living_room_roku
   roku_ip: 10.31.36.47
   projector: switch.cec_projector
