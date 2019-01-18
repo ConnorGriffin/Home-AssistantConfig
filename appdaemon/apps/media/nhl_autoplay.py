@@ -5,8 +5,9 @@ from datetime import timezone, time, timedelta, datetime
 class NHLAutoplay(hass.Hass):
 
     def initialize(self):
-        self.debug = True
+        self.return_home_handle = None
 
+        # Check the schedule every day at 9 AM
         self.run_daily(
             callback = self.get_schedule,
             start = time(9, 0, 0)
@@ -16,8 +17,20 @@ class NHLAutoplay(hass.Hass):
             start = self.time()
         )
 
+        # Listen for the notification to be clicked
+        self.listen_event(
+            cb = self.notification_clicked,
+            event = 'html5_notification.clicked',
+            tag = 'nhl-autoplay'
+        )
+
+
 
     def get_schedule(self, kwargs):
+        # Cancel any existing return_home listeners
+        if self.return_home_handle:
+            self.cancel_listen_state(self.return_home_handle)
+
         # Get the Bruins schedule for today, include the broadcast data
         schedule = requests.get('https://statsapi.web.nhl.com/api/v1/schedule?teamId=6&expand=schedule.broadcasts').json()
 
@@ -27,7 +40,7 @@ class NHLAutoplay(hass.Hass):
             game_date = self.utc_to_local(self.convert_utc(game['gameDate']))
             now = self.datetime().replace(tzinfo=timezone.utc).astimezone(tz=None)
 
-            if now <= game_date or self.debug:
+            if now <= game_date:
                 # Order the broadcasts the way they'd appear in the Roku app so we can navigate to them properly
                 available = []
                 for broadcast_type in ['home', 'away', 'national']:
@@ -37,57 +50,164 @@ class NHLAutoplay(hass.Hass):
 
                 # Determine which broadcast to use (prefer local over national)
                 if game['teams']['home']['team']['id'] == 6:
-                    location = 'home'
+                    proponent_location = 'home'
+                    opponent_location = 'away'
                 else:
-                    location = 'away'
+                    proponent_location = 'away'
+                    opponent_location = 'home'
 
                 # Store the index of the broadcast, this is how many times to move right to select the broadcast in the Roku app
-                if location in available:
-                    chosen_broadcast = available.index(location)
+                if proponent_location in available:
+                    chosen_broadcast = available.index(proponent_location)
                 else:
                     chosen_broadcast = available.index('national')
 
-                ## At game_start plus 7 minutes (typical start delay for a game), start listening for me to come home if I'm not already home
+                # Get other game details to pass to the notification sender
+                opponent_id = game['teams'][opponent_location]['team']['id']
+                proponent_id = game['teams'][proponent_location]['team']['id']
+                opponent = requests.get('https://statsapi.web.nhl.com/api/v1/teams/{}'.format(opponent_id)).json()
+                proponent = requests.get('https://statsapi.web.nhl.com/api/v1/teams/{}'.format(proponent_id)).json()
+                opponent_name = opponent['teams'][0]['locationName']
+                proponent_name = proponent['teams'][0]['locationName']
+
+                # At game_start, start listening for me to come home if I'm not already home
                 self.run_at(
                     callback = self.game_start,
-                    start = # game start + 7 minutes,
-                    chosen_broadcast = chosen_broadcast
-                    #etc.
+                    start = self.datetime(),#game_date,
+                    chosen_broadcast = chosen_broadcast,
+                    proponent_location = proponent_location,
+                    opponent_name = opponent_name,
+                    proponent_name = proponent_name,
+                    scheduled_start = game_date,
+                    content_url = 'https://statsapi.web.nhl.com{}'.format(game['content']['link'])
                 )
+
+
+    def game_start(self, kwargs):
+        # Check if I'm home, if not, start a oneshot listener for me to return home
+        presence = self.get_state(self.args['presence'])
+        if presence != 'on':
+            self.return_home_handle = self.listen_state(
+                cb = self.returned_home,
+                entity = self.args['presence'],
+                new = 'on',
+                old = 'off',
+                chosen_broadcast = kwargs['chosen_broadcast'],
+                proponent_location = kwargs['proponent_location'],
+                opponent_name = kwargs['opponent_name'],
+                proponent_name = kwargs['proponent_name'],
+                scheduled_start = kwargs['scheduled_start'],
+                content_url = kwargs['content_url']
+            )
+
+
+    def returned_home(self, entity, attribute, old, new, kwargs):
+        # Cancel listening (doing this because oneshots don't work)
+        self.cancel_listen_state(kwargs['handle'])
+
+        # Format the notification message
+        if kwargs['proponent_location'] == 'away':
+            separator = '@'
+        else:
+            separator = 'vs'
+        team_details = '{} {} {} - {}'.format(kwargs['proponent_name'], separator, kwargs['opponent_name'], kwargs['scheduled_start'].strftime('%-I:%M %p'))
+
+        # Send a notification asking if I want to watch the game
+        self.notify(
+            title = 'NHL Autoplay',
+            message = 'Do you want to watch the game?\n{}'.format(team_details),
+            name = 'gcm_html5',
+            target = self.args['notification_targets'],
+            data = {
+                'tag': 'nhl-autoplay',
+                'icon': '/local/icons/nhl.png',
+                'actions': [{
+                    'action': 'yes',
+                    'title': 'Yes'
+                }, {
+                    'action': 'no',
+                    'title': 'No'
+                }],
+                'chosen_broadcast': kwargs['chosen_broadcast'],
+                'content_url': kwargs['content_url']
+            }
+        )
+
+
+    # Take action based on notification actions
+    def notification_clicked(self, event_name, data, kwargs):
+        # If the notification action is yes, turn on the roku and start the game
+        if data['action'] == 'yes':
+            # Determine if the game is over or not, figure out how many "clicks" to the right to select the proper broadcast
+            chosen_broadcast = data['data']['chosen_broadcast']
+            game_content = requests.get(data['data']['content_url']).json()
+            for stream in game_content['media']['epg']:
+                # Recap and Extended Highlights show up before the NHL.tv broadcasts, so if they're in the list we need to move the
+                # cursor to the right to select the full game feeds
+                if stream['title'] in ['Recap', 'Extended Highlights']:
+                    game_over = True
+                    chosen_broadcast += 1
+
+            if game_over:
+                down_count = 1
+            else:
+                down_count = 2
+
+            # Open the NHL app on the Roku
+            self.call_service(
+                service = 'media_player/select_source',
+                entity_id = self.args['roku_entity'],
+                source = 'NHL'
+            )
+
+            # Select the game on the home screen (defaults to favorite team's latest game)
+            self.run_in(
+                self.roku_remote,
+                seconds = 20,
+                action = 'Select'
+            )
+
+            # Wait for game details to load, then find the broadcast
+            self.run_in(
+                self.roku_remote,
+                seconds = 30,
+                action = 'Down'
+            )
+            for _ in range(chosen_broadcast):
+                self.run_in(
+                    self.roku_remote,
+                    seconds = 32,
+                    action = 'Right'
+                )
+            for _ in range(down_count):
+                self.run_in(
+                    self.roku_remote,
+                    seconds = 33,
+                    action = 'Down'
+                )
+            self.run_in(
+                self.roku_remote,
+                seconds = 34,
+                action = 'Select'
+            )
+
+            # Fast Forward to about 7 minutes in. Don't use 32x, not enough precision here
+            for i in range(3):
+                self.run_in(
+                    self.roku_remote,
+                    seconds = 42+i,
+                    action = 'Fwd'
+                )
+            self.run_in(
+                self.roku_remote,
+                seconds = 54,
+                action = 'Play'
+            )
+
+
+    def roku_remote(self, kwargs):
+        requests.post('http://{}:8060/keypress/{}'.format(self.args['roku_ip'], kwargs['action']))
 
 
     def utc_to_local(self, utc_dt):
         return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
-
-
-"""
-
-
-# Setup a notification listener
-self.listen_event(
-    self.start_watching_cb,
-    #etc.
-)
-
-def game_start(self, kwargs):
-    # Check if I'm home, if not, start a oneshot listener for me to return home
-
-
-def return_home(self, kwargs):
-    # Check if the projector is already on.
-    # If so, do nothing
-    # If not, send a notification asking if you want to start watching the game
-
-
-def start_watching(self, kwargs):
-    # If I say 'yes' to the notification, do the following:
-    # - Turn on the projector
-    # - Set the roku to the NHL app
-
-    # Look into whether or not we can issue roku remote control commands.
-    # If yes, press down, choose the appropriate broadcast, and press 'Start from beginning', then fast forward 6 minutes.
-
-
-def roku_remote(self, kwargs):
-
-"""
