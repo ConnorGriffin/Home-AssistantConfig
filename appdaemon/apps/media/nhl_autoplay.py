@@ -10,7 +10,7 @@ class NHLAutoplay(hass.Hass):
         # Check the schedule every day at 9 AM
         self.run_daily(
             callback = self.get_schedule,
-            start = time(9, 0, 0)
+            start = time(10, 0, 0)
         )
         self.run_once(
             callback = self.get_schedule,
@@ -27,6 +27,7 @@ class NHLAutoplay(hass.Hass):
 
 
     def get_schedule(self, kwargs):
+        self.log('Getting NHL schedule.')
         # Cancel any existing return_home listeners
         if self.return_home_handle:
             self.cancel_listen_state(self.return_home_handle)
@@ -38,9 +39,10 @@ class NHLAutoplay(hass.Hass):
         if schedule['dates']:
             game = schedule['dates'][0]['games'][0]
             game_date = self.utc_to_local(self.convert_utc(game['gameDate']))
-            now = self.datetime().replace(tzinfo=timezone.utc).astimezone(tz=None)
+            now = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(tz=None)
 
             if now <= game_date:
+                self.log('Game today at {}.'.format(game_date.strftime('%-I:%M %p')))
                 # Order the broadcasts the way they'd appear in the Roku app so we can navigate to them properly
                 available = []
                 for broadcast_type in ['home', 'away', 'national']:
@@ -71,9 +73,10 @@ class NHLAutoplay(hass.Hass):
                 proponent_name = proponent['teams'][0]['locationName']
 
                 # At game_start, start listening for me to come home if I'm not already home
+                self.log('Starting a listener for Connor to return home.')
                 self.run_at(
                     callback = self.game_start,
-                    start = self.datetime(),#game_date,
+                    start = game_date,
                     chosen_broadcast = chosen_broadcast,
                     proponent_location = proponent_location,
                     opponent_name = opponent_name,
@@ -81,12 +84,15 @@ class NHLAutoplay(hass.Hass):
                     scheduled_start = game_date,
                     content_url = 'https://statsapi.web.nhl.com{}'.format(game['content']['link'])
                 )
+        else:
+            self.log('No games today.')
 
 
     def game_start(self, kwargs):
         # Check if I'm home, if not, start a oneshot listener for me to return home
         presence = self.get_state(self.args['presence'])
         if presence != 'on':
+            self.log('Waiting for Connor to return home.')
             self.return_home_handle = self.listen_state(
                 cb = self.returned_home,
                 entity = self.args['presence'],
@@ -104,6 +110,9 @@ class NHLAutoplay(hass.Hass):
     def returned_home(self, entity, attribute, old, new, kwargs):
         # Cancel listening (doing this because oneshots don't work)
         self.cancel_listen_state(kwargs['handle'])
+        self.return_home_handle = None
+
+        self.log('Connor returned home, sending game start notification.')
 
         # Format the notification message
         if kwargs['proponent_location'] == 'away':
