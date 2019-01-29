@@ -33,7 +33,6 @@ class AlarmClock(hass.Hass):
             )
 
     def rename_alarm(self, alarm_name):
-        #alarm_name = kwargs.get('alarm_name')
         # Get the alarm's friendly name (group name) and input name (Name textbox)
         input_name = self.get_state('input_text.{}_name'.format(alarm_name))
         friendly_name = self.friendly_name('group.{}'.format(alarm_name))
@@ -80,7 +79,7 @@ class AlarmClock(hass.Hass):
         midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
         now_seconds = (now - midnight).seconds
 
-        #If the alarm time is before the current time, add 24 hours. This allows the script to run at 23:59 to trigger an alarm at 00:00
+        # If the alarm time is before the current time, add 24 hours. This allows the script to run at 23:59 to trigger an alarm at 00:00
         if alarm_seconds < now_seconds:
             alarm_seconds += 86400
             alarm_day = (now + datetime.timedelta(days=1)).strftime("%A").lower()
