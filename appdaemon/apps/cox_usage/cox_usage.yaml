@@ -1,3 +1,5 @@
 cox_usage:
   module: cox_usage
   class: CoxUsage
+  dependencies:
+    - install_dependencies
