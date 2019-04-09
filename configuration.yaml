@@ -138,6 +138,9 @@ media_player:
   - platform: roku
   - platform: plex
 
+roku:
+  - host: 10.31.36.47
+
 zwave:
   usb_path: /dev/ttyACM0
   network_key: !secret zwave_network_key
@@ -175,6 +178,8 @@ device_tracker:
   #  password: !secret router_password
   #  new_device_defaults:
   #    track_new_devices: False
+
+system_health:
 
 influxdb:
   host: !secret influx_ip

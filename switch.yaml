@@ -1,7 +1,7 @@
 ### AV ###
 - name: CEC Projector
   platform: mqtt
-  device_class: power
+#  device_class: power
   icon: mdi:projector
   availability_topic: "media/bridge/status"
   state_topic: "media/cec/0"
@@ -13,7 +13,7 @@
 
 - name: CEC Receiver
   platform: mqtt
-  device_class: power
+#  device_class: power
   icon: mdi:video-input-hdmi
   availability_topic: "media/bridge/status"
   state_topic: "media/cec/5"
@@ -37,7 +37,7 @@
 ### Computer Control ###
 - name: "Connor's Monitors"
   platform: mqtt
-  device_class: power
+#  device_class: power
   icon: mdi:monitor
   state_topic: "connorpc/monitor/status"
   #state_on: "on"

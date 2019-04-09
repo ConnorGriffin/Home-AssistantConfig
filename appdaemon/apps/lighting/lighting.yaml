@@ -40,7 +40,7 @@ lights:
       off_delay: 570 # +30 built into sensor: 10 minutes
       on_delay: 0
     - name: hallway_light
-      min_brightness: 14
+      min_brightness: 5
       brightness_schedule:
       - pct: 55
         start: '9:00:00'

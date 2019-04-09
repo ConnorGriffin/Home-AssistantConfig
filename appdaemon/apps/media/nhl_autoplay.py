@@ -6,12 +6,14 @@ class NHLAutoplay(hass.Hass):
 
     def initialize(self):
         self.return_home_handle = None
+        self.debug = False
 
         # Check the schedule every day at 9 AM
         self.run_daily(
             callback = self.get_schedule,
             start = time(10, 0, 0)
         )
+
         self.run_once(
             callback = self.get_schedule,
             start = self.time()
@@ -41,7 +43,7 @@ class NHLAutoplay(hass.Hass):
             game_date = self.utc_to_local(self.convert_utc(game['gameDate']))
             now = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(tz=None)
 
-            if now <= game_date:
+            if now <= game_date or self.debug:
                 self.log('Game today at {}.'.format(game_date.strftime('%-I:%M %p')))
                 # Order the broadcasts the way they'd appear in the Roku app so we can navigate to them properly
                 available = []
@@ -73,10 +75,10 @@ class NHLAutoplay(hass.Hass):
                 proponent_name = proponent['teams'][0]['locationName']
 
                 # At game_start, start listening for me to come home if I'm not already home
-                self.log('Starting a listener for Connor to return home.')
+                self.log('At {} a listener will arm for Connor to return home.'.format(game_date.strftime('%-I:%M %p')))
                 self.run_at(
                     callback = self.game_start,
-                    start = game_date,
+                    start = game_date.replace(tzinfo=None),
                     chosen_broadcast = chosen_broadcast,
                     proponent_location = proponent_location,
                     opponent_name = opponent_name,
@@ -145,6 +147,7 @@ class NHLAutoplay(hass.Hass):
 
     # Take action based on notification actions
     def notification_clicked(self, event_name, data, kwargs):
+        game_over = False
         # If the notification action is yes, turn on the roku and start the game
         if data['action'] == 'yes':
             # Determine if the game is over or not, figure out how many "clicks" to the right to select the proper broadcast
@@ -154,8 +157,9 @@ class NHLAutoplay(hass.Hass):
                 # Recap and Extended Highlights show up before the NHL.tv broadcasts, so if they're in the list we need to move the
                 # cursor to the right to select the full game feeds
                 if stream['title'] in ['Recap', 'Extended Highlights']:
-                    game_over = True
-                    chosen_broadcast += 1
+                    if stream['items']:
+                        game_over = True
+                        chosen_broadcast += 1
 
             if game_over:
                 down_count = 1
@@ -182,21 +186,21 @@ class NHLAutoplay(hass.Hass):
                 seconds = 30,
                 action = 'Down'
             )
-            for _ in range(chosen_broadcast):
+            for i in range(chosen_broadcast):
                 self.run_in(
                     self.roku_remote,
-                    seconds = 32,
+                    seconds = 32+i,
                     action = 'Right'
                 )
-            for _ in range(down_count):
+            for i in range(down_count):
                 self.run_in(
                     self.roku_remote,
-                    seconds = 33,
+                    seconds = 35+i,
                     action = 'Down'
                 )
             self.run_in(
                 self.roku_remote,
-                seconds = 34,
+                seconds = 37,
                 action = 'Select'
             )
 
@@ -204,12 +208,12 @@ class NHLAutoplay(hass.Hass):
             for i in range(3):
                 self.run_in(
                     self.roku_remote,
-                    seconds = 42+i,
+                    seconds = 53+i,
                     action = 'Fwd'
                 )
             self.run_in(
                 self.roku_remote,
-                seconds = 54,
+                seconds = 67,
                 action = 'Play'
             )
 

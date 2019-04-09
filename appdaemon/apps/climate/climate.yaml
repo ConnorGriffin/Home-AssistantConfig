@@ -44,13 +44,6 @@ door_window_climate:
       dependencies:
         - zone: binary_sensor.back_room_exterior_zone
         - door: binary_sensor.kitchen_door
-    # House is open or door to back room is open
-    #- name: Main House + Back Room Entry
-    #  mode: any
-    #  temperature_delta: 5
-    #  dependencies:
-    #    - zone: sensor.main_house_zone
-    #    - door: binary_sensor.kitchen_door
     # House is open, door to back room is open, and door/windows to back yard is open
     - name: Main House + Kitchen Door + Back Room
       mode: all
