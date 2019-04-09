@@ -58,6 +58,10 @@ christmas_light_schedule_automation:
   name: Christmas Tree Light Schedule
   icon: mdi:ornament
 
+nhl_projector_autoplay_automation:
+  name: NHL Projector Autoplay
+  icon: mdi:hockey-sticks
+
 # region alarms
 alarm1_enabled:
   name: Enabled

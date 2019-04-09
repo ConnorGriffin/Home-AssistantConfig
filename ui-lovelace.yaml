@@ -24,8 +24,8 @@ views:
             type: section
           - entity: climate.home
             name: Ecobee
-          - name: Bedroom
-            entity: climate.bedroom
+          #- name: Bedroom
+          #  entity: climate.bedroom
           - binary_sensor.main_house_zone
           - binary_sensor.back_room_exterior_zone
           - label: Presence
@@ -148,14 +148,17 @@ views:
         show_header_toggle: false
         type: entities
         entities:
-          - name: Bedroom Heater
-            entity: climate.bedroom
+          - switch.smart_plug_1
+          - switch.smart_plug_2
           #- name: Bedroom Space Heater
           #  icon: mdi:radiator
           #  entity: switch.smart_plug_2
-          - name: Christmas Tree Lights
-            icon: mdi:ornament
-            entity: switch.smart_plug_1
+          #- name: Keezer
+          #  icon: mdi:beer
+          #  entity: switch.smart_plug_1
+          #- name: Christmas Tree Lights
+          #  icon: mdi:ornament
+          #  entity: switch.smart_plug_1
 
 
       # Show only open windows

@@ -6,6 +6,7 @@ roku_power_control:
   projector: switch.cec_projector
   idle_duration: 300
   constrain_input_boolean: input_boolean.roku_projector_power_control_automation
+
 projector_switch:
   module: hdmi_control
   class: ProjectorSwitch
@@ -18,3 +19,15 @@ receiver_volume:
   global_dependencies: helpers
   volume_sensor: sensor.cec_receiver_volume
   volume_slider: input_number.receiver_volume_slider
+
+nhl_autoplay:
+  module: nhl_autoplay
+  class: NHLAutoplay
+  constrain_input_boolean: input_boolean.nhl_projector_autoplay_automation
+  roku_entity: media_player.living_room_roku
+  roku_ip: 10.31.36.47
+  projector: switch.cec_projector
+  presence: binary_sensor.connor_presence
+  notification_targets:
+    - Connor Phone
+

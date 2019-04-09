@@ -1,9 +1,7 @@
 # TODO: Add temperature delta dependent rules
-# TODO: Add notifications for when the AC is tunred on/off by the app, maybe incorporeate actionable notifications (windows open, do you want to turn off AC?)
-# TODO: Add door/window burglar detector (separate app)
+# TODO: Add notifications for when the AC is turned on/off by the app, maybe incorporeate actionable notifications (windows open, do you want to turn off AC?)
 
 import appdaemon.plugins.hass.hassapi as hass
-from datetime import datetime
 
 class DoorWindowClimate(hass.Hass):
 
@@ -83,8 +81,11 @@ class DoorWindowClimate(hass.Hass):
         }
         self.eval_rule(eval_kwargs)
 
-    # Handles sensor state in the context of a rule, determines if the rule is active or not as a result, and takes action based on the state of other rules
+
     def eval_rule(self, kwargs):
+        """ Handles sensor state in the context of a rule, determines if the rule is
+        active or not as a result, and takes action based on the state of other rules. """
+
         entity = kwargs.get('entity_id')
         rule = kwargs.get('rule')
         state = self.get_state(entity).lower()
