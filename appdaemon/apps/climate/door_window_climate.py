@@ -17,7 +17,7 @@ class DoorWindowClimate(hass.Hass):
         }
         self.climate_data = {
             'last_mode': None,
-            'current_mode': self.get_state(self.args.get('climate'), attribute='hvac_mode')
+            'current_mode': self.get_state(self.args.get('climate'), attribute='hvac_action')
         }
 
         # Figure out if each rule is open or closed based on a combination of zones and sensors
@@ -151,7 +151,7 @@ class DoorWindowClimate(hass.Hass):
                 if len(self.rule_counts['active_rules']) == 1:
                     self.log('{} (rule) is {}, turning off AC.'.format(rule_name, new_state))
 
-                    self.climate_data['last_mode'] = self.get_state(climate, attribute='hvac_mode')
+                    self.climate_data['last_mode'] = self.get_state(climate, attribute='hvac_action')
                     self.climate_data['current_mode'] = 'off'
 
                     # Set the AC mode
@@ -190,7 +190,7 @@ class DoorWindowClimate(hass.Hass):
                     )
 
                     # Change AC back to the previous mode, but only if it hasn't been manually changed since it was turned off
-                    climate_mode = self.get_state(climate, attribute='hvac_mode')
+                    climate_mode = self.get_state(climate, attribute='hvac_action')
                     if climate_mode == self.climate_data['current_mode'] and self.climate_data['last_mode']:
                         new_mode = self.climate_data['last_mode']
                         self.log('{} (rule) is {}, setting AC back to {}.'.format(rule_name, new_state, new_mode))

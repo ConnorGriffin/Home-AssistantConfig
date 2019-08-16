@@ -56,7 +56,7 @@ class Ecobee(hass.Hass):
             preset_match = preset_mode in ['away', 'home', 'temp'] or not preset_mode
 
         # Don't run if the ecobee is off
-        if preset_match and state_data['attributes']['hvac_mode'] != 'off':
+        if preset_match and state_data['attributes']['hvac_action'] != 'off':
             if home:
                 if preset_mode != 'home' and climate_mode in away_modes:
                     # Home during a standard away time, set a home hold
