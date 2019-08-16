@@ -1,2 +1,4 @@
----
-global_modules: helpers
+hello_world:
+  module: hello
+  class: HelloWorld
+

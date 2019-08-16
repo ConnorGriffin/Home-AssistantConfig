@@ -93,13 +93,13 @@ class NHLAutoplay(hass.Hass):
     def game_start(self, kwargs):
         # Check if I'm home, if not, start a oneshot listener for me to return home
         presence = self.get_state(self.args['presence'])
-        if presence != 'on':
+        if presence != 'home':
             self.log('Waiting for Connor to return home.')
             self.return_home_handle = self.listen_state(
                 cb = self.returned_home,
                 entity = self.args['presence'],
-                new = 'on',
-                old = 'off',
+                new = 'home',
+                old = 'not_home',
                 chosen_broadcast = kwargs['chosen_broadcast'],
                 proponent_location = kwargs['proponent_location'],
                 opponent_name = kwargs['opponent_name'],
@@ -127,7 +127,7 @@ class NHLAutoplay(hass.Hass):
         self.notify(
             title = 'NHL Autoplay',
             message = 'Do you want to watch the game?\n{}'.format(team_details),
-            name = 'gcm_html5',
+            name = 'html5',
             target = self.args['notification_targets'],
             data = {
                 'tag': 'nhl-autoplay',

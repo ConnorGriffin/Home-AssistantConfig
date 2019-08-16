@@ -13,7 +13,7 @@ class DoorAutoUnlock(hass.Hass):
             self.listen_state(
                 cb = self.presence_cb,
                 entity = tracker['tracker'],
-                new = 'off',
+                new = 'not_home',
                 duration = self.args['not_home_duration'],
                 immediate = True,
                 notification_target = tracker.get('notification_target'),
@@ -26,18 +26,18 @@ class DoorAutoUnlock(hass.Hass):
         tracker_name = kwargs['tracker_name']
 
         # Setup listeners if the new state is off (away)
-        if new == 'off':
+        if new == 'not_home':
             self.log('Waiting for {} to return home.'.format(tracker_name))
 
             # Listen for the person to return home
             self.listen_state(
                 cb = self.presence_cb,
                 entity = entity,
-                new = 'on',
+                new = 'home',
                 notification_target = notification_target,
                 tracker_name = tracker_name
             )
-        elif new == 'on':
+        elif new == 'home':
             # Unlock the door if the new state is on (home)
             lock = self.args['lock_entity']
             lock_friendly = self.friendly_name(lock)
@@ -56,6 +56,6 @@ class DoorAutoUnlock(hass.Hass):
             if notification_target:
                 self.notify(
                     message = '{} unlocked.'.format(lock_friendly),
-                    name = 'gcm_html5',
+                    name = 'html5',
                     target = notification_target
                 )

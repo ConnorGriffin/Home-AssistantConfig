@@ -1,11 +1,11 @@
 resources:
-  - url: /local/slider-entity-row.js?v=2
+  - url: /local/slider-entity-row.js?v=3
     type: js
     git: https://github.com/thomasloven/lovelace-slider-entity-row
-  - url: /local/monster-card.js?v=1
+  - url: /local/monster-card.js?v=2
     type: js
     git: https://raw.githubusercontent.com/ciotlosm/custom-lovelace/master/monster-card/monster-card.js
-  - url: /local/vertical-stack-in-card.js?v=7
+  - url: /local/vertical-stack-in-card.js?v=8
     type: js
     git: https://github.com/custom-cards/vertical-stack-in-card
 
@@ -30,15 +30,15 @@ views:
           - binary_sensor.back_room_exterior_zone
           - label: Presence
             type: section
-          - binary_sensor.connor_presence
-          - binary_sensor.diana_presence
-          #- entity: device_tracker.connor_galaxys8
+          - person.connor
+          - person.diana
+          #- entity: device_tracker.connor_galaxys10e
           #- entity: device_tracker.diana_pixel2
           - label: Security
             type: section
           - lock.front_door_lock
-          - sensor.home_security_armed
-          - sensor.home_security_fired
+          #- sensor.home_security_armed
+          #- sensor.home_security_fired
 
       #- title: Routines
       #  id: routines
@@ -56,6 +56,7 @@ views:
         show_empty: false
         card:
           title: Active Automations
+          show_header_toggle: false
         state_filter:
           - "on"
         entities:

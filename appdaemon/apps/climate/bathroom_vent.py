@@ -24,11 +24,11 @@ class BathroomVent(hass.Hass):
 
     def send_notification(self):
         for tracker in self.args['trackers']:
-            if self.get_state(tracker['tracker']) == 'on':
+            if self.get_state(tracker['tracker']) == 'home':
                 # Send a notification
                 self.notify(
                     message = 'Bathroom done venting, please shut the window.',
-                    name = 'gcm_html5',
+                    name = 'html5',
                     target = tracker['notification_target'],
                     data = {
                         "tag": "bathroom-vent"

@@ -60,12 +60,12 @@ bathroom_vent:
   window: binary_sensor.bathroom_window
   trackers:
     - tracker_name: Connor
-      tracker: binary_sensor.connor_presence
+      tracker: person.connor
       notification_target:
         - Connor Desktop
         - Connor Phone
     - tracker_name: Diana
-      tracker: binary_sensor.diana_presence
+      tracker: person.connor
       notification_target:
         - Diana Phone
 

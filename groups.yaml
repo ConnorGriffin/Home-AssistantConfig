@@ -60,8 +60,8 @@ people:
     name: Presence
     view: no
     entities:
-      - binary_sensor.connor_presence
-      - binary_sensor.diana_presence
+      - person.connor
+      - person.diana
 
 inside_lights:
     name: Inside Lights

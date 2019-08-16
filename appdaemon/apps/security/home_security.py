@@ -228,7 +228,7 @@ class HomeSecurity(hass.Hass):
         self.notify(
             title = 'Home Security Alarm',
             message = 'Alart: {} changed from {} to {}'.format(self.friendly_name(entity), old, new),
-            name = 'gcm_html5',
+            name = 'html5',
             target = self.args['notification_targets'],
             data = {
                 "tag": "home-security-alarm",

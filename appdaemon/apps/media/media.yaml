@@ -27,7 +27,7 @@ nhl_autoplay:
   roku_entity: media_player.living_room_roku
   roku_ip: 10.31.36.47
   projector: switch.cec_projector
-  presence: binary_sensor.connor_presence
+  presence: person.connor
   notification_targets:
     - Connor Phone
 

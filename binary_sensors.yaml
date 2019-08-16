@@ -2,10 +2,10 @@
   sensors:
   ### DOORS ###
     front_door:
-      entity_id: sensor.front_door_sensor_2_access_control
+      entity_id: sensor.front_door_sensor_access_control
       friendly_name: 'Front Door'
       value_template: >-
-        {{ is_state('sensor.front_door_sensor_2_access_control', '22') }}
+        {{ is_state('sensor.front_door_sensor_access_control', '22') }}
       device_class: door
 
     kitchen_door:
@@ -23,11 +23,10 @@
       device_class: door
 
     backyard_door:
-      entity_id: sensor.backyard_door_sensor_access_control
+      entity_id: sensor.backyard_door_sensor_access_control1
       friendly_name: 'Backyard Door'
       value_template: >-
-        #{{ is_state('sensor.backyard_door_sensor_access_control', '22') }}
-        False
+        {{ is_state('sensor.backyard_door_sensor_access_control1', '22') }}
       device_class: door
 
   ### WINDOWS ###
@@ -225,19 +224,19 @@
         }}
 
   ### PRESENCE ###
-    connor_presence:
-      friendly_name: Connor
-      device_class: presence
-      entity_id: device_tracker.connor_galaxys8
-      value_template: >-
-        {{ is_state('device_tracker.connor_galaxys8', 'home') }}
+    # connor_presence:
+    #   friendly_name: Connor
+    #   device_class: presence
+    #   entity_id: device_tracker.connor_galaxys10e
+    #   value_template: >-
+    #     {{ is_state('device_tracker.connor_galaxys10e', 'home') }}
 
-    diana_presence:
-      friendly_name: Diana
-      device_class: presence
-      entity_id: device_tracker.diana_pixel2
-      value_template: >-
-        {{ is_state('device_tracker.diana_pixel2', 'home') }}
+    # diana_presence:
+    #   friendly_name: Diana
+    #   device_class: presence
+    #   entity_id: device_tracker.diana_pixel2
+    #   value_template: >-
+    #     {{ is_state('device_tracker.diana_pixel2', 'home') }}
 
 ### AV ###
 - name: CEC Roku

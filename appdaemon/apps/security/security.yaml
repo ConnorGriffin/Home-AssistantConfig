@@ -50,10 +50,10 @@ door_auto_unlock:
   class: DoorAutoUnlock
   trackers:
     - tracker_name: Connor
-      tracker: binary_sensor.connor_presence
+      tracker: person.connor
       notification_target: Connor Phone
     - tracker_name: Diana
-      tracker: binary_sensor.diana_presence
+      tracker: person.diana
       #notification_target: Diana Phone
   # Time in seconds before arming the auto-unlock
   not_home_duration: 300

@@ -103,7 +103,8 @@ sun:
 
 # Text to speech
 tts:
-  - platform: google
+  - platform: google_translate
+    service_name: google_say
 
 group: !include groups.yaml
 automation: !include automations.yaml
@@ -121,18 +122,19 @@ input_number: !include input_number.yaml
 ecobee:
   api_key: !secret ecobee_api_key
 
-climate:
-  - platform: generic_thermostat
-    name: Bedroom
-    heater: switch.smart_plug_2
-    target_sensor: sensor.bedroom_temperature
-    min_temp: 68
-    max_temp: 78
-    ac_mode: false
-    min_cycle_duration:
-      minutes: 10
-    precision: .1
-    away_temp: 68
+# Disabled until winter
+#climate:
+#  - platform: generic_thermostat
+#    name: Bedroom
+#    heater: switch.smart_plug_2
+#    target_sensor: sensor.bedroom_temperature
+#    min_temp: 68
+#    max_temp: 78
+#    ac_mode: false
+#    min_cycle_duration:
+#      minutes: 10
+#    precision: .1
+#    away_temp: 68
 
 media_player:
   - platform: roku
@@ -187,10 +189,11 @@ influxdb:
   password: !secret influx_password
 
 notify:
-  - name: gcm_html5
+  - name: html5
     platform: html5
-    gcm_api_key: !secret gcm_api_key
-    gcm_sender_id: !secret gcm_sender_id
+    vapid_pub_key: !secret vapid_pub_key
+    vapid_prv_key: !secret vapid_prv_key
+    vapid_email: connor@connorcg.com
   - name: email
     platform: smtp
     sender: homeassistant@connorcg.com
@@ -201,9 +204,6 @@ notify:
     username: homeassistant@connorcg.com
     password: !secret smtp_server_password
     sender_name: HomeAssistant
-  - name: simplepush_connor
-    platform: simplepush
-    device_key: !secret connor_simplepush
 
 mqtt:
   password: !secret http_password
@@ -214,3 +214,15 @@ shopping_list:
 
 lovelace:
   mode: yaml
+
+person:
+  - name: Connor
+    id: connor
+    user_id: 34df42f3d2c4456a896b92cee7332494
+    device_trackers:
+      - device_tracker.connor_galaxys10e
+  - name: Diana
+    id: diana
+    user_id: da0393185d074b8a82131d9762336517
+    device_trackers:
+      - device_tracker.diana_pixel2

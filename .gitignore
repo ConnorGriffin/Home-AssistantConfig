@@ -18,3 +18,4 @@ appdaemon/apps/__pycache__
 .viminfo
 tts
 .storage
+ssl

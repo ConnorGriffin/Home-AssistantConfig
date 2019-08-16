@@ -92,8 +92,8 @@ welcome_home_lighting:
   not_home_duration: 300
   #brightness_pct: 50
   presence_sensors:
-    - binary_sensor.connor_presence
-    - binary_sensor.diana_presence
+    - person.connor
+    - person.diana
   lights:
     - light.dining_room_light
     - light.hallway_light

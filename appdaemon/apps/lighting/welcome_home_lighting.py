@@ -26,7 +26,7 @@ class WelcomeHomeLighting(hass.Hass):
             self.listen_state(
                 cb = self.not_home_cb,
                 entity = entity,
-                new = 'off',
+                new = 'not_home',
                 duration = self.args['not_home_duration'],
                 immediate = True,
                 type = 'presence'
@@ -39,8 +39,8 @@ class WelcomeHomeLighting(hass.Hass):
         self.listen_state(
             cb = self.returned_home_cb,
             entity = entity,
-            old = 'off',
-            new = 'on',
+            old = 'not_home',
+            new = 'home',
             type = 'presence'
         )
 

@@ -1,0 +1,46 @@
+{
+    "Connor Desktop": {
+        "browser": "chrome",
+        "subscription": {
+            "endpoint": "https://android.googleapis.com/gcm/send/eO_SNTVnVsI:APA91bHLSXrJSwfcDr9Zm3dUuNhGzGjDGRR0s1EG6KNmcFWIjn8uOXXRRA6Vm669Mlubc5SUSttxNIc9H7AiYASUWK2RdmyA0_u3NyZaY4zyj6zpp2vZiPumNdIWjQASxFnFprH4a6jq",
+            "expirationTime": null,
+            "keys": {
+                "auth": "7wYL_7BbXj7q5MAwODXYQQ",
+                "p256dh": "BLRLZzWzuK_bAWSXgBp3v2OYvhIEmd0EEgAG-gG09v1dBG-KSlv8Qmju2tihorwAHU5uhvIlKqvtPVTiXWR6pyo"
+            }
+        }
+    },
+    "Connor Phone": {
+        "browser": "chrome",
+        "subscription": {
+            "endpoint": "https://android.googleapis.com/gcm/send/dAfMVgmmolw:APA91bH99LDUYGG48sC2v78oa6FbTEOVROd7DAy95VnsrrgR6j8ifEZ_dZD4uwR3QcPDer939Hnv4hhFR8HNpY7k8Kad2UlQhmH8AcSZdo4QGeT_8PT_N-j5cfJ6bHM1xp-F0Jj3SSlH",
+            "expirationTime": null,
+            "keys": {
+                "auth": "hEn2WKaYbMchBQ7NxIbx0w",
+                "p256dh": "BFDqyC75abizyRZauH-C1dZ0kkIfYp4rDm5Lxn4qlMqY0jUnlh2Gpv5IzWAV7LZa-nOsuvTSAnaNtut2HWsB_II"
+            }
+        }
+    },
+    "Diana Phone": {
+        "browser": "chrome",
+        "subscription": {
+            "endpoint": "https://android.googleapis.com/gcm/send/dWVS0IUJvnM:APA91bESS6rLLYL_Bsfa27VABIs-gpRoyLVqBVrPYmREL5EFZbejw9UaOx8CyaUmaF1VygPwZU9JPaT5LYhcbmioTUQqfwvezgv_g-Gs8QcbR9Aa1z8UkdLkSbORvohQbrkSlpUmKkGV",
+            "expirationTime": null,
+            "keys": {
+                "auth": "BQqBJVumk1XnXwn-qYp-6w",
+                "p256dh": "BJ6-gcG3MhAmtzAtHJzp6_R1Pgx4P7HQZLMqcQGmLkkTL_fS4TLZyqSrW_hKqb1G_ZKLvwr_ATNhvCmlOrFFviA"
+            }
+        }
+    },
+    "unnamed device": {
+        "browser": "chrome",
+        "subscription": {
+            "endpoint": "https://android.googleapis.com/gcm/send/e1MYcfsNAR8:APA91bH9sU2e469aBilWRTwnpf0pl4deSDhiHUSzzE3RDo5AJ5aU67ojYdiKl-cStv_bZIKeLBRLZhRP0RlwPtZAzP5M13YjWAoudwZu6jdTYDhpJuNSWfKpcKQsMly4lolQT163FAT7",
+            "expirationTime": null,
+            "keys": {
+                "auth": "rzDEHURq_ecCjBw6qVipPg",
+                "p256dh": "BDaKkK591d6sM_nNuHGT2cH4-z8KctBKmkoT7fx6lTIzVwg9ryVgOFjLrprjgV8dJoiPDECOEuBnt-VPCWxOqms"
+            }
+        }
+    }
+}
