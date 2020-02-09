@@ -15,7 +15,7 @@ class LowBattery(hass.Hass):
 
             # Configure listeners
             self.listen_state(
-                cb = self.low_battery_cb,
+                callback = self.low_battery_cb,
                 entity = entity,
                 attribute = 'battery_level',
                 immediate = True

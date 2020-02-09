@@ -36,7 +36,7 @@ class TemplateSensor(hass.Hass):
 
             # Listen for changes and update the values immediately
             self.listen_state(
-                cb = self.sensor_cb,
+                callback = self.sensor_cb,
                 entity = entity_id,
                 attribute = attribute,
                 sensor = sensor,

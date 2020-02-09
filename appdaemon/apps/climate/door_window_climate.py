@@ -44,21 +44,21 @@ class DoorWindowClimate(hass.Hass):
                     # Get the initial state (so stuff works if AppDaemon reboots)
                     self.run_in(
                         self.eval_rule,
-                        seconds = 5,
+                        delay =  5,
                         rule = rule,
                         entity_id = entity
                     )
 
                     # Listen for state changes
                     self.listen_state(
-                        cb = self.dependency_cb,
+                        callback = self.dependency_cb,
                         entity = entity,
                         rule = rule
                     )
                 elif dependency.get('door'):
                     entity = dependency['door']
                     self.listen_state(
-                        cb = self.dependency_cb,
+                        callback = self.dependency_cb,
                         entity = entity,
                         new = 'off',
                         duration = door_closed_seconds,
@@ -66,7 +66,7 @@ class DoorWindowClimate(hass.Hass):
                         rule = rule
                     )
                     self.listen_state(
-                        cb = self.dependency_cb,
+                        callback = self.dependency_cb,
                         entity = entity,
                         new = 'on',
                         duration = door_open_seconds,

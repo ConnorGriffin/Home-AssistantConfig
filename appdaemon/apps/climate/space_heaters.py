@@ -1,6 +1,7 @@
 import appdaemon.plugins.hass.hassapi as hass
 from datetime import datetime, timedelta
 
+
 class SpaceHeaters(hass.Hass):
 
     def initialize(self):
@@ -26,39 +27,38 @@ class SpaceHeaters(hass.Hass):
                 else:
                     end_dt = datetime.combine(today_start, end_time)
 
-
                 self.log(start_dt)
                 self.log(end_dt)
 
                 # Setup a daily schedule call for the begin and end operations
                 self.run_every(
-                    callback = self.set_operation_mode,
-                    start = start_dt,
-                    interval = 86400,
-                    room = heater_config['room'],
-                    climate = heater_config['climate'],
-                    operation_mode = schedule_entry['start_operation']
+                    callback=self.set_operation_mode,
+                    start=start_dt,
+                    interval=86400,
+                    room=heater_config['room'],
+                    climate=heater_config['climate'],
+                    operation_mode=schedule_entry['start_operation']
                 )
 
                 self.run_every(
-                    callback = self.set_operation_mode,
-                    start = end_dt,
-                    interval = 86400,
-                    room = heater_config['room'],
-                    climate = heater_config['climate'],
-                    operation_mode = schedule_entry['end_operation']
+                    callback=self.set_operation_mode,
+                    start=end_dt,
+                    interval=86400,
+                    room=heater_config['room'],
+                    climate=heater_config['climate'],
+                    operation_mode=schedule_entry['end_operation']
                 )
-
 
     def set_operation_mode(self, kwargs):
         room = kwargs['room']
         climate = kwargs['climate']
         operation_mode = kwargs['operation_mode']
 
-        self.log('Setting {} space heater ({}) to {}.'.format(room, climate, operation_mode))
+        self.log('Setting {} space heater ({}) to {}.'.format(
+            room, climate, operation_mode))
 
         self.call_service(
-            service = 'climate/set_operation_mode',
-            entity_id = climate,
-            operation_mode = operation_mode
+            service='climate/set_operation_mode',
+            entity_id=climate,
+            operation_mode=operation_mode
         )

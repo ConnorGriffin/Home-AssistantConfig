@@ -6,7 +6,7 @@ class BathroomVent(hass.Hass):
 
         # Listen for the window to be open for <open_duration> seconds
         self.listen_state(
-            cb = self.window_cb,
+            callback = self.window_cb,
             entity = self.args['window'],
             old = 'off',
             new = 'on',

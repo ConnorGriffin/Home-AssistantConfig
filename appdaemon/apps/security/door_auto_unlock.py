@@ -11,7 +11,7 @@ class DoorAutoUnlock(hass.Hass):
 
             # Wait for the person to not be home for the specified duration
             self.listen_state(
-                cb = self.presence_cb,
+                callback = self.presence_cb,
                 entity = tracker['tracker'],
                 new = 'not_home',
                 duration = self.args['not_home_duration'],
@@ -31,7 +31,7 @@ class DoorAutoUnlock(hass.Hass):
 
             # Listen for the person to return home
             self.listen_state(
-                cb = self.presence_cb,
+                callback = self.presence_cb,
                 entity = entity,
                 new = 'home',
                 notification_target = notification_target,

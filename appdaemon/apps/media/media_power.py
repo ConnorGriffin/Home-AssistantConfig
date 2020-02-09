@@ -28,7 +28,7 @@ class MediaPower(hass.Hass):
 
         # Listen for plug to be inactive for 'off_duration' seconds
         self.listen_state(
-            cb = self.power_cb,
+            callback = self.power_cb,
             entity = plug_status,
             new = 'off',
             duration = self.args['off_duration'],
@@ -39,7 +39,7 @@ class MediaPower(hass.Hass):
 
         # Listen for the roku channel to change, but only if the power switch is off
         self.listen_state(
-            cb = self.roku_cb,
+            callback = self.roku_cb,
             entity = self.args['roku'],
             power_switch = power_switch,
             constrain_input_boolean = '{},off'.format(power_switch),

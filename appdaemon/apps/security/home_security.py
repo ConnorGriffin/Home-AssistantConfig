@@ -49,7 +49,7 @@ class HomeSecurity(hass.Hass):
 
         # Listen for nobody to be home for the set duration
         self.listen_state(
-            cb = self.presence_cb,
+            callback = self.presence_cb,
             entity = self.args['presence_entity'],
             new = 'off',
             duration = self.args['arm_delay'],
@@ -58,7 +58,7 @@ class HomeSecurity(hass.Hass):
 
         # Listen for someone to return home
         self.listen_state(
-            cb = self.presence_cb,
+            callback = self.presence_cb,
             entity = self.args['presence_entity'],
             old = 'off',
             new = 'on'
@@ -66,7 +66,7 @@ class HomeSecurity(hass.Hass):
 
         # Listen for the notification to be clicked
         self.listen_event(
-            cb = self.notification_clicked_cb,
+            callback = self.notification_clicked_cb,
             event = 'html5_notification.clicked',
             tag = 'home-security-alarm'
         )
@@ -127,7 +127,7 @@ class HomeSecurity(hass.Hass):
 
             # Setup the listeners and add the handler to the handle array, oneshots fixed in 3.0.3, not working right now.
             handle = self.listen_state(
-                cb = self.sensor_cb,
+                callback = self.sensor_cb,
                 entity = sensor,
                 old = current_state,
                 new = new_state,
@@ -136,7 +136,7 @@ class HomeSecurity(hass.Hass):
             self.sensor_handles.append(handle)
 
             handle = self.listen_state(
-                cb = self.sensor_cb,
+                callback = self.sensor_cb,
                 entity = sensor,
                 old = current_state,
                 new = new_state,
@@ -184,7 +184,7 @@ class HomeSecurity(hass.Hass):
         if check_returned_home:
             handle = self.run_in(
                 self.check_returned_home,
-                seconds = self.args['return_delay'],
+                delay =  self.args['return_delay'],
                 entity_id = entity,
                 old = old,
                 new = new

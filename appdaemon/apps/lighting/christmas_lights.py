@@ -17,12 +17,12 @@ class ChristmasTreeLights(hass.Hass):
 
         # Turn on/off christmas tree lights when the projector is turned off/on
         self.listen_state(
-            cb = self.projector_cb,
+            callback = self.projector_cb,
             entity = 'switch.cec_projector',
             new = 'on'
         )
         self.listen_state(
-            cb = self.projector_cb,
+            callback = self.projector_cb,
             entity = 'switch.cec_projector',
             new = 'off',
             duration = 30

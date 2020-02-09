@@ -21,7 +21,7 @@ class NHLAutoplay(hass.Hass):
 
         # Listen for the notification to be clicked
         self.listen_event(
-            cb = self.notification_clicked,
+            callback = self.notification_clicked,
             event = 'html5_notification.clicked',
             tag = 'nhl-autoplay'
         )
@@ -96,7 +96,7 @@ class NHLAutoplay(hass.Hass):
         if presence != 'home':
             self.log('Waiting for Connor to return home.')
             self.return_home_handle = self.listen_state(
-                cb = self.returned_home,
+                callback = self.returned_home,
                 entity = self.args['presence'],
                 new = 'home',
                 old = 'not_home',
@@ -176,31 +176,31 @@ class NHLAutoplay(hass.Hass):
             # Select the game on the home screen (defaults to favorite team's latest game)
             self.run_in(
                 self.roku_remote,
-                seconds = 20,
+                delay =  20,
                 action = 'Select'
             )
 
             # Wait for game details to load, then find the broadcast
             self.run_in(
                 self.roku_remote,
-                seconds = 30,
+                delay =  30,
                 action = 'Down'
             )
             for i in range(chosen_broadcast):
                 self.run_in(
                     self.roku_remote,
-                    seconds = 32+i,
+                    delay =  32+i,
                     action = 'Right'
                 )
             for i in range(down_count):
                 self.run_in(
                     self.roku_remote,
-                    seconds = 35+i,
+                    delay =  35+i,
                     action = 'Down'
                 )
             self.run_in(
                 self.roku_remote,
-                seconds = 37,
+                delay =  37,
                 action = 'Select'
             )
 
@@ -208,12 +208,12 @@ class NHLAutoplay(hass.Hass):
             for i in range(3):
                 self.run_in(
                     self.roku_remote,
-                    seconds = 53+i,
+                    delay =  53+i,
                     action = 'Fwd'
                 )
             self.run_in(
                 self.roku_remote,
-                seconds = 67,
+                delay =  67,
                 action = 'Play'
             )
 
