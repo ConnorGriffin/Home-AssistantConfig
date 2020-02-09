@@ -57,13 +57,15 @@ class Lights(hass.Hass):
                     self.listen_state(
                         self.turned_off_cb,
                         entity=light_entity,
-                        new='off'
+                        new='off',
+                        oneshot=True
                     )
                 elif state == 'off':
                     self.listen_state(
                         self.turned_on_cb,
                         entity=light_entity,
-                        new='on'
+                        new='on',
+                        oneshot=True
                     )
 
                 # Arm the turned_on_cb after light has been off for a set duration
@@ -72,9 +74,10 @@ class Lights(hass.Hass):
                     entity=light_entity,
                     new='off',
                     duration=off_threshold,
-                    target_callback='turned_on_cb',
+                    target_cb='turned_on_cb',
                     on_threshold=on_threshold,
-                    off_threshold=off_threshold
+                    off_threshold=off_threshold,
+                    oneshot=True
                 )
 
                 # Arm the turned_off_cb after light has been on for a set duration
@@ -83,9 +86,10 @@ class Lights(hass.Hass):
                     entity=light_entity,
                     new='on',
                     duration=on_threshold,
-                    target_callback='turned_off_cb',
+                    target_cb='turned_off_cb',
                     on_threshold=on_threshold,
-                    off_threshold=off_threshold
+                    off_threshold=off_threshold,
+                    oneshot=True
                 )
 
                 # Set auto-brightness every 5 minutes if light is on and mode is Automatic
@@ -228,9 +232,6 @@ class Lights(hass.Hass):
             entities=original_entities
         )
 
-        # Stop the listener manually, can't use a oneshot until https://github.com/home-assistant/appdaemon/pull/299 is merged
-        self.cancel_listen_event(kwargs['handle'])
-
     # Used by other functions to set overrides and store override data in the global_vars dictionary
 
     def set_override(self, entity_id, override, brightness_pct):
@@ -335,7 +336,8 @@ class Lights(hass.Hass):
                     old='on',
                     new='off',
                     original_entities=original_entities,
-                    group=group
+                    group=group,
+                    oneshot=True
                 )
 
     # Set max/min brightness on double tap up/down
@@ -363,10 +365,8 @@ class Lights(hass.Hass):
     # Used to arm the turned_off and turned_on callbacks after a delay
 
     def arm_cb(self, entity, attribute, old, new, kwargs):
-        # Cancel listening (doing this because oneshots don't work)
-        # self.cancel_listen_state(kwargs['handle'])
         setting = self.global_vars['lights'][entity]
-        target_callback = kwargs.get('target_cb')
+        target_cb = kwargs.get('target_cb')
         on_threshold = kwargs.get('on_threshold')
         off_threshold = kwargs.get('off_threshold')
 
@@ -388,14 +388,12 @@ class Lights(hass.Hass):
                 entity=entity,
                 new='off',
                 on_threshold=on_threshold,
-                off_threshold=off_threshold
+                off_threshold=off_threshold,
+                oneshot=True
             )
 
     # Nullify the override when a light is turned off
     def turned_off_cb(self, entity, attribute, old, new, kwargs):
-        # Cancel listening (doing this because oneshots don't work)
-        self.cancel_listen_state(kwargs['handle'])
-
         light_friendly = self.friendly_name(entity)
         self.log('{}: Turned off'.format(light_friendly))
 
@@ -417,8 +415,6 @@ class Lights(hass.Hass):
     # Call auto_brightness_cb when a light is turned on
 
     def turned_on_cb(self, entity, attribute, old, new, kwargs):
-        # Cancel listening (doing this because oneshots don't work)
-        self.cancel_listen_state(kwargs['handle'])
         light_friendly = self.friendly_name(entity)
 
         # Don't call auto_brightness_cb if the mode dropdown isn't set to Automatic
