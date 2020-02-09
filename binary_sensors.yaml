@@ -1,52 +1,52 @@
 - platform: template
   sensors:
-  ### DOORS ###
+    ### DOORS ###
     front_door:
       entity_id: sensor.front_door_sensor_access_control
-      friendly_name: 'Front Door'
+      friendly_name: "Front Door"
       value_template: >-
         {{ is_state('sensor.front_door_sensor_access_control', '22') }}
       device_class: door
 
     kitchen_door:
       entity_id: sensor.kitchen_door_sensor_access_control
-      friendly_name: 'Kitchen Door'
+      friendly_name: "Kitchen Door"
       value_template: >-
         {{ is_state('sensor.kitchen_door_sensor_access_control', '22') }}
       device_class: door
 
     carport_door:
       entity_id: sensor.carport_door_sensor_access_control
-      friendly_name: 'Carport Door'
+      friendly_name: "Carport Door"
       value_template: >-
         {{ is_state('sensor.carport_door_sensor_access_control', '22') }}
       device_class: door
 
     backyard_door:
-      entity_id: sensor.backyard_door_sensor_access_control1
-      friendly_name: 'Backyard Door'
+      entity_id: sensor.backyard_door_sensor_access_control
+      friendly_name: "Backyard Door"
       value_template: >-
-        {{ is_state('sensor.backyard_door_sensor_access_control1', '22') }}
+        {{ is_state('sensor.backyard_door_sensor_access_control', '22') }}
       device_class: door
 
-  ### WINDOWS ###
+    ### WINDOWS ###
     front_window_left:
       entity_id: sensor.front_window_left_sensor_access_control
-      friendly_name: 'Front Window (Left Half)'
+      friendly_name: "Front Window (Left Half)"
       value_template: >-
         {{ is_state('sensor.front_window_left_sensor_access_control', '22') }}
       device_class: window
 
     front_window_right:
       entity_id: sensor.front_window_right_sensor_access_control
-      friendly_name: 'Front Window (Right Half)'
+      friendly_name: "Front Window (Right Half)"
       value_template: >-
         {{ is_state('sensor.front_window_right_sensor_access_control', '22') }}
       device_class: window
 
     dining_room_window:
       entity_id: sensor.dining_room_window_sensor_access_control
-      friendly_name: 'Dining Room Window'
+      friendly_name: "Dining Room Window"
       value_template: >-
         {{ is_state('sensor.dining_room_window_sensor_access_control', '22') }}
       device_class: window
@@ -74,41 +74,33 @@
 
     bedroom_window:
       entity_id: sensor.bedroom_window_sensor_access_control
-      friendly_name: 'Bedroom Window'
+      friendly_name: "Bedroom Window"
       value_template: >-
         {{ is_state('sensor.bedroom_window_sensor_access_control', '22') }}
       device_class: window
 
     back_left_window:
       entity_id: sensor.back_left_window_sensor_access_control
-      friendly_name: 'Back Left Window'
+      friendly_name: "Back Left Window"
       value_template: >-
         {{ is_state('sensor.back_left_window_sensor_access_control', '22') }}
       device_class: window
 
     back_right_window:
       entity_id: sensor.back_right_window_sensor_access_control
-      friendly_name: 'Back Right Window'
+      friendly_name: "Back Right Window"
       value_template: >-
         {{ is_state('sensor.back_right_window_sensor_access_control', '22') }}
       device_class: window
 
     bathroom_window:
       entity_id: sensor.bathroom_window_sensor_access_control
-      friendly_name: 'Bathroom Window'
+      friendly_name: "Bathroom Window"
       value_template: >-
         {{ is_state('sensor.bathroom_window_sensor_access_control', '22') }}
       device_class: window
 
-  ### SMART PLUGS ###
-    smart_plug_1_active:
-      entity_id: sensor.smart_plug_1_current
-      friendly_name: 'Smart Plug 1 Active'
-      value_template: >-
-        {{ states('sensor.smart_plug_1_current')|float > 0 }}
-      device_class: plug
-
-  ### MISC. ###
+    ### MISC. ###
     bathroom_occupancy:
       friendly_name: Bathroom Occupancy
       entity_id: binary_sensor.bathroom_motion
@@ -120,28 +112,12 @@
 
     shower:
       entity_id: sensor.bathroom_relative_humidity
-      friendly_name: 'Shower'
+      friendly_name: "Shower"
       value_template: >-
         {{ states('sensor.bathroom_relative_humidity')|float >= 80 }}
-      icon_template: 'mdi:shower-head'
+      icon_template: "mdi:shower-head"
 
-    bed_occupancy_connor:
-      entity_id: sensor.bed_sensor_connor_fsr
-      friendly_name: Bed Occupancy (Connor)
-      device_class: occupancy
-      delay_off:
-        seconds: 30
-      value_template: >-
-        {{ states('sensor.bed_sensor_connor_fsr')|float >= 0.15 }}
-      icon_template: >-
-        {%- set fsr = states('sensor.bed_sensor_connor_fsr')|float -%}
-        {%- if (fsr < 0.15) -%}
-          mdi:bed-empty
-        {%- elif (fsr >= 0.15) -%}
-          mdi:hotel
-        {%- endif -%}
-
-  ### CLIMATE ZONE DATA ###
+    ### CLIMATE ZONE DATA ###
     main_house_windows:
       friendly_name: Main House Windows
       device_class: window
@@ -224,20 +200,19 @@
         }}
 
   ### PRESENCE ###
-    # connor_presence:
-    #   friendly_name: Connor
-    #   device_class: presence
-    #   entity_id: device_tracker.connor_galaxys10e
-    #   value_template: >-
-    #     {{ is_state('device_tracker.connor_galaxys10e', 'home') }}
+  # connor_presence:
+  #   friendly_name: Connor
+  #   device_class: presence
+  #   entity_id: device_tracker.connor_galaxys10e
+  #   value_template: >-
+  #     {{ is_state('device_tracker.connor_galaxys10e', 'home') }}
 
-    # diana_presence:
-    #   friendly_name: Diana
-    #   device_class: presence
-    #   entity_id: device_tracker.diana_pixel2
-    #   value_template: >-
-    #     {{ is_state('device_tracker.diana_pixel2', 'home') }}
-
+  # diana_presence:
+  #   friendly_name: Diana
+  #   device_class: presence
+  #   entity_id: device_tracker.diana_pixel2
+  #   value_template: >-
+  #     {{ is_state('device_tracker.diana_pixel2', 'home') }}
 ### AV ###
 - name: CEC Roku
   platform: mqtt

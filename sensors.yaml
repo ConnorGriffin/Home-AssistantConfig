@@ -131,10 +131,3 @@
 - platform: sonarr
   api_key: !secret sonarr_api_key
   host: media.ipa.connorcg.com
-
-
-### MISC ###
-- platform: srp_energy
-  username: !secret srp_username
-  password: !secret srp_password
-  id: !secret srp_id

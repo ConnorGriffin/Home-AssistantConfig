@@ -1,22 +1,18 @@
 secrets: /conf/secrets.yaml
-log:
-  accessfile: /conf/logs/access.log
-  errorfile: /conf/logs/error.log
-  logfile: /conf/logs/appdaemon.log
-  log_generations: 3
-  log_size: 1000000
+logs:
+  access_log:
+    filename: /conf/logs/access.log
+  error_log:
+    filename: /conf/logs/error.log
+  main_log:
+    filename: /conf/logs/appdaemon.log
 appdaemon:
   #threads: 10
   app_dir: /conf/apps
-  api_port: 5000
-  api_key: !secret http_password
-#  api_ssl_certificate: fullchain.pem
-#  api_ssl_key: privkey.pem
   plugins:
     HASS:
       type: hass
       ha_url: !secret base_url
-      #ha_key: !secret http_password
       token: !secret ha_token
   opnsense:
     api_key: !secret opnsense_api_key
@@ -24,6 +20,9 @@ appdaemon:
   cox:
     username: !secret cox_username
     password: !secret cox_password
-hadashboard:
-  dash_url: !secret hadash_url
-  dash_dir: /conf/dashboards
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: !secret elevation
+  time_zone: !secret time_zone
+http:
+  url: http://0.0.0.0:5050

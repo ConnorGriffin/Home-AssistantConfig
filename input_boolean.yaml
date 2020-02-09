@@ -54,8 +54,12 @@ bathroom_vent_notification_automation:
   name: Bathroom Vent Notification
   icon: mdi:emoticon-poop
 
-christmas_light_schedule_automation:
+christmas_tree_light_schedule_automation:
   name: Christmas Tree Light Schedule
+  icon: mdi:ornament
+
+christmas_light_schedule_automation:
+  name: Christmas Light (Outdoor) Schedule
   icon: mdi:ornament
 
 nhl_projector_autoplay_automation:

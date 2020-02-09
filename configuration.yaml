@@ -44,12 +44,9 @@ cloud:
       #  - group.inside_lights
       #  - group.inside_lights_except_bedroom
 
-
 http:
   # Secrets are defined in the file secrets.yaml
-  api_password: !secret http_password
   server_port: 443
-  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
   base_url: !secret base_url
   ssl_certificate: /config/ssl/fullchain.pem
   ssl_key: /config/ssl/privkey.pem
@@ -73,24 +70,24 @@ conversation:
 
 # Enables support for tracking state changes over time
 history:
-    include:
-        entities:
-            - binary_sensor.bedroom_occupancy
-            - binary_sensor.connors_office_occupancy
-            - binary_sensor.dianas_office_occupancy
-            - binary_sensor.living_room_occupancy
-        domains:
-            - sensor
-            - climate
-            - device_tracker
-            - light
-            - lock
-            - media_player
-            - sun
-            - weather
-    exclude:
-        entities:
-            - sensor.home_temperature
+  include:
+    entities:
+      - binary_sensor.bedroom_occupancy
+      - binary_sensor.connors_office_occupancy
+      - binary_sensor.dianas_office_occupancy
+      - binary_sensor.living_room_occupancy
+    domains:
+      - sensor
+      - climate
+      - device_tracker
+      - light
+      - lock
+      - media_player
+      - sun
+      - weather
+  exclude:
+    entities:
+      - sensor.home_temperature
 
 # View all events in a logbook
 logbook:
@@ -147,33 +144,33 @@ zwave:
   usb_path: /dev/ttyACM0
   network_key: !secret zwave_network_key
   #device_config:
-    #light.connors_office_light:
-    #  polling_intensity: 1
-    #  refresh_value: true
-    #light.bedroom_light:
-    #  polling_intensity: 1
-    #  refresh_value: true
-    #light.dianas_office_light:
-    #  polling_intensity: 1
-    #  refresh_value: true
-    #light.hallway_light:
-    #  polling_intensity: 1
-    #  refresh_value: true
-    #light.dining_room_light:
-    #  polling_intensity: 1
-    #  refresh_value: true
-    #light.bathroom_light:
-    #  polling_intensity: 1
-    #  refresh_value: true
+  #light.connors_office_light:
+  #  polling_intensity: 1
+  #  refresh_value: true
+  #light.bedroom_light:
+  #  polling_intensity: 1
+  #  refresh_value: true
+  #light.dianas_office_light:
+  #  polling_intensity: 1
+  #  refresh_value: true
+  #light.hallway_light:
+  #  polling_intensity: 1
+  #  refresh_value: true
+  #light.dining_room_light:
+  #  polling_intensity: 1
+  #  refresh_value: true
+  #light.bathroom_light:
+  #  polling_intensity: 1
+  #  refresh_value: true
 
 device_tracker:
   - platform: nmap_tracker
     hosts: 10.31.36.101-102
     new_device_defaults:
       track_new_devices: False
-    consider_home: 300
+    consider_home: 600
     home_interval: 1
-    interval_seconds: 10
+    interval_seconds: 20
   #- platform: netgear
   #  host: 10.31.36.45
   #  username: admin
@@ -216,13 +213,5 @@ lovelace:
   mode: yaml
 
 person:
-  - name: Connor
-    id: connor
-    user_id: 34df42f3d2c4456a896b92cee7332494
-    device_trackers:
-      - device_tracker.connor_galaxys10e
-  - name: Diana
-    id: diana
-    user_id: da0393185d074b8a82131d9762336517
-    device_trackers:
-      - device_tracker.diana_pixel2
+
+scene: !include scenes.yaml

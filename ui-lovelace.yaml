@@ -1,17 +1,17 @@
 resources:
-  - url: /local/slider-entity-row.js?v=3
-    type: js
+  - url: /local/slider-entity-row.js?v=4
+    type: module
     git: https://github.com/thomasloven/lovelace-slider-entity-row
   - url: /local/monster-card.js?v=2
     type: js
     git: https://raw.githubusercontent.com/ciotlosm/custom-lovelace/master/monster-card/monster-card.js
-  - url: /local/vertical-stack-in-card.js?v=8
+  - url: /local/vertical-stack-in-card.js?v=9
     type: js
     git: https://github.com/custom-cards/vertical-stack-in-card
 
 title: Home
 views:
-### HOME / GENERAL VIEW ###
+  ### HOME / GENERAL VIEW ###
   - title: Home
     icon: mdi:home-assistant
     id: home
@@ -40,17 +40,17 @@ views:
           #- sensor.home_security_armed
           #- sensor.home_security_fired
 
-      #- title: Routines
-      #  id: routines
-      #  type: entities
-      #  entities:
-      #    - name: Turn off all lights
-      #      type: call-service
-      #      icon: mdi:lightbulb-outline
-      #      action_name: Run
-      #      service: light.turn_off
+      - type: "custom:monster-card"
+        id: all-scenes
+        card:
+          type: entities
+          title: Scenes
+          show_header_toggle: false
+        filter:
+          include:
+            - entity_id: "scene.*"
 
-       # Show active automations
+        # Show active automations
       - id: active-automations
         type: entity-filter
         show_empty: false
@@ -141,8 +141,8 @@ views:
           - entity: switch.cec_projector
             state: "on"
         card:
-            type: media-control
-            entity: media_player.living_room_roku
+          type: media-control
+          entity: media_player.living_room_roku
 
       - title: Smart Switches
         id: smart-switches
@@ -160,7 +160,6 @@ views:
           #- name: Christmas Tree Lights
           #  icon: mdi:ornament
           #  entity: switch.smart_plug_1
-
 
       # Show only open windows
       - id: open-windows
@@ -227,7 +226,7 @@ views:
               #- entity: sensor.cox_remaining_daily_usage
               #  name: Remaining Daily Usage
 
-### ROOM VIEW ###
+  ### ROOM VIEW ###
   - title: Rooms
     icon: mdi:home
     id: rooms
@@ -315,29 +314,29 @@ views:
         type: custom:vertical-stack-in-card
         id: living-room-stack
         cards:
-        - id: living-room-glance
-          type: glance
-          columns: 3
-          entities:
-            - entity: sensor.living_room_temperature
-              name: Temp
-            #- entity: binary_sensor.living_room_occupancy
-            #  name: Presence
-            - entity: switch.cec_projector
-              name: Projector
-              icon: mdi:projector
-              hold_action:
-                action: call-service
-                service: switch.toggle
-                service_data:
-                  entity_id: switch.cec_projector
-            - name: Roku
-              entity: media_player.living_room_roku
-            - binary_sensor.front_door
-            - entity: binary_sensor.front_window_left
-              name: Left Half
-            - entity: binary_sensor.front_window_right
-              name: Right Half
+          - id: living-room-glance
+            type: glance
+            columns: 3
+            entities:
+              - entity: sensor.living_room_temperature
+                name: Temp
+              #- entity: binary_sensor.living_room_occupancy
+              #  name: Presence
+              - entity: switch.cec_projector
+                name: Projector
+                icon: mdi:projector
+                hold_action:
+                  action: call-service
+                  service: switch.toggle
+                  service_data:
+                    entity_id: switch.cec_projector
+              - name: Roku
+                entity: media_player.living_room_roku
+              - binary_sensor.front_door
+              - entity: binary_sensor.front_window_left
+                name: Left Half
+              - entity: binary_sensor.front_window_right
+                name: Right Half
 
       - title: Dining Room
         type: custom:vertical-stack-in-card
@@ -349,16 +348,16 @@ views:
           - id: dining-room-glance
             type: glance
             entities:
-            - entity: input_select.dining_room_light_mode
-              name: Light Mode
-              hold_action:
-                action: call-service
-                service: input_select.select_option
-                service_data:
-                  entity_id: input_select.dining_room_light_mode
-                  option: Automatic
-            - entity: binary_sensor.dining_room_window
-              name: Window
+              - entity: input_select.dining_room_light_mode
+                name: Light Mode
+                hold_action:
+                  action: call-service
+                  service: input_select.select_option
+                  service_data:
+                    entity_id: input_select.dining_room_light_mode
+                    option: Automatic
+              - entity: binary_sensor.dining_room_window
+                name: Window
 
       - title: Hallway
         type: custom:vertical-stack-in-card
@@ -370,16 +369,16 @@ views:
           - id: hallway-glance
             type: glance
             entities:
-            - entity: sensor.home_temperature
-              name: Temp
-            - entity: input_select.hallway_light_mode
-              name: Light Mode
-              hold_action:
-                action: call-service
-                service: input_select.select_option
-                service_data:
-                  entity_id: input_select.hallway_light_mode
-                  option: Automatic
+              - entity: sensor.home_temperature
+                name: Temp
+              - entity: input_select.hallway_light_mode
+                name: Light Mode
+                hold_action:
+                  action: call-service
+                  service: input_select.select_option
+                  service_data:
+                    entity_id: input_select.hallway_light_mode
+                    option: Automatic
 
       - title: Bathroom
         type: custom:vertical-stack-in-card
@@ -392,25 +391,25 @@ views:
             type: glance
             columns: 4
             entities:
-            - entity: sensor.bathroom_temperature
-              name: Temp
-            - entity: binary_sensor.bathroom_motion
-              name: Motion
-            - entity: input_select.bathroom_light_mode
-              name: Light Mode
-              hold_action:
-                action: call-service
-                service: input_select.select_option
-                service_data:
-                  entity_id: input_select.bathroom_light_mode
-                  option: Automatic
-            - binary_sensor.shower
-            - entity: binary_sensor.bathroom_window
-              name: Window
-            - entity: sensor.bathroom_luminance
-              name: Lux
-            - entity: sensor.bathroom_relative_humidity
-              name: Humidity
+              - entity: sensor.bathroom_temperature
+                name: Temp
+              - entity: binary_sensor.bathroom_motion
+                name: Motion
+              - entity: input_select.bathroom_light_mode
+                name: Light Mode
+                hold_action:
+                  action: call-service
+                  service: input_select.select_option
+                  service_data:
+                    entity_id: input_select.bathroom_light_mode
+                    option: Automatic
+              - binary_sensor.shower
+              - entity: binary_sensor.bathroom_window
+                name: Window
+              - entity: sensor.bathroom_luminance
+                name: Lux
+              - entity: sensor.bathroom_relative_humidity
+                name: Humidity
 
       - title: Back Room
         id: back-room
@@ -429,7 +428,7 @@ views:
           - entity: binary_sensor.back_right_window
             name: Right Window
 
-### MEDIA VIEW ###
+  ### MEDIA VIEW ###
   - title: Media
     id: media
     icon: mdi:audio-video
@@ -458,7 +457,7 @@ views:
         entities:
           - sensor.sonarr_upcoming
 
-### CLIMATE VIEW ###
+  ### CLIMATE VIEW ###
   - title: Climate
     id: climate
     icon: mdi:weather-sunny
@@ -474,7 +473,7 @@ views:
         title: History
         url: http://10.31.36.11:3000/dashboard-solo/snapshot/AHM5vJRewYGhx2eg6iJiy6KFhRYeu1I7?orgId=1&panelId=2&from=1530396946437&to=1530440146437&theme=light
 
-### AUTOMATIONS VIEW ###
+  ### AUTOMATIONS VIEW ###
   - title: Automations
     id: automations
     icon: mdi:robot
@@ -487,7 +486,6 @@ views:
         filter:
           include:
             - entity_id: "input_boolean.*_automation"
-
             ### ALARM VIEW ###
   - title: Alarms
     id: alarms
@@ -498,82 +496,82 @@ views:
         type: entities
         show_header_toggle: false
         entities:
-        #- input_text.alarm1_name
-        - input_boolean.alarm1_enabled
-        - input_datetime.alarm1_datetime
-        - input_boolean.alarm1_sunday
-        - input_boolean.alarm1_monday
-        - input_boolean.alarm1_tuesday
-        - input_boolean.alarm1_wednesday
-        - input_boolean.alarm1_thursday
-        - input_boolean.alarm1_friday
-        - input_boolean.alarm1_saturday
+          #- input_text.alarm1_name
+          - input_boolean.alarm1_enabled
+          - input_datetime.alarm1_datetime
+          - input_boolean.alarm1_sunday
+          - input_boolean.alarm1_monday
+          - input_boolean.alarm1_tuesday
+          - input_boolean.alarm1_wednesday
+          - input_boolean.alarm1_thursday
+          - input_boolean.alarm1_friday
+          - input_boolean.alarm1_saturday
 
       - title: Alarm2
         id: alarm2
         type: entities
         show_header_toggle: false
         entities:
-        #- input_text.alarm2_name
-        - input_boolean.alarm2_enabled
-        - input_datetime.alarm2_datetime
-        - input_boolean.alarm2_sunday
-        - input_boolean.alarm2_monday
-        - input_boolean.alarm2_tuesday
-        - input_boolean.alarm2_wednesday
-        - input_boolean.alarm2_thursday
-        - input_boolean.alarm2_friday
-        - input_boolean.alarm2_saturday
+          #- input_text.alarm2_name
+          - input_boolean.alarm2_enabled
+          - input_datetime.alarm2_datetime
+          - input_boolean.alarm2_sunday
+          - input_boolean.alarm2_monday
+          - input_boolean.alarm2_tuesday
+          - input_boolean.alarm2_wednesday
+          - input_boolean.alarm2_thursday
+          - input_boolean.alarm2_friday
+          - input_boolean.alarm2_saturday
 
       - title: Alarm3
         id: alarm3
         type: entities
         show_header_toggle: false
         entities:
-        #- input_text.alarm3_name
-        - input_boolean.alarm3_enabled
-        - input_datetime.alarm3_datetime
-        - input_boolean.alarm3_sunday
-        - input_boolean.alarm3_monday
-        - input_boolean.alarm3_tuesday
-        - input_boolean.alarm3_wednesday
-        - input_boolean.alarm3_thursday
-        - input_boolean.alarm3_friday
-        - input_boolean.alarm3_saturday
+          #- input_text.alarm3_name
+          - input_boolean.alarm3_enabled
+          - input_datetime.alarm3_datetime
+          - input_boolean.alarm3_sunday
+          - input_boolean.alarm3_monday
+          - input_boolean.alarm3_tuesday
+          - input_boolean.alarm3_wednesday
+          - input_boolean.alarm3_thursday
+          - input_boolean.alarm3_friday
+          - input_boolean.alarm3_saturday
 
       - title: Alarm4
         id: alarm4
         type: entities
         show_header_toggle: false
         entities:
-        #- input_text.alarm4_name
-        - input_boolean.alarm4_enabled
-        - input_datetime.alarm4_datetime
-        - input_boolean.alarm4_sunday
-        - input_boolean.alarm4_monday
-        - input_boolean.alarm4_tuesday
-        - input_boolean.alarm4_wednesday
-        - input_boolean.alarm4_thursday
-        - input_boolean.alarm4_friday
-        - input_boolean.alarm4_saturday
+          #- input_text.alarm4_name
+          - input_boolean.alarm4_enabled
+          - input_datetime.alarm4_datetime
+          - input_boolean.alarm4_sunday
+          - input_boolean.alarm4_monday
+          - input_boolean.alarm4_tuesday
+          - input_boolean.alarm4_wednesday
+          - input_boolean.alarm4_thursday
+          - input_boolean.alarm4_friday
+          - input_boolean.alarm4_saturday
 
       - title: Alarm5
         id: alarm5
         type: entities
         show_header_toggle: false
         entities:
-        #- input_text.alarm5_name
-        - input_boolean.alarm5_enabled
-        - input_datetime.alarm5_datetime
-        - input_boolean.alarm5_sunday
-        - input_boolean.alarm5_monday
-        - input_boolean.alarm5_tuesday
-        - input_boolean.alarm5_wednesday
-        - input_boolean.alarm5_thursday
-        - input_boolean.alarm5_friday
-        - input_boolean.alarm5_saturday
+          #- input_text.alarm5_name
+          - input_boolean.alarm5_enabled
+          - input_datetime.alarm5_datetime
+          - input_boolean.alarm5_sunday
+          - input_boolean.alarm5_monday
+          - input_boolean.alarm5_tuesday
+          - input_boolean.alarm5_wednesday
+          - input_boolean.alarm5_thursday
+          - input_boolean.alarm5_friday
+          - input_boolean.alarm5_saturday
 
-### ZWAVE / SANDBOX VIEW ###
+  ### ZWAVE / SANDBOX VIEW ###
   - title: Z-Wave
     id: zwave
     icon: mdi:z-wave

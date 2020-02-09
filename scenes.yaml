@@ -1,0 +1,11 @@
+- id: media_center
+  name: Media Center
+  entities:
+    light.dining_room_light:
+      state: "off"
+    light.hallway_light:
+      state: "off"
+    switch.cec_projector:
+      state: "on"
+    switch.cec_receiver:
+      state: "on"
