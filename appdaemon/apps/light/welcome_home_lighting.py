@@ -1,5 +1,6 @@
-# Welcome Home automation - Turns on lights when someone returns home between certain hours.
-# Uses Schlage connect to detect if lights should be turned on/off, since normal presence detection isn't fast enough
+""" Welcome Home automation - Turns on lights when someone returns home between certain hours.
+Uses smart lock state and presence detection to detect if lights should be turned on/off
+"""
 
 import appdaemon.plugins.hass.hassapi as hass
 
@@ -60,7 +61,9 @@ class WelcomeHomeLighting(hass.Hass):
                 self.log('{} returned home, turning on lights.'.format(
                     self.friendly_name(entity)))
 
-            auto_off = self.args.get('auto_off', 300)
+            # If auto-off is disabled, turn off the automation alert after 5 minutes
+            auto_off = self.args.get('auto_off')
+            automation_off_delay = self.args.get('auto_off', 300)
 
             # If automation is already triggered, just extend the existing timers
             automation_state = self.get_state(self.args['state_sensor'])
@@ -78,9 +81,10 @@ class WelcomeHomeLighting(hass.Hass):
 
             # Set the automation state
             self.set_automation_state({'state': 'on'})
+
             handle = self.run_in(
                 self.set_automation_state,
-                delay=auto_off,
+                delay=automation_off_delay,
                 state='off'
             )
             self.handles.append(handle)
@@ -99,12 +103,13 @@ class WelcomeHomeLighting(hass.Hass):
                         self.lights.append(light)
 
                     # Turn off the lights after a set time
-                    handle = self.run_in(
-                        self.turn_off_and_refresh,
-                        delay=auto_off,
-                        entity_id=light
-                    )
-                    self.handles.append(handle)
+                    if auto_off:
+                        handle = self.run_in(
+                            self.turn_off_and_refresh,
+                            delay=auto_off,
+                            entity_id=light
+                        )
+                        self.handles.append(handle)
 
     def refresh_zwave_entity(self, kwargs):
         entity_id = kwargs.get('entity_id')

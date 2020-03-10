@@ -2,7 +2,7 @@ import appdaemon.plugins.hass.hassapi as hass
 from datetime import datetime
 
 
-class DoorAutoLock(hass.Hass):
+class DoorAutolock(hass.Hass):
 
     def initialize(self):
         for door in self.args.get("doors"):

@@ -1,6 +1,6 @@
 import appdaemon.plugins.hass.hassapi as hass
 import requests
-from datetime import timezone, time, timedelta, datetime
+from datetime import timezone, time, datetime
 
 
 class NHLAutoplay(hass.Hass):

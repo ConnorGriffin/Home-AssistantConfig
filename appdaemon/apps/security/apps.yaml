@@ -1,0 +1,11 @@
+---
+door_auto_lock:
+  module: door_auto_lock
+  class: DoorAutoLock
+  constrain_input_boolean: input_boolean.smart_autolock_automation
+  closed_seconds: 300
+  unlocked_seconds: 300
+  doors:
+    - door: Front Door
+      lock: lock.front_door_lock
+      sensor: binary_sensor.front_door

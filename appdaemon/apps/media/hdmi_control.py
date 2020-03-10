@@ -1,3 +1,15 @@
+""" HDMI Control - HDMI/CEC Related Automations
+
+Projector Switch:
+- Turn receiver on if projector switch is turned on (ties the two together)
+
+Roku Power Control:
+- Turn projector on if Roku channel changes from home/idle
+
+Receiver Volume:
+- Update the volume slider when the volume sensor updates (slider is decoupled from sensor)
+"""
+
 import appdaemon.plugins.hass.hassapi as hass
 from helpers import Helpers as helpers
 
@@ -23,7 +35,6 @@ class ProjectorSwitch(hass.Hass):
 class RokuPowerControl(hass.Hass):
 
     def initialize(self):
-
         # Turn projector on if Roku changes from home/idle and the projector is off
         self.listen_state(
             callback=self.roku_cb,
@@ -42,7 +53,6 @@ class RokuPowerControl(hass.Hass):
 class ReceiverVolume(hass.Hass):
 
     def initialize(self):
-
         # Update the volume slider when the volume sensor updates
         self.listen_state(
             callback=self.volume_state_cb,
